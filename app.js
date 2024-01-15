@@ -18,7 +18,8 @@ app.get('/expectFail', (req, res) => {
 
 app.post('/toggleLight', (req, res) => {
 
-let ledStatus;
+  const filePath = './apiData.txt';
+  let ledStatus;
 
   fs.readFile(filePath, 'utf8', (err, data) => {
     if (err) {
