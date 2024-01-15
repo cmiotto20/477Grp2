@@ -58,10 +58,10 @@ app.post('/toggleLight', (req, res) => {
         console.error(err);
         res.status(501).send(err);
       }
-      });
-  });
 
-  res.status(200).send(`Light toggled: ${ledStatus}`);
+      res.status(200).send(`Light toggled: ${ledStatus}`);
+    });
+  });
 });
 
 app.get('/getLightVal', (req, res) => {
@@ -85,11 +85,9 @@ app.get('/getLightVal', (req, res) => {
 
     // Get the text after the colon (index 1)
     ledStatus = parts[1].trim();
+    let returnString = 'ledStatus: ' + ledStatus;
+    res.status(200).send(returnString);
   });
-
-  let returnString = 'ledStatus: ' + ledStatus;
-
-  res.status(200).send(returnString);
 });
 
 app.listen(port, () => {
