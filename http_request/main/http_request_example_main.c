@@ -6,6 +6,7 @@
    software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
    CONDITIONS OF ANY KIND, either express or implied.
 */
+#include <stdio.h>
 #include <string.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -23,10 +24,12 @@
 #include "lwip/dns.h"
 #include "sdkconfig.h"
 
+#include "driver/gpio.h"
+
 /* Constants that aren't configurable in menuconfig */
-#define WEB_SERVER "54.226.108.25/"
+#define WEB_SERVER "54.226.108.25"
 #define WEB_PORT "8080"
-#define WEB_PATH "/toggleLight"
+#define WEB_PATH "/getLightVal"
 
 static const char *TAG = "example";
 
@@ -34,6 +37,8 @@ static const char *REQUEST = "GET " WEB_PATH " HTTP/1.0\r\n"
     "Host: "WEB_SERVER":"WEB_PORT"\r\n"
     "User-Agent: esp-idf/1.0 esp32\r\n"
     "\r\n";
+
+#define GPIO_PIN GPIO_NUM_4
 
 static void http_get_task(void *pvParameters)
 {
@@ -109,6 +114,24 @@ static void http_get_task(void *pvParameters)
                 putchar(recv_buf[i]);
             }
         } while(r > 0);
+
+        // Configure the GPIO pin as an output
+        gpio_config_t io_conf = {
+            .pin_bit_mask = (1ULL << GPIO_PIN),
+            .mode = GPIO_MODE_OUTPUT,
+            .intr_type = GPIO_INTR_DISABLE,
+            .pull_up_en = 0,
+            .pull_down_en = 0,
+        };
+        gpio_config(&io_conf);
+
+        if (strstr(recv_buf, "ledStatus: 1") != NULL) {
+            gpio_set_level(GPIO_PIN, 1);
+		    printf("GPIO state set to HIGH\n");
+        } else if (strstr(recv_buf, "ledStatus: 0") != NULL) {
+            gpio_set_level(GPIO_PIN, 0);
+		    printf("GPIO state set to LOW\n");
+        }
 
         ESP_LOGI(TAG, "... done reading from socket. Last read return=%d errno=%d.", r, errno);
         close(s);

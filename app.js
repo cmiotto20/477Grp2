@@ -85,7 +85,9 @@ app.get('/getLightVal', (req, res) => {
     ledStatus = parts[1].trim();
   });
 
-  res.status(200).send(`ledStatus: ${ledStatus}`);
+  let returnString = 'ledStatus: ' + ledStatus;
+
+  res.status(200).send(returnString);
 });
 
 app.listen(port, () => {
