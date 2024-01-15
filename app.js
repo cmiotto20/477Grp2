@@ -59,7 +59,33 @@ app.post('/toggleLight', (req, res) => {
       });
   });
 
-  res.status(200).send('Light toggled');
+  res.status(200).send(`Light toggled: ${ledStatus}`);
+});
+
+app.get('/getLightVal', (req, res) => {
+
+  const filePath = './apiData.txt';
+  let ledStatus;
+
+  fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+  
+    // Split the content into lines
+    const lines = data.split('\n');
+
+    let firstLine = lines[0];
+
+    // Split the string by colon
+    const parts = firstLine.split(':');
+
+    // Get the text after the colon (index 1)
+    ledStatus = parts[1].trim();
+  });
+
+  res.status(200).send(`${ledStatus}`);
 });
 
 app.listen(port, () => {

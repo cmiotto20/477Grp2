@@ -24,9 +24,9 @@
 #include "sdkconfig.h"
 
 /* Constants that aren't configurable in menuconfig */
-#define WEB_SERVER "3.94.110.51"
+#define WEB_SERVER "54.226.108.25/"
 #define WEB_PORT "8080"
-#define WEB_PATH "/expectFail"
+#define WEB_PATH "/toggleLight"
 
 static const char *TAG = "example";
 
