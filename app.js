@@ -43,6 +43,8 @@ app.post('/toggleLight', (req, res) => {
     } else {
       ledStatus = "0";
     }
+
+    console.log(`testing ledStatus: ${ledStatus}`);
   
     // Change the first line (index 0)
     lines[0] = `ledStatus:${ledStatus}`;
