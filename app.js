@@ -57,7 +57,7 @@ app.post('/toggleLight', (req, res) => {
         res.status(501).send(err);
       }
       });
-  i});
+  });
 
   res.status(200).send('Light toggled');
 });
