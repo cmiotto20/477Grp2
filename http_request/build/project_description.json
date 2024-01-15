@@ -1,7 +1,7 @@
 {
     "version":            "1",
     "project_name":       "http_request",
-    "project_version":    "59f7884",
+    "project_version":    "bfad34e-dirty",
     "project_path":       "C:/Users/mgher/Documents/GitHub/477Grp2/http_request",
     "idf_path":           "C:/Users/mgher/esp/esp-idf",
     "build_dir":          "C:/Users/mgher/Documents/GitHub/477Grp2/http_request/build",

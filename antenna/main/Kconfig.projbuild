@@ -1,0 +1,56 @@
+/* HTTP GET Example using plain POSIX sockets
+
+   This example code is in the Public Domain (or CC0 licensed, at your option.)
+
+   Unless required by applicable law or agreed to in writing, this
+   software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+   CONDITIONS OF ANY KIND, either express or implied.
+*/
+#include <string.h>
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "esp_system.h"
+#include "esp_wifi.h"
+#include "esp_event.h"
+#include "esp_log.h"
+#include "nvs_flash.h"
+#include "protocol_examples_common.h"
+
+#include "lwip/err.h"
+#include "lwip/sockets.h"
+#include "lwip/sys.h"
+#include "lwip/netdb.h"
+#include "lwip/dns.h"
+#include "sdkconfig.h"
+
+#include "freertos/event_groups.h"
+
+#include <stdio.h>
+#include <esp_http_client.h>
+
+static const char *TAG = "example";
+
+void http_request_task(void *pvParameters) {
+    esp_http_client_config_t config = {
+        .url = "http://3.94.110.51:8080",
+    };
+    
+    esp_http_client_handle_t client = esp_http_client_init(&config);
+
+    esp_err_t err = esp_http_client_perform(client);
+    if (err == ESP_OK) {
+        ESP_LOGI(TAG, "HTTP Status = %d, content_length = %d",
+                 esp_http_client_get_status_code(client),
+                 esp_http_client_get_content_length(client));
+    } else {
+        ESP_LOGE(TAG, "HTTP GET request failed: %s", esp_err_to_name(err));
+    }
+
+    esp_http_client_cleanup(client);
+}
+
+void app_main() {
+    ESP_ERROR_CHECK(example_connect());
+
+    xTaskCreate(&http_request_task, "http_request_task", 8192, NULL, 5, NULL);
+}
