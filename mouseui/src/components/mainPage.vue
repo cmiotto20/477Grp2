@@ -5,13 +5,17 @@
 
 <script>
 export default {
-  name: 'HelloWorld',
+  name: 'mainPage',
   props: {
     msg: String
   },
   methods: {
     turnOnLight() {
+<<<<<<< HEAD
       const url = 'http://174.129.215.96:8080/toggleLight'; 
+=======
+      const url = 'http://52.23.199.138:8080/toggleLight'; 
+>>>>>>> 30645964d247636041cdd28efe9567316fbc376a
 
       fetch(url, {
         method: 'POST',
