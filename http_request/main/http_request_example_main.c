@@ -27,7 +27,7 @@
 #include "driver/gpio.h"
 
 /* Constants that aren't configurable in menuconfig */
-#define WEB_SERVER "54.226.108.25"
+#define WEB_SERVER "174.129.215.96"
 #define WEB_PORT "8080"
 #define WEB_PATH "/getLightVal"
 
