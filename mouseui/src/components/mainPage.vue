@@ -15,7 +15,7 @@ export default {
   },
   methods: {
     turnOnLight() {
-      const url = 'http://i8.221.98.218:8080/toggleLight'; 
+      const url = 'http://174.129.215.96:8080/toggleLight'; 
 
       fetch(url, {
         method: 'POST',
