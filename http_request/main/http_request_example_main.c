@@ -51,21 +51,32 @@ static void http_get_task(void *pvParameters)
     int s, r;
     char recv_buf[64];
 
+    // Configure the GPIO pin as an output
+    gpio_config_t io_conf = {
+        .pin_bit_mask = (1ULL << GPIO_PIN),
+        .mode = GPIO_MODE_OUTPUT,
+        .intr_type = GPIO_INTR_DISABLE,
+        .pull_up_en = 0,
+        .pull_down_en = 0,
+    };
+    gpio_config(&io_conf);
+
     while(1) {
+        ESP_LOGI(TAG, "Request checkpoint 1");
         int err = getaddrinfo(WEB_SERVER, WEB_PORT, &hints, &res);
 
+        ESP_LOGI(TAG, "Request checkpoint 2");
         if(err != 0 || res == NULL) {
             ESP_LOGE(TAG, "DNS lookup failed err=%d res=%p", err, res);
             vTaskDelay(1000 / portTICK_PERIOD_MS);
             continue;
         }
 
-        /* Code to print the resolved IP.
-
-           Note: inet_ntoa is non-reentrant, look at ipaddr_ntoa_r for "real" code */
+        ESP_LOGI(TAG, "Request checkpoint 3");
         addr = &((struct sockaddr_in *)res->ai_addr)->sin_addr;
         ESP_LOGI(TAG, "DNS lookup succeeded. IP=%s", inet_ntoa(*addr));
 
+        ESP_LOGI(TAG, "Request checkpoint 4");
         s = socket(res->ai_family, res->ai_socktype, 0);
         if(s < 0) {
             ESP_LOGE(TAG, "... Failed to allocate socket.");
@@ -75,6 +86,7 @@ static void http_get_task(void *pvParameters)
         }
         ESP_LOGI(TAG, "... allocated socket");
 
+        ESP_LOGI(TAG, "Request checkpoint 5");
         if(connect(s, res->ai_addr, res->ai_addrlen) != 0) {
             ESP_LOGE(TAG, "... socket connect failed errno=%d", errno);
             close(s);
@@ -83,9 +95,11 @@ static void http_get_task(void *pvParameters)
             continue;
         }
 
+        ESP_LOGI(TAG, "Request checkpoint 6");
         ESP_LOGI(TAG, "... connected");
         freeaddrinfo(res);
 
+        ESP_LOGI(TAG, "Request checkpoint 7");
         if (write(s, REQUEST, strlen(REQUEST)) < 0) {
             ESP_LOGE(TAG, "... socket send failed");
             close(s);
@@ -94,7 +108,7 @@ static void http_get_task(void *pvParameters)
         }
         ESP_LOGI(TAG, "... socket send success");
 
-        struct timeval receiving_timeout;
+        /*struct timeval receiving_timeout;
         receiving_timeout.tv_sec = 5;
         receiving_timeout.tv_usec = 0;
         if (setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, &receiving_timeout,
@@ -104,41 +118,34 @@ static void http_get_task(void *pvParameters)
             vTaskDelay(4000 / portTICK_PERIOD_MS);
             continue;
         }
-        ESP_LOGI(TAG, "... set socket receiving timeout success");
+        ESP_LOGI(TAG, "... set socket receiving timeout success");*/
 
+        ESP_LOGI(TAG, "Request checkpoint 8");
         /* Read HTTP response */
         do {
             bzero(recv_buf, sizeof(recv_buf));
             r = read(s, recv_buf, sizeof(recv_buf)-1);
+
+            if (strstr(recv_buf, "ledStatus: 1") != NULL) {
+                gpio_set_level(GPIO_PIN, 1);
+                printf("GPIO state set to HIGH\n");
+            } else if (strstr(recv_buf, "ledStatus: 0") != NULL) {
+                gpio_set_level(GPIO_PIN, 0);
+                printf("GPIO state set to LOW\n");
+            }
+
             for(int i = 0; i < r; i++) {
                 putchar(recv_buf[i]);
             }
         } while(r > 0);
 
-        // Configure the GPIO pin as an output
-        gpio_config_t io_conf = {
-            .pin_bit_mask = (1ULL << GPIO_PIN),
-            .mode = GPIO_MODE_OUTPUT,
-            .intr_type = GPIO_INTR_DISABLE,
-            .pull_up_en = 0,
-            .pull_down_en = 0,
-        };
-        gpio_config(&io_conf);
-
-        if (strstr(recv_buf, "ledStatus: 1") != NULL) {
-            gpio_set_level(GPIO_PIN, 1);
-		    printf("GPIO state set to HIGH\n");
-        } else if (strstr(recv_buf, "ledStatus: 0") != NULL) {
-            gpio_set_level(GPIO_PIN, 0);
-		    printf("GPIO state set to LOW\n");
-        }
-
         ESP_LOGI(TAG, "... done reading from socket. Last read return=%d errno=%d.", r, errno);
         close(s);
-        for(int countdown = 10; countdown >= 0; countdown--) {
-            ESP_LOGI(TAG, "%d... ", countdown);
+        /*int countdownUntilNextHTTPReq = 10
+        for(countdownUntilNextHTTPReq; countdownUntilNextHTTPReq > 0; countdownUntilNextHTTPReq--) {
+            ESP_LOGI(TAG, "%d... ", countdownUntilNextHTTPReq);
             vTaskDelay(1000 / portTICK_PERIOD_MS);
-        }
+        }*/
         ESP_LOGI(TAG, "Starting again!");
     }
 }
