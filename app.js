@@ -1,4 +1,42 @@
-const express = require('express');
+import express from 'express';
+import {WebSocket, WebSocketServer} from 'ws';
+import http from 'http';
+
+const app = express();
+const server = http.createServer(app);
+const wss = new WebSocketServer({ server });
+
+import {toggleLight} from './apiFunctions.mjs'
+
+wss.on('connection', (ws) => {
+    console.log('Client connected');
+    ws.on('message', (message) => {
+        console.log(`Received: ${message}`);
+
+        if(message == "hello") {
+          ws.send(`Hi There`);
+        } else if(message == "toggle light") {
+          toggleLight((err, ledStatus) => {
+            if (err) {
+              console.error(`Error: ${err}`);
+            } else {
+              console.log(`Result: ${ledStatus}`);
+              ws.send(`ledStatus: ${ledStatus}`);
+            }
+          });
+        }
+    });
+
+    ws.on('close', () => {
+        console.log('Client disconnected');
+    });
+});
+
+server.listen(3000, () => {
+    console.log('Server listening on port 3000');
+});
+
+/*const express = require('express');
 const cors = require('cors');
 const app = express();
 const port = 8080;
@@ -118,3 +156,4 @@ app.post('/moveRight', (req, res) => {
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
 });
+*/

@@ -1,6 +1,6 @@
 <template>
   <h1>MOUSE Controls Main Page</h1>
-  <button @click="turnOnLight()">Toggle light</button>
+  <button @click="toggleLight()">Toggle light</button>
   <button @click="moveUp()">Up</button>
   <button @click="moveRight()">Right</button>
   <button @click="moveLeft()">Left</button>
@@ -15,29 +15,14 @@ export default {
   name: 'mainPage',
   data() {
     return {
-      websocketStatus: 'Disconnected',
+      messages: [],
+      socket: null,
     };
   },
   props: {
     msg: String
   },
   methods: {
-    turnOnLight() {
-      const url = 'http://174.129.215.96:8080/toggleLight'; 
-
-      fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json', 
-        },
-      })
-        .then(data => {
-          console.log('Response:', data);
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
-    },
     moveUp() {
       const url = home + 'moveUp'
       fetch(url, {
@@ -127,23 +112,17 @@ export default {
         });
     },
     sendMessage() {
-      this.$socket.send('Hello, server!');
+      this.socket.send('hello');
+    },
+    toggleLight() {
+      this.socket.send('toggle light');
     }
   },
   mounted() {
-    this.$options.sockets.onopen = () => {
-      this.websocketStatus = 'Connected';
-      console.log('WebSocket connected');
-    };
-
-    this.$options.sockets.onclose = () => {
-      this.websocketStatus = 'Disconnected';
-      console.log('WebSocket disconnected');
-    };
-
-    this.$options.sockets.onmessage = (message) => {
-      console.log('Message from server:', message);
-      // Handle the received data as needed
+    this.socket = new WebSocket('ws://localhost:3000');
+    this.socket.onmessage = (event) => {
+      this.messages.push(event.data);
+      console.log(event.data)
     };
   }
 }
