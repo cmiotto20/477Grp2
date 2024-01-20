@@ -5,6 +5,7 @@
   <button @click="moveRight()">Right</button>
   <button @click="moveLeft()">Left</button>
   <button @click="moveDown()">Down</button>
+  <button @click="sendMessage()">Send Message</button>
 </template>
 
 <script>
@@ -12,6 +13,11 @@
 const home = 'http://localhost:8080/';
 export default {
   name: 'mainPage',
+  data() {
+    return {
+      websocketStatus: 'Disconnected',
+    };
+  },
   props: {
     msg: String
   },
@@ -119,7 +125,26 @@ export default {
         .catch(error => {
           console.error('Error:', error);
         });
+    },
+    sendMessage() {
+      this.$socket.send('Hello, server!');
     }
+  },
+  mounted() {
+    this.$options.sockets.onopen = () => {
+      this.websocketStatus = 'Connected';
+      console.log('WebSocket connected');
+    };
+
+    this.$options.sockets.onclose = () => {
+      this.websocketStatus = 'Disconnected';
+      console.log('WebSocket disconnected');
+    };
+
+    this.$options.sockets.onmessage = (message) => {
+      console.log('Message from server:', message);
+      // Handle the received data as needed
+    };
   }
 }
 </script>
