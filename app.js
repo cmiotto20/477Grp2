@@ -90,6 +90,31 @@ app.get('/getLightVal', (req, res) => {
   });
 });
 
+app.post('/moveUp', (req, res) => { 
+    console.log('sending movement: Up'); 
+    
+    res.status(200).send(`U`);
+  });
+
+app.post('/moveDown', (req, res) => {
+    console.log('sending movement: Down');
+    
+    res.status(200).send('D');
+  });
+
+app.post('/moveLeft', (req, res) => {
+    console.log('sending movement: Left');
+    
+    res.status(200).send('D');
+  });
+
+
+app.post('/moveRight', (req, res) => {
+    console.log('sending movement: Right');
+    
+    res.status(200).send('D');
+  });
+
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
 });

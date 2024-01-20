@@ -8,6 +8,8 @@
 </template>
 
 <script>
+//const home = 'http://174.129.215.96:8080/'
+const home = 'http://localhost:8080/';
 export default {
   name: 'mainPage',
   props: {
@@ -31,7 +33,7 @@ export default {
         });
     },
     moveUp() {
-      const url = 'http://174.129.215.96:8080/moveUp'
+      const url = home + 'moveUp'
       fetch(url, {
         method: 'POST',
         headers: {
@@ -53,7 +55,7 @@ export default {
         });
     }, 
     moveLeft() {
-      const url = 'http://174.129.215.96:8080/moveLeft'
+      const url = home + 'moveLeft'
       fetch(url, {
         method: 'POST',
         headers: {
@@ -75,7 +77,7 @@ export default {
         });
     },
     moveDown() {
-      const url = 'http://174.129.215.96:8080/moveDown'
+      const url = home + 'D'
       fetch(url, {
         method: 'POST',
         headers: {
@@ -97,7 +99,7 @@ export default {
         });
     },
     moveRight() {
-      const url = 'http://174.129.215.96:8080/moveLeft'
+      const url = home + 'R'
       fetch(url, {
         method: 'POST',
         headers: {
