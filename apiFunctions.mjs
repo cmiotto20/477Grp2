@@ -40,7 +40,7 @@ export function toggleLight(callback) {
   });
 }
 
-export function getLightStatus() {
+export function getLightStatus(callback) {
 
   const filePath = './apiData.txt';
   let ledStatus;

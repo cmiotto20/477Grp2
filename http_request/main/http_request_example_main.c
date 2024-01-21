@@ -27,7 +27,6 @@ static void on_websocket_event(void *handler_args, esp_event_base_t base, int32_
             break;
         case WEBSOCKET_EVENT_DATA:
             ESP_LOGI(TAG, "WebSocket Received Data");
-            // Access data using data->data_ptr and data->data_len
             break;
         default:
             break;
@@ -59,7 +58,7 @@ static void ws_client_task(void *pvParameters) {
 
     while (1) {
         // Send WebSocket Text Message
-        const char *message = "hello";
+        const char *message = "get light status";
         esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
 
         // Wait for a while before sending the next message
