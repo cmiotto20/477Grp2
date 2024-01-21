@@ -26225,6 +26225,24 @@
                 "id": "component-config-wi-fi-provisioning-manager",
                 "title": "Wi-Fi Provisioning Manager",
                 "type": "menu"
+            },
+            {
+                "children": [
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": "Enable this option will reallocated buffer when send or receive data and free them when end of use.\nThis can save about 2 KB memory when no websocket data send and receive.",
+                        "id": "ESP_WS_CLIENT_ENABLE_DYNAMIC_BUFFER",
+                        "name": "ESP_WS_CLIENT_ENABLE_DYNAMIC_BUFFER",
+                        "range": null,
+                        "title": "Enable websocket client dynamic buffer for send and receive data",
+                        "type": "bool"
+                    }
+                ],
+                "depends_on": null,
+                "id": "component-config-esp-websocket-client",
+                "title": "ESP WebSocket client",
+                "type": "menu"
             }
         ],
         "depends_on": null,

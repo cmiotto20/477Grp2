@@ -409,6 +409,11 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
+  include("C:/Users/mgher/Documents/GitHub/477Grp2/http_request/build/esp-idf/espressif__esp_websocket_client/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
   include("C:/Users/mgher/Documents/GitHub/477Grp2/http_request/build/esp-idf/main/cmake_install.cmake")
 endif()
 

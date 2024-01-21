@@ -626,6 +626,13 @@ C:/Users/mgher/Documents/GitHub/477Grp2/http_request/build/esp-idf/wifi_provisio
 C:/Users/mgher/Documents/GitHub/477Grp2/http_request/build/esp-idf/wifi_provisioning/CMakeFiles/install.dir
 C:/Users/mgher/Documents/GitHub/477Grp2/http_request/build/esp-idf/wifi_provisioning/CMakeFiles/install/local.dir
 C:/Users/mgher/Documents/GitHub/477Grp2/http_request/build/esp-idf/wifi_provisioning/CMakeFiles/install/strip.dir
+C:/Users/mgher/Documents/GitHub/477Grp2/http_request/build/esp-idf/espressif__esp_websocket_client/CMakeFiles/__idf_espressif__esp_websocket_client.dir
+C:/Users/mgher/Documents/GitHub/477Grp2/http_request/build/esp-idf/espressif__esp_websocket_client/CMakeFiles/edit_cache.dir
+C:/Users/mgher/Documents/GitHub/477Grp2/http_request/build/esp-idf/espressif__esp_websocket_client/CMakeFiles/rebuild_cache.dir
+C:/Users/mgher/Documents/GitHub/477Grp2/http_request/build/esp-idf/espressif__esp_websocket_client/CMakeFiles/list_install_components.dir
+C:/Users/mgher/Documents/GitHub/477Grp2/http_request/build/esp-idf/espressif__esp_websocket_client/CMakeFiles/install.dir
+C:/Users/mgher/Documents/GitHub/477Grp2/http_request/build/esp-idf/espressif__esp_websocket_client/CMakeFiles/install/local.dir
+C:/Users/mgher/Documents/GitHub/477Grp2/http_request/build/esp-idf/espressif__esp_websocket_client/CMakeFiles/install/strip.dir
 C:/Users/mgher/Documents/GitHub/477Grp2/http_request/build/esp-idf/main/CMakeFiles/__idf_main.dir
 C:/Users/mgher/Documents/GitHub/477Grp2/http_request/build/esp-idf/main/CMakeFiles/edit_cache.dir
 C:/Users/mgher/Documents/GitHub/477Grp2/http_request/build/esp-idf/main/CMakeFiles/rebuild_cache.dir
