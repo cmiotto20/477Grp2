@@ -27,7 +27,8 @@
 #define SSID "ChickenNuggies"
 #define PASS "3172940072M@tt"
 
-static const char *TAG = "WEBSOCKET";
+static const char *TAG = "websocket_example";
+esp_websocket_client_handle_t client;
 
 static void wifi_event_handler(void *event_handler_arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
 {
@@ -73,10 +74,9 @@ void wifi_connection()
     esp_wifi_connect();
 }
 
-esp_websocket_client_handle_t client;
-
-static void websocket_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data) {
+static void on_websocket_event(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data) {
     esp_websocket_event_data_t *data = (esp_websocket_event_data_t *)event_data;
+
     switch (event_id) {
         case WEBSOCKET_EVENT_CONNECTED:
             ESP_LOGI(TAG, "WebSocket Connected");
@@ -108,29 +108,44 @@ static void websocket_event_handler(void *handler_args, esp_event_base_t base, i
                 printf("GPIO state set to LOW\n");
             }
             break;
-        case WEBSOCKET_EVENT_ERROR:
-            ESP_LOGI(TAG, "WebSocket Error");
-            break;
         default:
             break;
     }
 }
 
-void websocket_send_text(const char *text) {
-    if (client) {
-        esp_websocket_client_send_text(client, text, strlen(text), portMAX_DELAY);
+static void ws_client_task(void *pvParameters) {
+    // Wait for connection
+        while (!esp_wifi_connect()) {
+            vTaskDelay(1000 / portTICK_PERIOD_MS);
+        }
+
+        // WebSocket Configuration
+        esp_websocket_client_config_t ws_cfg = {
+            .uri = "ws://174.129.215.96:3000",  // Set your WebSocket server URI
+        };
+
+        // Create WebSocket Client
+        client = esp_websocket_client_init(&ws_cfg);
+        esp_websocket_register_events(client, ESP_EVENT_ANY_ID, on_websocket_event, client);
+
+        // Connect to WebSocket Server
+        esp_websocket_client_start(client);
+
+        // Wait for the connection to be established
+        while (esp_websocket_client_is_connected(client) != true) {
+            vTaskDelay(1000 / portTICK_PERIOD_MS);
+        }
+    while (1) {
+        // Send WebSocket Text Message
+        const char *message = "get light status";
+        esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
+
+        // Wait for a while before sending the next message
+        vTaskDelay(1500 / portTICK_PERIOD_MS);
+
+        // Clean up and disconnect
+        //esp_websocket_client_stop(client);
     }
-}
-
-void websocket_app_start(const char *uri) {
-    esp_websocket_client_config_t ws_cfg = {
-        .uri = uri,
-    };
-
-    client = esp_websocket_client_init(&ws_cfg);
-    esp_websocket_register_events(client, WEBSOCKET_EVENT_ANY, websocket_event_handler, client);
-
-    esp_websocket_client_start(client);
 }
 
 void app_main(void)
@@ -138,13 +153,5 @@ void app_main(void)
     wifi_connection();
     vTaskDelay(1000 / portTICK_PERIOD_MS);
     
-    // Start the WebSocket client
-    websocket_app_start("ws://174.129.215.96:3000");
-
-    while (1) {
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-
-        // Example: Send a text message every second
-        websocket_send_text("get light status");
-    }    
+   xTaskCreate(&ws_client_task, "ws_client_task", 8192, NULL, 5, NULL);
 }
