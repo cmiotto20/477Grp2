@@ -1932,7 +1932,7 @@
   (symbol (lib_id "Device:LED") (at 179.07 27.94 270) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 01b39a46-d6ee-4fd3-97e3-522399dc960e)
-    (property "Reference" "D12" (id 0) (at 176.53 30.48 0))
+    (property "Reference" "D13" (id 0) (at 176.53 30.48 0))
     (property "Value" "LED" (id 1) (at 176.53 26.67 0))
     (property "Footprint" "" (id 2) (at 179.07 27.94 0)
       (effects (font (size 1.27 1.27)) hide)
@@ -1947,7 +1947,7 @@
   (symbol (lib_id "Device:R_US") (at 255.27 38.1 180) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 07351029-785c-417f-978d-03080a4fe616)
-    (property "Reference" "R24" (id 0) (at 252.73 41.91 90))
+    (property "Reference" "R27" (id 0) (at 252.73 41.91 90))
     (property "Value" "200Ω" (id 1) (at 252.73 36.83 90))
     (property "Footprint" "" (id 2) (at 254.254 37.846 90)
       (effects (font (size 1.27 1.27)) hide)
@@ -1962,7 +1962,7 @@
   (symbol (lib_id "Device:R_US") (at 210.82 38.1 180) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 07eafb7b-e092-478c-ba38-a3bb53d9c103)
-    (property "Reference" "R17" (id 0) (at 208.28 41.91 90))
+    (property "Reference" "R20" (id 0) (at 208.28 41.91 90))
     (property "Value" "200Ω" (id 1) (at 208.28 36.83 90))
     (property "Footprint" "" (id 2) (at 209.804 37.846 90)
       (effects (font (size 1.27 1.27)) hide)
@@ -1977,7 +1977,7 @@
   (symbol (lib_id "Device:LED") (at 147.32 27.94 270) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 15014aca-8f83-495b-8ea5-f3f9d6ea0005)
-    (property "Reference" "D7" (id 0) (at 144.78 30.48 0))
+    (property "Reference" "D8" (id 0) (at 144.78 30.48 0))
     (property "Value" "LED" (id 1) (at 144.78 26.67 0))
     (property "Footprint" "" (id 2) (at 147.32 27.94 0)
       (effects (font (size 1.27 1.27)) hide)
@@ -1992,7 +1992,7 @@
   (symbol (lib_id "Device:LED") (at 210.82 27.94 270) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 1b13c355-5955-447d-8bee-4c211efbbfab)
-    (property "Reference" "D17" (id 0) (at 208.28 30.48 0))
+    (property "Reference" "D18" (id 0) (at 208.28 30.48 0))
     (property "Value" "LED" (id 1) (at 208.28 26.67 0))
     (property "Footprint" "" (id 2) (at 210.82 27.94 0)
       (effects (font (size 1.27 1.27)) hide)
@@ -2007,7 +2007,7 @@
   (symbol (lib_id "Device:R_US") (at 52.07 72.39 90) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 1dfb1f4c-e554-4a91-ade0-32950a61cde4)
-    (property "Reference" "R27" (id 0) (at 48.26 69.85 90))
+    (property "Reference" "R1" (id 0) (at 48.26 69.85 90))
     (property "Value" "2kΩ" (id 1) (at 53.34 69.85 90))
     (property "Footprint" "" (id 2) (at 52.324 71.374 90)
       (effects (font (size 1.27 1.27)) hide)
@@ -2022,7 +2022,7 @@
   (symbol (lib_id "Device:R_US") (at 229.87 38.1 180) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 1fccbe60-f862-4dbc-9a06-6011e37cd2db)
-    (property "Reference" "R20" (id 0) (at 227.33 41.91 90))
+    (property "Reference" "R23" (id 0) (at 227.33 41.91 90))
     (property "Value" "200Ω" (id 1) (at 227.33 36.83 90))
     (property "Footprint" "" (id 2) (at 228.854 37.846 90)
       (effects (font (size 1.27 1.27)) hide)
@@ -2037,7 +2037,7 @@
   (symbol (lib_id "Device:R_US") (at 191.77 38.1 180) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 22a3cf26-0342-42eb-b3fe-ed439c5bcae6)
-    (property "Reference" "R14" (id 0) (at 189.23 41.91 90))
+    (property "Reference" "R17" (id 0) (at 189.23 41.91 90))
     (property "Value" "200Ω" (id 1) (at 189.23 36.83 90))
     (property "Footprint" "" (id 2) (at 190.754 37.846 90)
       (effects (font (size 1.27 1.27)) hide)
@@ -2052,7 +2052,7 @@
   (symbol (lib_id "Device:R_US") (at 204.47 38.1 180) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 2fe143f7-11d1-404b-a91f-a11aa567711e)
-    (property "Reference" "R16" (id 0) (at 201.93 41.91 90))
+    (property "Reference" "R19" (id 0) (at 201.93 41.91 90))
     (property "Value" "200Ω" (id 1) (at 201.93 36.83 90))
     (property "Footprint" "" (id 2) (at 203.454 37.846 90)
       (effects (font (size 1.27 1.27)) hide)
@@ -2067,7 +2067,7 @@
   (symbol (lib_id "Device:R_US") (at 179.07 38.1 180) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 3154adfa-a7aa-4785-81ff-481124ff9e94)
-    (property "Reference" "R12" (id 0) (at 176.53 41.91 90))
+    (property "Reference" "R15" (id 0) (at 176.53 41.91 90))
     (property "Value" "200Ω" (id 1) (at 176.53 36.83 90))
     (property "Footprint" "" (id 2) (at 178.054 37.846 90)
       (effects (font (size 1.27 1.27)) hide)
@@ -2082,7 +2082,7 @@
   (symbol (lib_id "Device:R_US") (at 140.97 38.1 180) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 402119b0-114e-484c-be95-b421a718a177)
-    (property "Reference" "R6" (id 0) (at 138.43 41.91 90))
+    (property "Reference" "R9" (id 0) (at 138.43 41.91 90))
     (property "Value" "200Ω" (id 1) (at 138.43 36.83 90))
     (property "Footprint" "" (id 2) (at 139.954 37.846 90)
       (effects (font (size 1.27 1.27)) hide)
@@ -2097,7 +2097,7 @@
   (symbol (lib_id "Device:R_US") (at 172.72 38.1 180) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 4580ece8-8be1-4dd3-a0d5-89c8228c4984)
-    (property "Reference" "R11" (id 0) (at 170.18 41.91 90))
+    (property "Reference" "R14" (id 0) (at 170.18 41.91 90))
     (property "Value" "200Ω" (id 1) (at 170.18 36.83 90))
     (property "Footprint" "" (id 2) (at 171.704 37.846 90)
       (effects (font (size 1.27 1.27)) hide)
@@ -2112,7 +2112,7 @@
   (symbol (lib_id "Device:R_US") (at 166.37 38.1 180) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 4be80715-78e3-4686-8e64-094147cb0781)
-    (property "Reference" "R10" (id 0) (at 163.83 41.91 90))
+    (property "Reference" "R13" (id 0) (at 163.83 41.91 90))
     (property "Value" "200Ω" (id 1) (at 163.83 36.83 90))
     (property "Footprint" "" (id 2) (at 165.354 37.846 90)
       (effects (font (size 1.27 1.27)) hide)
@@ -2162,7 +2162,7 @@
   (symbol (lib_id "Device:LED") (at 223.52 27.94 270) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 4feaa9ba-e6d4-4ec4-91a4-58ba95a4d68f)
-    (property "Reference" "D19" (id 0) (at 220.98 30.48 0))
+    (property "Reference" "D20" (id 0) (at 220.98 30.48 0))
     (property "Value" "LED" (id 1) (at 220.98 26.67 0))
     (property "Footprint" "" (id 2) (at 223.52 27.94 0)
       (effects (font (size 1.27 1.27)) hide)
@@ -2177,7 +2177,7 @@
   (symbol (lib_id "Device:LED") (at 198.12 27.94 270) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 544c9807-6b2b-4bea-b031-822af8073377)
-    (property "Reference" "D15" (id 0) (at 195.58 30.48 0))
+    (property "Reference" "D16" (id 0) (at 195.58 30.48 0))
     (property "Value" "LED" (id 1) (at 195.58 26.67 0))
     (property "Footprint" "" (id 2) (at 198.12 27.94 0)
       (effects (font (size 1.27 1.27)) hide)
@@ -2192,7 +2192,7 @@
   (symbol (lib_id "Device:LED") (at 140.97 27.94 270) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 59215f5f-ee64-4d27-84d4-61a160245c4e)
-    (property "Reference" "D6" (id 0) (at 138.43 30.48 0))
+    (property "Reference" "D7" (id 0) (at 138.43 30.48 0))
     (property "Value" "LED" (id 1) (at 138.43 26.67 0))
     (property "Footprint" "" (id 2) (at 140.97 27.94 0)
       (effects (font (size 1.27 1.27)) hide)
@@ -2207,7 +2207,7 @@
   (symbol (lib_id "power:+12V") (at 68.58 27.94 0) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid 59839f72-a59f-46cd-be42-281dd27e8cc0)
-    (property "Reference" "#PWR?" (id 0) (at 68.58 31.75 0)
+    (property "Reference" "#PWR01" (id 0) (at 68.58 31.75 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "+12V" (id 1) (at 68.58 22.86 0))
@@ -2242,7 +2242,7 @@
   (symbol (lib_id "Device:LED") (at 204.47 27.94 270) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 62a25133-319b-47ba-b50a-70ece1d7ab65)
-    (property "Reference" "D16" (id 0) (at 201.93 30.48 0))
+    (property "Reference" "D17" (id 0) (at 201.93 30.48 0))
     (property "Value" "LED" (id 1) (at 201.93 26.67 0))
     (property "Footprint" "" (id 2) (at 204.47 27.94 0)
       (effects (font (size 1.27 1.27)) hide)
@@ -2257,7 +2257,7 @@
   (symbol (lib_id "Device:R_US") (at 121.92 38.1 180) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 6a1f0f4f-ea35-45b3-bf30-91c886ef9813)
-    (property "Reference" "R3" (id 0) (at 119.38 41.91 90))
+    (property "Reference" "R6" (id 0) (at 119.38 41.91 90))
     (property "Value" "200Ω" (id 1) (at 119.38 36.83 90))
     (property "Footprint" "" (id 2) (at 120.904 37.846 90)
       (effects (font (size 1.27 1.27)) hide)
@@ -2272,7 +2272,7 @@
   (symbol (lib_id "Device:R_US") (at 115.57 38.1 180) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 6ad71aba-bac6-4892-b543-c14a4f6e3e9f)
-    (property "Reference" "R2" (id 0) (at 113.03 41.91 90))
+    (property "Reference" "R5" (id 0) (at 113.03 41.91 90))
     (property "Value" "200Ω" (id 1) (at 113.03 36.83 90))
     (property "Footprint" "" (id 2) (at 114.554 37.846 90)
       (effects (font (size 1.27 1.27)) hide)
@@ -2287,7 +2287,7 @@
   (symbol (lib_id "power:PWR_FLAG") (at 68.58 29.21 270) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 6dcd469d-2a43-41af-9f84-ba3abaac8079)
-    (property "Reference" "#FLG?" (id 0) (at 70.485 29.21 0)
+    (property "Reference" "#FLG01" (id 0) (at 70.485 29.21 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "PWR_FLAG" (id 1) (at 72.39 29.21 90)
@@ -2305,7 +2305,7 @@
   (symbol (lib_id "Device:R_US") (at 128.27 38.1 180) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 6ecdd2e5-07db-4b81-9ada-7bcd4698443f)
-    (property "Reference" "R4" (id 0) (at 125.73 41.91 90))
+    (property "Reference" "R7" (id 0) (at 125.73 41.91 90))
     (property "Value" "200Ω" (id 1) (at 125.73 36.83 90))
     (property "Footprint" "" (id 2) (at 127.254 37.846 90)
       (effects (font (size 1.27 1.27)) hide)
@@ -2320,7 +2320,7 @@
   (symbol (lib_id "Device:LED") (at 160.02 27.94 270) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 71e523b8-8919-498e-b489-046b48051c4b)
-    (property "Reference" "D9" (id 0) (at 157.48 30.48 0))
+    (property "Reference" "D10" (id 0) (at 157.48 30.48 0))
     (property "Value" "LED" (id 1) (at 157.48 26.67 0))
     (property "Footprint" "" (id 2) (at 160.02 27.94 0)
       (effects (font (size 1.27 1.27)) hide)
@@ -2335,7 +2335,7 @@
   (symbol (lib_id "power:PWR_FLAG") (at 147.32 167.64 90) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 72ea17b7-ace0-4281-939f-7dad449bbbc7)
-    (property "Reference" "#FLG01" (id 0) (at 145.415 167.64 0)
+    (property "Reference" "#FLG02" (id 0) (at 145.415 167.64 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "PWR_FLAG" (id 1) (at 143.51 167.64 90)
@@ -2353,7 +2353,7 @@
   (symbol (lib_id "74xx:74HC595") (at 139.7 72.39 90) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid 74cbdd7a-87a4-4aca-937c-2e82989929dc)
-    (property "Reference" "U1" (id 0) (at 121.92 70.3706 0)
+    (property "Reference" "U2" (id 0) (at 121.92 70.3706 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "74HC595" (id 1) (at 124.46 70.3706 0)
@@ -2386,7 +2386,7 @@
   (symbol (lib_id "Device:R_US") (at 109.22 38.1 180) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 7840f661-9ce5-40ac-95ee-cb0a43b31330)
-    (property "Reference" "R1" (id 0) (at 106.68 41.91 90))
+    (property "Reference" "R4" (id 0) (at 106.68 41.91 90))
     (property "Value" "200Ω" (id 1) (at 106.68 36.83 90))
     (property "Footprint" "" (id 2) (at 108.204 37.846 90)
       (effects (font (size 1.27 1.27)) hide)
@@ -2401,7 +2401,7 @@
   (symbol (lib_id "Device:R_US") (at 185.42 38.1 180) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 7a3086a3-1549-4a79-a56d-6e72d648506c)
-    (property "Reference" "R13" (id 0) (at 182.88 41.91 90))
+    (property "Reference" "R16" (id 0) (at 182.88 41.91 90))
     (property "Value" "200Ω" (id 1) (at 182.88 36.83 90))
     (property "Footprint" "" (id 2) (at 184.404 37.846 90)
       (effects (font (size 1.27 1.27)) hide)
@@ -2416,7 +2416,7 @@
   (symbol (lib_id "74xx:74HC595") (at 187.96 72.39 90) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid 7cc09ba0-3926-4d15-bc2f-1c3938325556)
-    (property "Reference" "U2" (id 0) (at 170.18 70.3706 0)
+    (property "Reference" "U3" (id 0) (at 170.18 70.3706 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "74HC595" (id 1) (at 172.72 70.3706 0)
@@ -2449,7 +2449,7 @@
   (symbol (lib_id "Device:LED") (at 172.72 27.94 270) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 7d7a37a0-df79-422e-a29b-0d83522a0b64)
-    (property "Reference" "D11" (id 0) (at 170.18 30.48 0))
+    (property "Reference" "D12" (id 0) (at 170.18 30.48 0))
     (property "Value" "LED" (id 1) (at 170.18 26.67 0))
     (property "Footprint" "" (id 2) (at 172.72 27.94 0)
       (effects (font (size 1.27 1.27)) hide)
@@ -2464,7 +2464,7 @@
   (symbol (lib_id "Device:R_US") (at 198.12 38.1 180) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 7f46a53a-3b16-40ac-8fc4-06a02980256b)
-    (property "Reference" "R15" (id 0) (at 195.58 41.91 90))
+    (property "Reference" "R18" (id 0) (at 195.58 41.91 90))
     (property "Value" "200Ω" (id 1) (at 195.58 36.83 90))
     (property "Footprint" "" (id 2) (at 197.104 37.846 90)
       (effects (font (size 1.27 1.27)) hide)
@@ -2479,7 +2479,7 @@
   (symbol (lib_id "power:GND") (at 147.32 168.91 0) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 833bbd02-56cd-4a46-9171-bd3864c42e38)
-    (property "Reference" "#PWR08" (id 0) (at 147.32 175.26 0)
+    (property "Reference" "#PWR02" (id 0) (at 147.32 175.26 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (id 1) (at 149.86 171.45 0))
@@ -2495,7 +2495,7 @@
   (symbol (lib_id "Device:LED") (at 115.57 27.94 270) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 84789b43-6eb0-4706-9d94-2416b6d90273)
-    (property "Reference" "D2" (id 0) (at 113.03 30.48 0))
+    (property "Reference" "D3" (id 0) (at 113.03 30.48 0))
     (property "Value" "LED" (id 1) (at 113.03 26.67 0))
     (property "Footprint" "" (id 2) (at 115.57 27.94 0)
       (effects (font (size 1.27 1.27)) hide)
@@ -2510,7 +2510,7 @@
   (symbol (lib_id "Device:R_US") (at 242.57 38.1 180) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 886f1a1a-a691-4c76-8ece-b774b150689f)
-    (property "Reference" "R22" (id 0) (at 240.03 41.91 90))
+    (property "Reference" "R25" (id 0) (at 240.03 41.91 90))
     (property "Value" "200Ω" (id 1) (at 240.03 36.83 90))
     (property "Footprint" "" (id 2) (at 241.554 37.846 90)
       (effects (font (size 1.27 1.27)) hide)
@@ -2525,7 +2525,7 @@
   (symbol (lib_id "Device:LED") (at 229.87 27.94 270) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 88a002f7-eb7c-4d6d-8f36-6860e2398a1b)
-    (property "Reference" "D20" (id 0) (at 227.33 30.48 0))
+    (property "Reference" "D21" (id 0) (at 227.33 30.48 0))
     (property "Value" "LED" (id 1) (at 227.33 26.67 0))
     (property "Footprint" "" (id 2) (at 229.87 27.94 0)
       (effects (font (size 1.27 1.27)) hide)
@@ -2540,7 +2540,7 @@
   (symbol (lib_id "Device:R_US") (at 160.02 38.1 180) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 8ae2e7a2-d870-4edd-82b8-b87f69b6a978)
-    (property "Reference" "R9" (id 0) (at 157.48 41.91 90))
+    (property "Reference" "R12" (id 0) (at 157.48 41.91 90))
     (property "Value" "200Ω" (id 1) (at 157.48 36.83 90))
     (property "Footprint" "" (id 2) (at 159.004 37.846 90)
       (effects (font (size 1.27 1.27)) hide)
@@ -2555,7 +2555,7 @@
   (symbol (lib_id "Device:R_US") (at 134.62 38.1 180) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 93179bb1-f267-4cad-941a-ee4deca9f61d)
-    (property "Reference" "R5" (id 0) (at 132.08 41.91 90))
+    (property "Reference" "R8" (id 0) (at 132.08 41.91 90))
     (property "Value" "200Ω" (id 1) (at 132.08 36.83 90))
     (property "Footprint" "" (id 2) (at 133.604 37.846 90)
       (effects (font (size 1.27 1.27)) hide)
@@ -2570,7 +2570,7 @@
   (symbol (lib_id "Device:LED") (at 128.27 27.94 270) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 9a92e8fb-3b64-4738-9b4d-97d8827a21f8)
-    (property "Reference" "D4" (id 0) (at 125.73 30.48 0))
+    (property "Reference" "D5" (id 0) (at 125.73 30.48 0))
     (property "Value" "LED" (id 1) (at 125.73 26.67 0))
     (property "Footprint" "" (id 2) (at 128.27 27.94 0)
       (effects (font (size 1.27 1.27)) hide)
@@ -2604,7 +2604,7 @@
   (symbol (lib_id "Device:LED") (at 191.77 27.94 270) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid a5a4b444-800d-4f62-8628-0c9e8fd2b629)
-    (property "Reference" "D14" (id 0) (at 189.23 30.48 0))
+    (property "Reference" "D15" (id 0) (at 189.23 30.48 0))
     (property "Value" "LED" (id 1) (at 189.23 26.67 0))
     (property "Footprint" "" (id 2) (at 191.77 27.94 0)
       (effects (font (size 1.27 1.27)) hide)
@@ -2619,7 +2619,7 @@
   (symbol (lib_id "Device:R_US") (at 248.92 38.1 180) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid ade6762e-fc60-4f21-af34-bb3b9b121ce7)
-    (property "Reference" "R23" (id 0) (at 246.38 41.91 90))
+    (property "Reference" "R26" (id 0) (at 246.38 41.91 90))
     (property "Value" "200Ω" (id 1) (at 246.38 36.83 90))
     (property "Footprint" "" (id 2) (at 247.904 37.846 90)
       (effects (font (size 1.27 1.27)) hide)
@@ -2634,7 +2634,7 @@
   (symbol (lib_id "Device:LED") (at 242.57 27.94 270) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid afb5463d-40fc-4cd2-9cae-c337d515cb42)
-    (property "Reference" "D22" (id 0) (at 240.03 30.48 0))
+    (property "Reference" "D23" (id 0) (at 240.03 30.48 0))
     (property "Value" "LED" (id 1) (at 240.03 26.67 0))
     (property "Footprint" "" (id 2) (at 242.57 27.94 0)
       (effects (font (size 1.27 1.27)) hide)
@@ -2649,7 +2649,7 @@
   (symbol (lib_id "RF_Module:ESP32-WROOM-32") (at 57.15 125.73 0) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid b1a3e32d-0e5e-4245-b2cc-72bcaa0390eb)
-    (property "Reference" "U4" (id 0) (at 59.1694 87.63 0)
+    (property "Reference" "U1" (id 0) (at 59.1694 87.63 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "ESP32-WROOM-32" (id 1) (at 59.1694 90.17 0)
@@ -2705,7 +2705,7 @@
   (symbol (lib_id "Device:LED") (at 236.22 27.94 270) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid b26ab1fd-93bf-45d9-b903-926edca9d663)
-    (property "Reference" "D21" (id 0) (at 233.68 30.48 0))
+    (property "Reference" "D22" (id 0) (at 233.68 30.48 0))
     (property "Value" "LED" (id 1) (at 233.68 26.67 0))
     (property "Footprint" "" (id 2) (at 236.22 27.94 0)
       (effects (font (size 1.27 1.27)) hide)
@@ -2720,7 +2720,7 @@
   (symbol (lib_id "Device:R_US") (at 236.22 38.1 180) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid b5d05f57-24c7-43ac-a149-fa90075575d0)
-    (property "Reference" "R21" (id 0) (at 233.68 41.91 90))
+    (property "Reference" "R24" (id 0) (at 233.68 41.91 90))
     (property "Value" "200Ω" (id 1) (at 233.68 36.83 90))
     (property "Footprint" "" (id 2) (at 235.204 37.846 90)
       (effects (font (size 1.27 1.27)) hide)
@@ -2735,7 +2735,7 @@
   (symbol (lib_id "Device:LED") (at 185.42 27.94 270) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid b700151e-58e6-42cc-b78b-1a84bfa6ce43)
-    (property "Reference" "D13" (id 0) (at 182.88 30.48 0))
+    (property "Reference" "D14" (id 0) (at 182.88 30.48 0))
     (property "Value" "LED" (id 1) (at 182.88 26.67 0))
     (property "Footprint" "" (id 2) (at 185.42 27.94 0)
       (effects (font (size 1.27 1.27)) hide)
@@ -2750,7 +2750,7 @@
   (symbol (lib_id "Device:R_US") (at 63.5 35.56 90) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid b73de31d-f220-401b-a8e3-13874c34af6a)
-    (property "Reference" "R25" (id 0) (at 59.69 33.02 90))
+    (property "Reference" "R2" (id 0) (at 59.69 33.02 90))
     (property "Value" "680Ω" (id 1) (at 64.77 33.02 90))
     (property "Footprint" "" (id 2) (at 63.754 34.544 90)
       (effects (font (size 1.27 1.27)) hide)
@@ -2765,7 +2765,7 @@
   (symbol (lib_id "Device:R_US") (at 223.52 38.1 180) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid b82ba8cb-65a6-4354-aa4a-f7fcae7bd402)
-    (property "Reference" "R19" (id 0) (at 220.98 41.91 90))
+    (property "Reference" "R22" (id 0) (at 220.98 41.91 90))
     (property "Value" "200Ω" (id 1) (at 220.98 36.83 90))
     (property "Footprint" "" (id 2) (at 222.504 37.846 90)
       (effects (font (size 1.27 1.27)) hide)
@@ -2780,7 +2780,7 @@
   (symbol (lib_id "Device:R_US") (at 147.32 38.1 180) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid bc7602e8-1156-4a73-9d71-8ee6f8f960a0)
-    (property "Reference" "R7" (id 0) (at 144.78 41.91 90))
+    (property "Reference" "R10" (id 0) (at 144.78 41.91 90))
     (property "Value" "200Ω" (id 1) (at 144.78 36.83 90))
     (property "Footprint" "" (id 2) (at 146.304 37.846 90)
       (effects (font (size 1.27 1.27)) hide)
@@ -2814,7 +2814,7 @@
   (symbol (lib_id "Device:LED") (at 255.27 27.94 270) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid c1b5e982-bd1d-4b21-96c2-789da4fbe560)
-    (property "Reference" "D24" (id 0) (at 252.73 30.48 0))
+    (property "Reference" "D25" (id 0) (at 252.73 30.48 0))
     (property "Value" "LED" (id 1) (at 252.73 26.67 0))
     (property "Footprint" "" (id 2) (at 255.27 27.94 0)
       (effects (font (size 1.27 1.27)) hide)
@@ -2829,7 +2829,7 @@
   (symbol (lib_id "Device:LED") (at 121.92 27.94 270) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid c767c57e-ddb1-42e2-b176-2c4ea641eeb8)
-    (property "Reference" "D3" (id 0) (at 119.38 30.48 0))
+    (property "Reference" "D4" (id 0) (at 119.38 30.48 0))
     (property "Value" "LED" (id 1) (at 119.38 26.67 0))
     (property "Footprint" "" (id 2) (at 121.92 27.94 0)
       (effects (font (size 1.27 1.27)) hide)
@@ -2844,7 +2844,7 @@
   (symbol (lib_id "Device:LED") (at 153.67 27.94 270) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid d15a2610-de4b-4499-8568-98afc8af3b19)
-    (property "Reference" "D8" (id 0) (at 151.13 30.48 0))
+    (property "Reference" "D9" (id 0) (at 151.13 30.48 0))
     (property "Value" "LED" (id 1) (at 151.13 26.67 0))
     (property "Footprint" "" (id 2) (at 153.67 27.94 0)
       (effects (font (size 1.27 1.27)) hide)
@@ -2859,7 +2859,7 @@
   (symbol (lib_id "Device:LED") (at 166.37 27.94 270) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid d835295b-4f83-4042-8d49-f39f0f6f1a4a)
-    (property "Reference" "D10" (id 0) (at 163.83 30.48 0))
+    (property "Reference" "D11" (id 0) (at 163.83 30.48 0))
     (property "Value" "LED" (id 1) (at 163.83 26.67 0))
     (property "Footprint" "" (id 2) (at 166.37 27.94 0)
       (effects (font (size 1.27 1.27)) hide)
@@ -2874,7 +2874,7 @@
   (symbol (lib_id "74xx:74HC595") (at 236.22 72.39 90) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid dd404d86-23a3-4f2b-9487-13eb5b6ea591)
-    (property "Reference" "U3" (id 0) (at 218.44 70.3706 0)
+    (property "Reference" "U4" (id 0) (at 218.44 70.3706 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "74HC595" (id 1) (at 220.98 70.3706 0)
@@ -2907,7 +2907,7 @@
   (symbol (lib_id "Device:LED") (at 109.22 27.94 270) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid e46df3f3-d35e-499c-8a8b-f201b27fa406)
-    (property "Reference" "D1" (id 0) (at 106.68 30.48 0))
+    (property "Reference" "D2" (id 0) (at 106.68 30.48 0))
     (property "Value" "LED" (id 1) (at 106.68 26.67 0))
     (property "Footprint" "" (id 2) (at 109.22 27.94 0)
       (effects (font (size 1.27 1.27)) hide)
@@ -2922,7 +2922,7 @@
   (symbol (lib_id "Device:R_US") (at 153.67 38.1 180) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid e77d7003-916c-4a4c-824c-c1b3138e325e)
-    (property "Reference" "R8" (id 0) (at 151.13 41.91 90))
+    (property "Reference" "R11" (id 0) (at 151.13 41.91 90))
     (property "Value" "200Ω" (id 1) (at 151.13 36.83 90))
     (property "Footprint" "" (id 2) (at 152.654 37.846 90)
       (effects (font (size 1.27 1.27)) hide)
@@ -2937,7 +2937,7 @@
   (symbol (lib_id "Device:R_US") (at 63.5 72.39 90) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid e8680ff6-3d82-4e5f-a33c-76a5dab104ae)
-    (property "Reference" "R26" (id 0) (at 59.69 69.85 90))
+    (property "Reference" "R3" (id 0) (at 59.69 69.85 90))
     (property "Value" "1kΩ" (id 1) (at 64.77 69.85 90))
     (property "Footprint" "" (id 2) (at 63.754 71.374 90)
       (effects (font (size 1.27 1.27)) hide)
@@ -2952,7 +2952,7 @@
   (symbol (lib_id "Device:LED") (at 217.17 27.94 270) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid ec5f2384-123c-48c8-b674-20afa8faa932)
-    (property "Reference" "D18" (id 0) (at 214.63 30.48 0))
+    (property "Reference" "D19" (id 0) (at 214.63 30.48 0))
     (property "Value" "LED" (id 1) (at 214.63 26.67 0))
     (property "Footprint" "" (id 2) (at 217.17 27.94 0)
       (effects (font (size 1.27 1.27)) hide)
@@ -2967,7 +2967,7 @@
   (symbol (lib_id "Device:LED") (at 248.92 27.94 270) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid f3a5d1a2-7e06-4bbd-a984-b271c3ad5813)
-    (property "Reference" "D23" (id 0) (at 246.38 30.48 0))
+    (property "Reference" "D24" (id 0) (at 246.38 30.48 0))
     (property "Value" "LED" (id 1) (at 246.38 26.67 0))
     (property "Footprint" "" (id 2) (at 248.92 27.94 0)
       (effects (font (size 1.27 1.27)) hide)
@@ -2982,7 +2982,7 @@
   (symbol (lib_id "Device:R_US") (at 217.17 38.1 180) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid f6bd2809-9106-45a7-ab73-24c26f42df25)
-    (property "Reference" "R18" (id 0) (at 214.63 41.91 90))
+    (property "Reference" "R21" (id 0) (at 214.63 41.91 90))
     (property "Value" "200Ω" (id 1) (at 214.63 36.83 90))
     (property "Footprint" "" (id 2) (at 216.154 37.846 90)
       (effects (font (size 1.27 1.27)) hide)
@@ -2997,7 +2997,7 @@
   (symbol (lib_id "Device:LED") (at 134.62 27.94 270) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid fbd3b4bf-1af8-4dc4-81d4-ffd0d029a6b8)
-    (property "Reference" "D5" (id 0) (at 132.08 30.48 0))
+    (property "Reference" "D6" (id 0) (at 132.08 30.48 0))
     (property "Value" "LED" (id 1) (at 132.08 26.67 0))
     (property "Footprint" "" (id 2) (at 134.62 27.94 0)
       (effects (font (size 1.27 1.27)) hide)
@@ -3014,17 +3014,17 @@
   )
 
   (symbol_instances
-    (path "/72ea17b7-ace0-4281-939f-7dad449bbbc7"
+    (path "/6dcd469d-2a43-41af-9f84-ba3abaac8079"
       (reference "#FLG01") (unit 1) (value "PWR_FLAG") (footprint "")
     )
-    (path "/6dcd469d-2a43-41af-9f84-ba3abaac8079"
-      (reference "#FLG?") (unit 1) (value "PWR_FLAG") (footprint "")
-    )
-    (path "/833bbd02-56cd-4a46-9171-bd3864c42e38"
-      (reference "#PWR08") (unit 1) (value "GND") (footprint "")
+    (path "/72ea17b7-ace0-4281-939f-7dad449bbbc7"
+      (reference "#FLG02") (unit 1) (value "PWR_FLAG") (footprint "")
     )
     (path "/59839f72-a59f-46cd-be42-281dd27e8cc0"
-      (reference "#PWR?") (unit 1) (value "+12V") (footprint "")
+      (reference "#PWR01") (unit 1) (value "+12V") (footprint "")
+    )
+    (path "/833bbd02-56cd-4a46-9171-bd3864c42e38"
+      (reference "#PWR02") (unit 1) (value "GND") (footprint "")
     )
     (path "/5e639216-6852-4d45-b2fb-93dba3daf643"
       (reference "C1") (unit 1) (value "10uF 16V") (footprint "")
@@ -3039,172 +3039,172 @@
       (reference "D1") (unit 1) (value "5.6V 0.5W") (footprint "")
     )
     (path "/e46df3f3-d35e-499c-8a8b-f201b27fa406"
-      (reference "D1") (unit 1) (value "LED") (footprint "")
-    )
-    (path "/84789b43-6eb0-4706-9d94-2416b6d90273"
       (reference "D2") (unit 1) (value "LED") (footprint "")
     )
-    (path "/c767c57e-ddb1-42e2-b176-2c4ea641eeb8"
+    (path "/84789b43-6eb0-4706-9d94-2416b6d90273"
       (reference "D3") (unit 1) (value "LED") (footprint "")
     )
-    (path "/9a92e8fb-3b64-4738-9b4d-97d8827a21f8"
+    (path "/c767c57e-ddb1-42e2-b176-2c4ea641eeb8"
       (reference "D4") (unit 1) (value "LED") (footprint "")
     )
-    (path "/fbd3b4bf-1af8-4dc4-81d4-ffd0d029a6b8"
+    (path "/9a92e8fb-3b64-4738-9b4d-97d8827a21f8"
       (reference "D5") (unit 1) (value "LED") (footprint "")
     )
-    (path "/59215f5f-ee64-4d27-84d4-61a160245c4e"
+    (path "/fbd3b4bf-1af8-4dc4-81d4-ffd0d029a6b8"
       (reference "D6") (unit 1) (value "LED") (footprint "")
     )
-    (path "/15014aca-8f83-495b-8ea5-f3f9d6ea0005"
+    (path "/59215f5f-ee64-4d27-84d4-61a160245c4e"
       (reference "D7") (unit 1) (value "LED") (footprint "")
     )
-    (path "/d15a2610-de4b-4499-8568-98afc8af3b19"
+    (path "/15014aca-8f83-495b-8ea5-f3f9d6ea0005"
       (reference "D8") (unit 1) (value "LED") (footprint "")
     )
-    (path "/71e523b8-8919-498e-b489-046b48051c4b"
+    (path "/d15a2610-de4b-4499-8568-98afc8af3b19"
       (reference "D9") (unit 1) (value "LED") (footprint "")
     )
-    (path "/d835295b-4f83-4042-8d49-f39f0f6f1a4a"
+    (path "/71e523b8-8919-498e-b489-046b48051c4b"
       (reference "D10") (unit 1) (value "LED") (footprint "")
     )
-    (path "/7d7a37a0-df79-422e-a29b-0d83522a0b64"
+    (path "/d835295b-4f83-4042-8d49-f39f0f6f1a4a"
       (reference "D11") (unit 1) (value "LED") (footprint "")
     )
-    (path "/01b39a46-d6ee-4fd3-97e3-522399dc960e"
+    (path "/7d7a37a0-df79-422e-a29b-0d83522a0b64"
       (reference "D12") (unit 1) (value "LED") (footprint "")
     )
-    (path "/b700151e-58e6-42cc-b78b-1a84bfa6ce43"
+    (path "/01b39a46-d6ee-4fd3-97e3-522399dc960e"
       (reference "D13") (unit 1) (value "LED") (footprint "")
     )
-    (path "/a5a4b444-800d-4f62-8628-0c9e8fd2b629"
+    (path "/b700151e-58e6-42cc-b78b-1a84bfa6ce43"
       (reference "D14") (unit 1) (value "LED") (footprint "")
     )
-    (path "/544c9807-6b2b-4bea-b031-822af8073377"
+    (path "/a5a4b444-800d-4f62-8628-0c9e8fd2b629"
       (reference "D15") (unit 1) (value "LED") (footprint "")
     )
-    (path "/62a25133-319b-47ba-b50a-70ece1d7ab65"
+    (path "/544c9807-6b2b-4bea-b031-822af8073377"
       (reference "D16") (unit 1) (value "LED") (footprint "")
     )
-    (path "/1b13c355-5955-447d-8bee-4c211efbbfab"
+    (path "/62a25133-319b-47ba-b50a-70ece1d7ab65"
       (reference "D17") (unit 1) (value "LED") (footprint "")
     )
-    (path "/ec5f2384-123c-48c8-b674-20afa8faa932"
+    (path "/1b13c355-5955-447d-8bee-4c211efbbfab"
       (reference "D18") (unit 1) (value "LED") (footprint "")
     )
-    (path "/4feaa9ba-e6d4-4ec4-91a4-58ba95a4d68f"
+    (path "/ec5f2384-123c-48c8-b674-20afa8faa932"
       (reference "D19") (unit 1) (value "LED") (footprint "")
     )
-    (path "/88a002f7-eb7c-4d6d-8f36-6860e2398a1b"
+    (path "/4feaa9ba-e6d4-4ec4-91a4-58ba95a4d68f"
       (reference "D20") (unit 1) (value "LED") (footprint "")
     )
-    (path "/b26ab1fd-93bf-45d9-b903-926edca9d663"
+    (path "/88a002f7-eb7c-4d6d-8f36-6860e2398a1b"
       (reference "D21") (unit 1) (value "LED") (footprint "")
     )
-    (path "/afb5463d-40fc-4cd2-9cae-c337d515cb42"
+    (path "/b26ab1fd-93bf-45d9-b903-926edca9d663"
       (reference "D22") (unit 1) (value "LED") (footprint "")
     )
-    (path "/f3a5d1a2-7e06-4bbd-a984-b271c3ad5813"
+    (path "/afb5463d-40fc-4cd2-9cae-c337d515cb42"
       (reference "D23") (unit 1) (value "LED") (footprint "")
     )
-    (path "/c1b5e982-bd1d-4b21-96c2-789da4fbe560"
+    (path "/f3a5d1a2-7e06-4bbd-a984-b271c3ad5813"
       (reference "D24") (unit 1) (value "LED") (footprint "")
+    )
+    (path "/c1b5e982-bd1d-4b21-96c2-789da4fbe560"
+      (reference "D25") (unit 1) (value "LED") (footprint "")
     )
     (path "/4c5e0b30-7d2f-465f-a9a7-7c214f81c0a6"
       (reference "Q1") (unit 1) (value "BD139") (footprint "Package_TO_SOT_THT:TO-126-3_Vertical")
     )
-    (path "/7840f661-9ce5-40ac-95ee-cb0a43b31330"
-      (reference "R1") (unit 1) (value "200Ω") (footprint "")
-    )
-    (path "/6ad71aba-bac6-4892-b543-c14a4f6e3e9f"
-      (reference "R2") (unit 1) (value "200Ω") (footprint "")
-    )
-    (path "/6a1f0f4f-ea35-45b3-bf30-91c886ef9813"
-      (reference "R3") (unit 1) (value "200Ω") (footprint "")
-    )
-    (path "/6ecdd2e5-07db-4b81-9ada-7bcd4698443f"
-      (reference "R4") (unit 1) (value "200Ω") (footprint "")
-    )
-    (path "/93179bb1-f267-4cad-941a-ee4deca9f61d"
-      (reference "R5") (unit 1) (value "200Ω") (footprint "")
-    )
-    (path "/402119b0-114e-484c-be95-b421a718a177"
-      (reference "R6") (unit 1) (value "200Ω") (footprint "")
-    )
-    (path "/bc7602e8-1156-4a73-9d71-8ee6f8f960a0"
-      (reference "R7") (unit 1) (value "200Ω") (footprint "")
-    )
-    (path "/e77d7003-916c-4a4c-824c-c1b3138e325e"
-      (reference "R8") (unit 1) (value "200Ω") (footprint "")
-    )
-    (path "/8ae2e7a2-d870-4edd-82b8-b87f69b6a978"
-      (reference "R9") (unit 1) (value "200Ω") (footprint "")
-    )
-    (path "/4be80715-78e3-4686-8e64-094147cb0781"
-      (reference "R10") (unit 1) (value "200Ω") (footprint "")
-    )
-    (path "/4580ece8-8be1-4dd3-a0d5-89c8228c4984"
-      (reference "R11") (unit 1) (value "200Ω") (footprint "")
-    )
-    (path "/3154adfa-a7aa-4785-81ff-481124ff9e94"
-      (reference "R12") (unit 1) (value "200Ω") (footprint "")
-    )
-    (path "/7a3086a3-1549-4a79-a56d-6e72d648506c"
-      (reference "R13") (unit 1) (value "200Ω") (footprint "")
-    )
-    (path "/22a3cf26-0342-42eb-b3fe-ed439c5bcae6"
-      (reference "R14") (unit 1) (value "200Ω") (footprint "")
-    )
-    (path "/7f46a53a-3b16-40ac-8fc4-06a02980256b"
-      (reference "R15") (unit 1) (value "200Ω") (footprint "")
-    )
-    (path "/2fe143f7-11d1-404b-a91f-a11aa567711e"
-      (reference "R16") (unit 1) (value "200Ω") (footprint "")
-    )
-    (path "/07eafb7b-e092-478c-ba38-a3bb53d9c103"
-      (reference "R17") (unit 1) (value "200Ω") (footprint "")
-    )
-    (path "/f6bd2809-9106-45a7-ab73-24c26f42df25"
-      (reference "R18") (unit 1) (value "200Ω") (footprint "")
-    )
-    (path "/b82ba8cb-65a6-4354-aa4a-f7fcae7bd402"
-      (reference "R19") (unit 1) (value "200Ω") (footprint "")
-    )
-    (path "/1fccbe60-f862-4dbc-9a06-6011e37cd2db"
-      (reference "R20") (unit 1) (value "200Ω") (footprint "")
-    )
-    (path "/b5d05f57-24c7-43ac-a149-fa90075575d0"
-      (reference "R21") (unit 1) (value "200Ω") (footprint "")
-    )
-    (path "/886f1a1a-a691-4c76-8ece-b774b150689f"
-      (reference "R22") (unit 1) (value "200Ω") (footprint "")
-    )
-    (path "/ade6762e-fc60-4f21-af34-bb3b9b121ce7"
-      (reference "R23") (unit 1) (value "200Ω") (footprint "")
-    )
-    (path "/07351029-785c-417f-978d-03080a4fe616"
-      (reference "R24") (unit 1) (value "200Ω") (footprint "")
+    (path "/1dfb1f4c-e554-4a91-ade0-32950a61cde4"
+      (reference "R1") (unit 1) (value "2kΩ") (footprint "")
     )
     (path "/b73de31d-f220-401b-a8e3-13874c34af6a"
-      (reference "R25") (unit 1) (value "680Ω") (footprint "")
+      (reference "R2") (unit 1) (value "680Ω") (footprint "")
     )
     (path "/e8680ff6-3d82-4e5f-a33c-76a5dab104ae"
-      (reference "R26") (unit 1) (value "1kΩ") (footprint "")
+      (reference "R3") (unit 1) (value "1kΩ") (footprint "")
     )
-    (path "/1dfb1f4c-e554-4a91-ade0-32950a61cde4"
-      (reference "R27") (unit 1) (value "2kΩ") (footprint "")
+    (path "/7840f661-9ce5-40ac-95ee-cb0a43b31330"
+      (reference "R4") (unit 1) (value "200Ω") (footprint "")
     )
-    (path "/74cbdd7a-87a4-4aca-937c-2e82989929dc"
-      (reference "U1") (unit 1) (value "74HC595") (footprint "")
+    (path "/6ad71aba-bac6-4892-b543-c14a4f6e3e9f"
+      (reference "R5") (unit 1) (value "200Ω") (footprint "")
     )
-    (path "/7cc09ba0-3926-4d15-bc2f-1c3938325556"
-      (reference "U2") (unit 1) (value "74HC595") (footprint "")
+    (path "/6a1f0f4f-ea35-45b3-bf30-91c886ef9813"
+      (reference "R6") (unit 1) (value "200Ω") (footprint "")
     )
-    (path "/dd404d86-23a3-4f2b-9487-13eb5b6ea591"
-      (reference "U3") (unit 1) (value "74HC595") (footprint "")
+    (path "/6ecdd2e5-07db-4b81-9ada-7bcd4698443f"
+      (reference "R7") (unit 1) (value "200Ω") (footprint "")
+    )
+    (path "/93179bb1-f267-4cad-941a-ee4deca9f61d"
+      (reference "R8") (unit 1) (value "200Ω") (footprint "")
+    )
+    (path "/402119b0-114e-484c-be95-b421a718a177"
+      (reference "R9") (unit 1) (value "200Ω") (footprint "")
+    )
+    (path "/bc7602e8-1156-4a73-9d71-8ee6f8f960a0"
+      (reference "R10") (unit 1) (value "200Ω") (footprint "")
+    )
+    (path "/e77d7003-916c-4a4c-824c-c1b3138e325e"
+      (reference "R11") (unit 1) (value "200Ω") (footprint "")
+    )
+    (path "/8ae2e7a2-d870-4edd-82b8-b87f69b6a978"
+      (reference "R12") (unit 1) (value "200Ω") (footprint "")
+    )
+    (path "/4be80715-78e3-4686-8e64-094147cb0781"
+      (reference "R13") (unit 1) (value "200Ω") (footprint "")
+    )
+    (path "/4580ece8-8be1-4dd3-a0d5-89c8228c4984"
+      (reference "R14") (unit 1) (value "200Ω") (footprint "")
+    )
+    (path "/3154adfa-a7aa-4785-81ff-481124ff9e94"
+      (reference "R15") (unit 1) (value "200Ω") (footprint "")
+    )
+    (path "/7a3086a3-1549-4a79-a56d-6e72d648506c"
+      (reference "R16") (unit 1) (value "200Ω") (footprint "")
+    )
+    (path "/22a3cf26-0342-42eb-b3fe-ed439c5bcae6"
+      (reference "R17") (unit 1) (value "200Ω") (footprint "")
+    )
+    (path "/7f46a53a-3b16-40ac-8fc4-06a02980256b"
+      (reference "R18") (unit 1) (value "200Ω") (footprint "")
+    )
+    (path "/2fe143f7-11d1-404b-a91f-a11aa567711e"
+      (reference "R19") (unit 1) (value "200Ω") (footprint "")
+    )
+    (path "/07eafb7b-e092-478c-ba38-a3bb53d9c103"
+      (reference "R20") (unit 1) (value "200Ω") (footprint "")
+    )
+    (path "/f6bd2809-9106-45a7-ab73-24c26f42df25"
+      (reference "R21") (unit 1) (value "200Ω") (footprint "")
+    )
+    (path "/b82ba8cb-65a6-4354-aa4a-f7fcae7bd402"
+      (reference "R22") (unit 1) (value "200Ω") (footprint "")
+    )
+    (path "/1fccbe60-f862-4dbc-9a06-6011e37cd2db"
+      (reference "R23") (unit 1) (value "200Ω") (footprint "")
+    )
+    (path "/b5d05f57-24c7-43ac-a149-fa90075575d0"
+      (reference "R24") (unit 1) (value "200Ω") (footprint "")
+    )
+    (path "/886f1a1a-a691-4c76-8ece-b774b150689f"
+      (reference "R25") (unit 1) (value "200Ω") (footprint "")
+    )
+    (path "/ade6762e-fc60-4f21-af34-bb3b9b121ce7"
+      (reference "R26") (unit 1) (value "200Ω") (footprint "")
+    )
+    (path "/07351029-785c-417f-978d-03080a4fe616"
+      (reference "R27") (unit 1) (value "200Ω") (footprint "")
     )
     (path "/b1a3e32d-0e5e-4245-b2cc-72bcaa0390eb"
-      (reference "U4") (unit 1) (value "ESP32-WROOM-32") (footprint "RF_Module:ESP32-WROOM-32")
+      (reference "U1") (unit 1) (value "ESP32-WROOM-32") (footprint "RF_Module:ESP32-WROOM-32")
+    )
+    (path "/74cbdd7a-87a4-4aca-937c-2e82989929dc"
+      (reference "U2") (unit 1) (value "74HC595") (footprint "")
+    )
+    (path "/7cc09ba0-3926-4d15-bc2f-1c3938325556"
+      (reference "U3") (unit 1) (value "74HC595") (footprint "")
+    )
+    (path "/dd404d86-23a3-4f2b-9487-13eb5b6ea591"
+      (reference "U4") (unit 1) (value "74HC595") (footprint "")
     )
   )
 )
