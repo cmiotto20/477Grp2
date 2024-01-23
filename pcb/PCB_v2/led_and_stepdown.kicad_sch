@@ -1920,7 +1920,7 @@
     (uuid ff78de48-0913-4bd3-a198-99e0751134be)
   )
 
-  (text "3V from step\ndown to ESP" (at 55.88 88.9 90)
+  (text "3.3V from step\ndown to ESP" (at 55.88 88.9 90)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 71e0d2f6-1b05-4d97-8ff9-1ea211fa1ca0)
   )
