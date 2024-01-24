@@ -6,7 +6,7 @@
   <button @click="moveAction('L')">Left</button>
   <button @click="moveAction('D')">Down</button>
   <button @click="sendMessage()">Send Message</button>
-  <h2 v-if="getMicroConn()">Microcontroller Connected</h2>
+  <h2 v-if="this.micro_conn">Microcontroller Connected</h2>
   <h2 v-else> No Microcontroller Connection </h2> 
 </template>
 
@@ -42,17 +42,16 @@ export default {
         return result[1].trim().split(/\s+/); //separates elements by whitespace
       }
     },
-    getMicroConn(){
-      this.socket.send("[micro_conn]");
-      return this.micro_conn;
-    }
   },
   mounted() {
     this.socket = new WebSocket('ws://174.129.215.96:3000');
     //this.socket = new WebSocket('ws://localhost:3000');
+
     //wait for socket connection to be established
+
     this.socket.onopen = () => {
       this.socket.send("[webpage]");
+      this.socket.send("[micro_conn]"); 
       console.log("Connection msg sent");
     };
     this.socket.onmessage = (event) => {
