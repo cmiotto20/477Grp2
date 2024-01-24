@@ -12,7 +12,6 @@ import {toggleLight, getLightStatus} from './apiFunctions.mjs'
 const clients = [];
 var micro_conn = null;
 
-
 function processUltrasonic(datastream){
   //TODO: Process ultrasonic data stream and report movement detection
   // if alert, call movementAlert()
@@ -29,8 +28,6 @@ function movementAlert(){
     client.send(msg);
   }
 }
-
-
 
 wss.on('connection', (ws) => {
   console.log('Client connected');
@@ -58,6 +55,12 @@ wss.on('connection', (ws) => {
         console.log('Micro connected')
         ws.send(`[micro]: 1`);
         break;
+
+      case "micro_conn": {
+        const conn_status = micro_conn != null ? 1 : 0;
+        ws.send(`[micro_conn]: ${conn_status}`);
+        break;
+      }
 
       case "hello": 
         //ws.send(`[hello]: Hi There`);

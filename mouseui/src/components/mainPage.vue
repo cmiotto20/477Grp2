@@ -6,6 +6,8 @@
   <button @click="moveAction('L')">Left</button>
   <button @click="moveAction('D')">Down</button>
   <button @click="sendMessage()">Send Message</button>
+  <h2 v-if="this.micro_conn">Microcontroller Connected</h2>
+  <h2 v-else> No Microcontroller Connection </h2> 
 </template>
 
 <script>
@@ -15,6 +17,7 @@ export default {
     return {
       messages: [],
       socket: null,
+      micro_conn: false,
     };
   },
   props: {
@@ -88,6 +91,11 @@ export default {
           console.log(`hello msg: ${hellomsg}`); 
           break;
         } 
+
+        case "micro_conn": {
+          this.micro_conn = parseInt(this.getDataStream(event)) == 1 ? true : false; 
+          break;
+        }
 
         default:
           console.log('Error: invalid command read');
