@@ -41,8 +41,8 @@ export default {
     },
   },
   mounted() {
-    //this.socket = new WebSocket('ws://174.129.215.96:3000');
-    this.socket = new WebSocket('ws://localhost:3000');
+    this.socket = new WebSocket('ws://174.129.215.96:3000');
+    //this.socket = new WebSocket('ws://localhost:3000');
     //wait for socket connection to be established
     this.socket.onopen = () => {
       this.socket.send("[webpage]");
