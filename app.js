@@ -61,7 +61,7 @@ wss.on('connection', (ws) => {
         break;
 
       case "micro_conn": {
-        const conn_status = micro_conn.empty ? 1 : 0;
+        const conn_status = micro_conn.empty ? 0 : 1;
         ws.send(`[micro_conn]: ${conn_status}`);
         break;
       }
