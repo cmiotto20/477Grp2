@@ -37,11 +37,12 @@ wss.on('connection', (ws) => {
     const regex = /\[([^\]]+)\]/; //matches items between square brackets
     const result = message.match(regex);
     //check if regex match
+    let command;
     if(!result || result.length <= 1){
       console.log("Error: could not parse [command] format");
       command = message;
     } else {
-      const command = result[1];
+      command = result[1];
     }
 
     console.log(`Received: ${message}`); 
