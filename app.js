@@ -8,17 +8,46 @@ const wss = new WebSocketServer({ server });
 
 import {toggleLight, getLightStatus} from './apiFunctions.mjs'
 
+//declaring global variables to track socket clients
 const clients = [];
 var micro_conn = null;
+
+
+function processUltrasonic(datastream){
+  //TODO: Process ultrasonic data stream and report movement detection
+  // if alert, call movementAlert()
+}
+
+function movementAlert(){
+  const currentDate = new Date();
+  const formatTime = currentDate.toLocaleString();
+  //TODO: add motion detection data to db file
+  console.log(`Detected movement at ${formatTime}`);
+  const msg = `[detected]: ${formatTime}`;
+
+  for (const client of clients){
+    client.send(msg);
+  }
+}
+
+
 
 wss.on('connection', (ws) => {
   console.log('Client connected');
   
   ws.on('message', (message) => {
     message = message.toString();
+    const regex = /\[([^\]]+)\]/; //matches items between square brackets
+    const result = message.match(regex);
+    //check if regex match
+    if(!result || result.length <= 1){
+      console.log("Error: could not parse [command] format");
+    }
+    const command = result[1];
     console.log(`Received: ${message}`); 
+    console.log(`Command: ${command}`);
       
-    switch(message) {
+    switch(command) {
       case "webpage":
         clients.push(ws);
         console.log(`New webpage connection (total: ${clients.length})`);
@@ -30,7 +59,8 @@ wss.on('connection', (ws) => {
         break;
 
       case "hello": 
-        ws.send(`Hi There`);
+        //ws.send(`[hello]: Hi There`);
+        movementAlert();
         break;
 
       case "toggle light":
@@ -39,7 +69,7 @@ wss.on('connection', (ws) => {
             console.error(`Error: ${err}`);
           } else {
             console.log(`Result: ${ledStatus}`);
-            ws.send(`ledStatus: ${ledStatus}`);
+            ws.send(`[toggleLight]: ${ledStatus}`);
           }
         }); 
         break;
@@ -50,7 +80,7 @@ wss.on('connection', (ws) => {
             console.error(`Error: ${err}`);
           } else {
             console.log(`${ledStatus}`);
-            ws.send(ledStatus);
+            ws.send(`[ledStatus]: ${ledStatus}`);
           }
         }); 
         break;
