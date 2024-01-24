@@ -10,7 +10,7 @@ import {toggleLight, getLightStatus} from './apiFunctions.mjs'
 
 //declaring global variables to track socket clients
 const clients = [];
-var micro_conn = null;
+const micro_conn = [];
 
 function processUltrasonic(datastream){
   //TODO: Process ultrasonic data stream and report movement detection
@@ -55,13 +55,13 @@ wss.on('connection', (ws) => {
         break;
 
       case "m":
-        micro_conn = ws;
+        micro_conn.push(ws);
         console.log('Micro connected')
         ws.send(`[micro]: 1`);
         break;
 
       case "micro_conn": {
-        const conn_status = micro_conn != null ? 1 : 0;
+        const conn_status = micro_conn.empty ? 1 : 0;
         ws.send(`[micro_conn]: ${conn_status}`);
         break;
       }
@@ -95,7 +95,7 @@ wss.on('connection', (ws) => {
 
       case "mv R":
         console.log("Received move R command");
-        if(micro_conn !== null){
+        if(micro_conn[0] !== null){
           console.log("Sending move R to micro");
           //can send data to microcontroller connection here 
           //i.e. micro_conn.send('R');
@@ -106,7 +106,7 @@ wss.on('connection', (ws) => {
       
       case "mv L":
         console.log("Received move L command");
-        if(micro_conn !== null){
+        if(micro_conn[0] !== null){
           console.log("Sending move L to micro");
           //can send data to microcontroller connection here 
           //i.e. micro_conn.send('L');
@@ -117,7 +117,7 @@ wss.on('connection', (ws) => {
 
       case "mv U":
         console.log("Received move U command");
-        if(micro_conn !== null){
+        if(micro_conn[0] !== null){
           console.log("Sending move U to micro");
           //can send data to microcontroller connection here 
           //i.e. micro_conn.send('U');
@@ -128,7 +128,7 @@ wss.on('connection', (ws) => {
 
       case "mv D":
         console.log("Received move D command");
-        if(micro_conn !== null){
+        if(micro_conn[0] !== null){
           console.log("Sending move D to micro");
           //can send data to microcontroller connection here 
           //i.e. micro_conn.send('D');
@@ -151,9 +151,9 @@ wss.on('connection', (ws) => {
         return;
       }
       //otherwise check if removing micro client
-      if(micro_conn == ws){
+      if(micro_conn[0] == ws){
         console.log('Microcontroller client disconnected');
-        micro_conn = null;
+        micro_conn.pop();
         return;
       }
       console.log('Error: closing unidentified connection');
