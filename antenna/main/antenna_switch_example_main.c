@@ -24,8 +24,8 @@
 #define GPIO_PIN GPIO_NUM_4
 
 
-#define SSID "ChickenNuggies"
-#define PASS "3172940072M@tt"
+#define SSID "Secret2.0"
+#define PASS "dogtime!"
 
 static const char *TAG = "websocket_example";
 esp_websocket_client_handle_t client;
@@ -66,7 +66,8 @@ void wifi_connection()
     wifi_config_t wifi_configuration = {
         .sta = {
             .ssid = SSID,
-            .password = PASS}};
+            .password = PASS,
+        }};
     esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_configuration);
     // 3 - Wi-Fi Start Phase
     esp_wifi_start();
@@ -88,8 +89,8 @@ static void on_websocket_event(void *handler_args, esp_event_base_t base, int32_
             ESP_LOGI(TAG, "WebSocket Received Data");
             //ESP_LOGI(TAG, "Received data: %.*s", data->data_len, (char*)data->data_ptr);
             // Assuming the target string is "Hello, WebSocket!"
-            const char *ledOn = "ledStatus: 1";
-            const char *ledOff = "ledStatus: 0";
+            const char *ledOn = "[ledStatus]: ledStatus: 1";
+            const char *ledOff = "[ledStatus]: ledStatus: 0";
 
             gpio_config_t io_conf = {
                     .pin_bit_mask = (1ULL << GPIO_PIN),
@@ -121,7 +122,7 @@ static void ws_client_task(void *pvParameters) {
 
         // WebSocket Configuration
         esp_websocket_client_config_t ws_cfg = {
-            .uri = "ws://174.129.215.96:3000",  // Set your WebSocket server URI
+            .uri = "ws://174.129.215.96:3000", 
         };
 
         // Create WebSocket Client
@@ -135,9 +136,16 @@ static void ws_client_task(void *pvParameters) {
         while (esp_websocket_client_is_connected(client) != true) {
             vTaskDelay(1000 / portTICK_PERIOD_MS);
         }
+
+    
+    const char *message = "[micro]";
+    esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
+    vTaskDelay(1500 / portTICK_PERIOD_MS);
+    
+    
     while (1) {
         // Send WebSocket Text Message
-        const char *message = "get light status";
+        const char *message = "[gls]";
         esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
 
         // Wait for a while before sending the next message

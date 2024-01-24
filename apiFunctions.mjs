@@ -61,7 +61,7 @@ export function getLightStatus(callback) {
 
     // Get the text after the colon (index 1)
     ledStatus = parts[1].trim();
-    let returnString = 'ledStatus: ' + ledStatus;
+    let returnString = ledStatus;
     callback(null, returnString);
   });
 }

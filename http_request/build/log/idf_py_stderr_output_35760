@@ -1,0 +1,25 @@
+Compiler supported targets: xtensa-esp32s3-elf
+
+CMake Error:
+  Running
+
+   'C:/Users/mgher/.espressif/tools/ninja/1.10.2/ninja.exe' '-C' 'C:/Users/mgher/Documents/GitHub/477Grp2/http_request/build' '-t' 'recompact'
+
+  failed with:
+
+   ninja: error: failed recompaction: Permission denied
+
+
+
+CMake Error:
+  Running
+
+   'C:/Users/mgher/.espressif/tools/ninja/1.10.2/ninja.exe' '-C' 'C:/Users/mgher/Documents/GitHub/477Grp2/http_request/build' '-t' 'restat' 'build.ninja'
+
+  failed with:
+
+   ninja: error: failed recompaction: Permission denied
+
+
+
+CMake Generate step failed.  Build files cannot be regenerated correctly.

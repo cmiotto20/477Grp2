@@ -56,6 +56,7 @@ wss.on('connection', (ws) => {
       case "micro":
         micro_conn = ws;
         console.log('Micro connected')
+        ws.send(`[micro]: 1`);
         break;
 
       case "hello": 
@@ -74,7 +75,7 @@ wss.on('connection', (ws) => {
         }); 
         break;
 
-      case "get light status":
+      case "gls":
         getLightStatus((err, ledStatus) => {
           if (err) {
             console.error(`Error: ${err}`);

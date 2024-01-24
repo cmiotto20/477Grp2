@@ -7,10 +7,15 @@
 #include "nvs_flash.h"
 #include "esp_http_client.h"
 #include "esp_websocket_client.h"
+#include "freertos/event_groups.h"
+#include "freertos/semphr.h"
+
 
 #include "protocol_examples_common.h"
 
 
+#define WIFI_SSID "ChickenNuggies"
+#define WIFI_PASS "3172940072M@tt"
 
 static const char *TAG = "websocket_example";
 esp_websocket_client_handle_t client;
@@ -27,6 +32,7 @@ static void on_websocket_event(void *handler_args, esp_event_base_t base, int32_
             break;
         case WEBSOCKET_EVENT_DATA:
             ESP_LOGI(TAG, "WebSocket Received Data");
+            ESP_LOGI(TAG, "Received data: %.*s", data->data_len, (char*)data->data_ptr);
             break;
         default:
             break;
@@ -69,17 +75,34 @@ static void ws_client_task(void *pvParameters) {
     }
 }
 
-void app_main() {
-    ESP_ERROR_CHECK( nvs_flash_init() );
-    ESP_ERROR_CHECK(esp_netif_init());
-    ESP_ERROR_CHECK(esp_event_loop_create_default());
+static void wifi_init_sta(void)
+{
+    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
+    ESP_ERROR_CHECK(esp_wifi_init(&cfg));
 
-    /* This helper function configures Wi-Fi or Ethernet, as selected in menuconfig.
-     * Read "Establishing Wi-Fi or Ethernet Connection" section in
-     * examples/protocols/README.md for more information about this function.
-     */
-    ESP_ERROR_CHECK(example_connect());
+    wifi_config_t wifi_config = {
+        .sta = {
+            .ssid = WIFI_SSID,
+            .password = WIFI_PASS,
+        },
+    };
+
+    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
+    ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
+    ESP_ERROR_CHECK(esp_wifi_start());
+
+    // Wait for connection
+    wifi_config_t conf = {};
+    esp_err_t err = esp_wifi_get_config(WIFI_IF_STA, &conf);
+    if (err == ESP_OK) {
+        ESP_LOGI("WiFi", "Connected to %s", conf.sta.ssid);
+    }
+}
+
+void app_main() {
+    ESP_ERROR_CHECK(nvs_flash_init());
+    wifi_init_sta();
 
     // Create WebSocket client task
-    xTaskCreate(&ws_client_task, "ws_client_task", 8192, NULL, 5, NULL);
+    xTaskCreate(&ws_client_task, "ws_client_task", 20000, NULL, 5, NULL);
 }
