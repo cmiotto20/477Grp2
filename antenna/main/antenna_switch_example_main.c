@@ -89,8 +89,8 @@ static void on_websocket_event(void *handler_args, esp_event_base_t base, int32_
             ESP_LOGI(TAG, "WebSocket Received Data");
             //ESP_LOGI(TAG, "Received data: %.*s", data->data_len, (char*)data->data_ptr);
             // Assuming the target string is "Hello, WebSocket!"
-            const char *ledOn = "[ledStatus]: ledStatus: 1";
-            const char *ledOff = "[ledStatus]: ledStatus: 0";
+            const char *ledOn = "[ledStatus]: 1";
+            const char *ledOff = "[ledStatus]: 0";
 
             gpio_config_t io_conf = {
                     .pin_bit_mask = (1ULL << GPIO_PIN),
@@ -149,7 +149,7 @@ static void ws_client_task(void *pvParameters) {
         esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
 
         // Wait for a while before sending the next message
-        vTaskDelay(1500 / portTICK_PERIOD_MS);
+        vTaskDelay(500 / portTICK_PERIOD_MS);
 
         // Clean up and disconnect
         //esp_websocket_client_stop(client);

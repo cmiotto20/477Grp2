@@ -42,6 +42,8 @@ wss.on('connection', (ws) => {
     //check if regex match
     if(!result || result.length <= 1){
       console.log("Error: could not parse [command] format");
+    } else {
+      command = message;
     }
     const command = result[1];
     console.log(`Received: ${message}`); 
@@ -53,7 +55,7 @@ wss.on('connection', (ws) => {
         console.log(`New webpage connection (total: ${clients.length})`);
         break;
 
-      case "micro":
+      case "m":
         micro_conn = ws;
         console.log('Micro connected')
         ws.send(`[micro]: 1`);
@@ -75,7 +77,7 @@ wss.on('connection', (ws) => {
         }); 
         break;
 
-      case "gls":
+      case "gL":
         getLightStatus((err, ledStatus) => {
           if (err) {
             console.error(`Error: ${err}`);
