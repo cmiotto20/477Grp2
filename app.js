@@ -39,10 +39,11 @@ wss.on('connection', (ws) => {
     //check if regex match
     if(!result || result.length <= 1){
       console.log("Error: could not parse [command] format");
-    } else {
       command = message;
+    } else {
+      const command = result[1];
     }
-    const command = result[1];
+
     console.log(`Received: ${message}`); 
     console.log(`Command: ${command}`);
       
