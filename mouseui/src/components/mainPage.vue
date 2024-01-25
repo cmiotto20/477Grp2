@@ -51,7 +51,10 @@ export default {
 
     this.socket.onopen = () => {
       this.socket.send("[webpage]");
-      this.socket.send("[micro_conn]"); 
+      setTimeout(() => {
+        this.socket.send("[micro_conn]");
+        console.log("Connection msg sent");
+      }, 500);
       console.log("Connection msg sent");
     };
     this.socket.onmessage = (event) => {
