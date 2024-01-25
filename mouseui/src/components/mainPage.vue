@@ -1,13 +1,38 @@
 <template>
-  <h1>MOUSE Controls Main Page</h1>
-  <button @click="toggleLight()">Toggle light</button>
-  <button @click="moveAction('U')">Up</button>
-  <button @click="moveAction('R')">Right</button>
-  <button @click="moveAction('L')">Left</button>
-  <button @click="moveAction('D')">Down</button>
-  <button @click="sendMessage()">Send Message</button>
-  <h2 v-if="this.micro_conn">Microcontroller Connected</h2>
-  <h2 v-else> No Microcontroller Connection </h2> 
+  <div class="container">
+    <h1>MOUSE Controls Main Page</h1>
+    <button @click="toggleLight()">Toggle light</button>
+    <button @click="sendMessage()">Send Message</button>
+
+    <!-- Microcontroller connection button -->
+    <button class="connected-button" :class="{ 'connected': micro_conn, 'not-connected': !micro_conn }"> Microcontroller Connection</button>
+
+    <!-- Joypad layout for arrow buttons -->
+    <div class="joypad-container">
+      <div class="arrow-button-row">
+        <div class="arrow-button-container">
+          <button @click="moveAction('U')" class="arrow-button arrow-up"></button>
+        </div>
+      </div>
+
+      <div class="arrow-button-row">
+        <div class="arrow-button-container">
+          <button @click="moveAction('L')" class="arrow-button arrow-left"></button>
+        </div>
+
+        <div class="arrow-button-container">
+          <button @click="moveAction('R')" class="arrow-button arrow-right"></button>
+        </div>
+      </div>
+
+      <div class="arrow-button-row">
+        <div class="arrow-button-container">
+          <button @click="moveAction('D')" class="arrow-button arrow-down"></button>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </template>
 
 <script>
@@ -113,3 +138,7 @@ export default {
 }
 </script>
 
+<style>
+  /* Import the styles.css file */
+  @import './style.css'; 
+</style>
