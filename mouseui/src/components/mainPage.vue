@@ -73,15 +73,11 @@ export default {
     //this.socket = new WebSocket('ws://localhost:3000');
 
     //wait for socket connection to be established
-
     this.socket.onopen = () => {
       this.socket.send("[webpage]");
-      setTimeout(() => {
-        this.socket.send("[micro_conn]");
-        console.log("Connection msg sent");
-      }, 500);
       console.log("Connection msg sent");
     };
+
     this.socket.onmessage = (event) => {
       this.messages.push(event.data);
       console.log(event.data);

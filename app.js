@@ -12,6 +12,12 @@ import {toggleLight, getLightStatus} from './apiFunctions.mjs'
 const clients = [];
 var micro_conn = null;
 
+function broadcastMsg(msg){
+  for (const client of clients){
+    client.send(msg);
+  }
+}
+
 function processUltrasonic(datastream){
   //TODO: Process ultrasonic data stream and report movement detection
   // if alert, call movementAlert()
@@ -23,10 +29,7 @@ function movementAlert(){
   //TODO: add motion detection data to db file
   console.log(`Detected movement at ${formatTime}`);
   const msg = `[detected]: ${formatTime}`;
-
-  for (const client of clients){
-    client.send(msg);
-  }
+  broadcastMsg(msg);
 }
 
 wss.on('connection', (ws) => {
@@ -59,7 +62,8 @@ wss.on('connection', (ws) => {
         console.log('Micro connected')
         ws.send(`[micro]: 1`);
         break;
-
+      
+      //micro_conn currently unused
       case "micro_conn": {
         const conn_status = (micro_conn != null) ? 1 : 0;
         ws.send(`[micro_conn]: ${conn_status}`);
@@ -154,6 +158,7 @@ wss.on('connection', (ws) => {
       if(micro_conn == ws){
         console.log('Microcontroller client disconnected');
         micro_conn = null;
+        broadcastMsg('[micro]: 0');
         return;
       }
       console.log('Error: closing unidentified connection');
