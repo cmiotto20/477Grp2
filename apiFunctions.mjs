@@ -40,10 +40,10 @@ export function toggleRow(row, callback) {
   });
 }
 
-export function getLightStatus(callback) {
+export function getRowStatus(row, callback) {
 
   const filePath = './apiData.txt';
-  let ledStatus;
+  let valStatus;
 
   fs.readFile(filePath, 'utf8', (err, data) => {
     if (err) {
@@ -54,14 +54,14 @@ export function getLightStatus(callback) {
     // Split the content into lines
     const lines = data.split('\n');
 
-    let firstLine = lines[0];
+    let firstLine = lines[row];
 
     // Split the string by colon
     const parts = firstLine.split(':');
 
     // Get the text after the colon (index 1)
-    ledStatus = parts[1].trim();
-    let returnString = ledStatus;
+    valStatus = parts[1].trim();
+    let returnString = valStatus;
     callback(null, returnString);
   });
 }

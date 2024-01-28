@@ -6,7 +6,7 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
-import {toggleRow, getLightStatus} from './apiFunctions.mjs'
+import {toggleRow, getRowStatus} from './apiFunctions.mjs'
 
 //declaring global variables to track socket clients
 const clients = [];
@@ -42,7 +42,7 @@ wss.on('connection', (ws) => {
     //check if regex match
     let command;
     if(!result || result.length <= 1){
-      console.log("Error: could not parse [command] format");
+      // console.log("Error: could not parse [command] format");
       command = message;
     } else {
       command = result[1];
@@ -85,8 +85,8 @@ wss.on('connection', (ws) => {
         }); 
         break;
 
-      case "gL":
-        getLightStatus((err, ledStatus) => {
+      case "gL": // Get Light Status
+        getRowStatus(0, (err, ledStatus) => {
           if (err) {
             console.error(`Error: ${err}`);
           } else {
