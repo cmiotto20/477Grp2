@@ -58,7 +58,8 @@ wss.on('connection', (ws) => {
         break;
 
       case "m":
-        setRow(1, 1, (err, microStatus) => {
+        const currentTime = new Date();
+        setRow(1, currentTime, (err, microStatus) => {
           if (err) {
             console.error(`Error: ${err}`);
           } else {
@@ -69,22 +70,22 @@ wss.on('connection', (ws) => {
         break;
       
       case "micro_conn": {
-        if (clients.length == 1) { // bandaid fix so that if only 1 client is connected (web ui) then that means the micro isnt connected, i know big assumption, but unless we find a good way to tell if the micro has disconnected, this is the best i got 
-          setRow(1, 0, (err, microStatus) => {
-            if (err) {
-              console.error(`Error: ${err}`);
-            } else {
-              console.log(`MicroStatus: ${microStatus}`);
-            }
-          }); 
-        }
-
         getRowStatus(1, (err, microStatus) => {
           if (err) {
             console.error(`Error: ${err}`);
           } else {
-            console.log(`Result: ${microStatus}`);
-            ws.send(`[micro_conn]: ${microStatus}`);
+            const currentTime = new Date();
+            const timeDifference = Math.abs(currentTime - microStatus);
+
+            if (timeDifference > 10000) {
+              console.log("The time difference is more than 10 seconds.");
+              console.log(`Result: ${0}`);
+              ws.send(`[micro_conn]: ${0}`);
+            } else {
+              console.log("The time difference is within 10 seconds.");
+              console.log(`Result: ${1}`);
+              ws.send(`[micro_conn]: ${1}`);
+            }
           }
         }); 
         break;
