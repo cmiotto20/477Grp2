@@ -21,8 +21,12 @@
 
 #include "driver/gpio.h"
 
-#define GPIO_PIN GPIO_NUM_4
+#define GPIO_PIN GPIO_NUM_5
+#define DATA_PIN    12
+#define CLOCK_PIN   14
+#define LATCH_PIN   4
 
+#define bitSet(value, bit) ((value) |= (1UL << (bit)))
 
 #define SSID "Secret2.0"
 #define PASS "dogtime!"
@@ -75,6 +79,38 @@ void wifi_connection()
     esp_wifi_connect();
 }
 
+void shiftOut(uint8_t bits) {
+    for (uint8_t i = 0; i < 8; i++)  {
+        gpio_set_level(DATA_PIN, (bits & (1 << (7 - i))) ? 1 : 0);
+        gpio_set_level(CLOCK_PIN, 1);
+        gpio_set_level(CLOCK_PIN, 0);
+    }
+    gpio_set_level(LATCH_PIN, 1);
+    gpio_set_level(LATCH_PIN, 0);
+}
+
+void initialize_gpio() {
+    gpio_config_t io_conf = {
+        .pin_bit_mask = (1ULL<<DATA_PIN) | (1ULL<<CLOCK_PIN) | (1ULL<<LATCH_PIN),
+        .mode = GPIO_MODE_OUTPUT,
+        .intr_type = GPIO_INTR_DISABLE,
+        .pull_down_en = 0,
+        .pull_up_en = 0,
+    };
+    gpio_config(&io_conf);
+}
+
+void setLEDRange(int left, int right) {
+    int ledBits = 0;
+    for(int i = left; i < right; i++) {
+        bitSet(ledBits, i);
+        shiftOut(ledBits>>16);
+        shiftOut(ledBits>>8);
+        shiftOut(ledBits);
+        gpio_set_level(LATCH_PIN, 1);
+    }
+}
+
 static void on_websocket_event(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data) {
     esp_websocket_event_data_t *data = (esp_websocket_event_data_t *)event_data;
 
@@ -102,10 +138,19 @@ static void on_websocket_event(void *handler_args, esp_event_base_t base, int32_
             gpio_config(&io_conf);
 
             if (data->data_len == strlen(ledOn) && memcmp(data->data_ptr, ledOn, data->data_len) == 0) {
-                gpio_set_level(GPIO_PIN, 1);
+                gpio_set_level(LATCH_PIN, 0);
+                shiftOut(0);
+                gpio_set_level(LATCH_PIN, 1);
+                gpio_set_level(LATCH_PIN, 0);
+                setLEDRange(0,8);
                 printf("GPIO state set to HIGH\n");
             } else if(data->data_len == strlen(ledOff) && memcmp(data->data_ptr, ledOff, data->data_len) == 0) {
-                gpio_set_level(GPIO_PIN, 0);
+                int ledBits = 0;
+                gpio_set_level(LATCH_PIN, 0);
+                shiftOut(ledBits);
+                gpio_set_level(LATCH_PIN, 1);
+                gpio_set_level(LATCH_PIN, 0);
+                setLEDRange(8,16);
                 printf("GPIO state set to LOW\n");
             }
             break;
@@ -138,18 +183,18 @@ static void ws_client_task(void *pvParameters) {
         }
 
     
-    const char *message = "[micro]";
+    const char *message = "m";
     esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
     vTaskDelay(1500 / portTICK_PERIOD_MS);
     
     
     while (1) {
         // Send WebSocket Text Message
-        const char *message = "[gls]";
+        const char *message = "gL";
         esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
 
         // Wait for a while before sending the next message
-        vTaskDelay(500 / portTICK_PERIOD_MS);
+        vTaskDelay(1500 / portTICK_PERIOD_MS);
 
         // Clean up and disconnect
         //esp_websocket_client_stop(client);
@@ -160,6 +205,8 @@ void app_main(void)
 {
     wifi_connection();
     vTaskDelay(1000 / portTICK_PERIOD_MS);
-    
-   xTaskCreate(&ws_client_task, "ws_client_task", 8192, NULL, 5, NULL);
+
+    initialize_gpio();
+
+    xTaskCreate(&ws_client_task, "ws_client_task", 8192, NULL, 5, NULL);
 }

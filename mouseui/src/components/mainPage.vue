@@ -76,6 +76,9 @@ export default {
     this.socket.onopen = () => {
       this.socket.send("[webpage]");
       console.log("Connection msg sent");
+
+      this.socket.send("[micro_conn]");
+      console.log("Checking for micro connection msg sent");
     };
 
     this.socket.onmessage = (event) => {
