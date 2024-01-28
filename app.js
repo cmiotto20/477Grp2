@@ -58,14 +58,13 @@ wss.on('connection', (ws) => {
         break;
 
       case "m":
-        micro_conn = ws;
+        micro_conn = 1;
         console.log('Micro connected')
         ws.send(`[micro]: 1`);
         break;
       
-      //micro_conn currently unused
       case "micro_conn": {
-        const conn_status = (micro_conn != null) ? 1 : 0;
+        const conn_status = micro_conn;
         ws.send(`[micro_conn]: ${conn_status}`);
         break;
       }
