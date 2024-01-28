@@ -183,10 +183,6 @@ static void ws_client_task(void *pvParameters) {
         }
 
     
-    const char *message = "m";
-    esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
-    vTaskDelay(1500 / portTICK_PERIOD_MS);
-    
     
     while (1) {
         // Send WebSocket Text Message
@@ -194,7 +190,11 @@ static void ws_client_task(void *pvParameters) {
         esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
 
         // Wait for a while before sending the next message
-        vTaskDelay(1500 / portTICK_PERIOD_MS);
+        vTaskDelay(500 / portTICK_PERIOD_MS);
+
+        message = "m";
+        esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
+        vTaskDelay(500 / portTICK_PERIOD_MS);
 
         // Clean up and disconnect
         //esp_websocket_client_stop(client);

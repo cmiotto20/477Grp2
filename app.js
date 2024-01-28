@@ -163,7 +163,7 @@ wss.on('connection', (ws) => {
         clients.splice(client_idx, 1);
         console.log(`Webpage client disconnected (total: ${clients.length})`);
         return;
-      } else if (clients.length() == 1) { // bandaid fix so that if only 1 client is connected (web ui) then that means the micro isnt connected, i know big assumption, but unless we find a good way to tell if the micro has disconnected, this is the best i got 
+      } else if (clients.length == 1) { // bandaid fix so that if only 1 client is connected (web ui) then that means the micro isnt connected, i know big assumption, but unless we find a good way to tell if the micro has disconnected, this is the best i got 
         setRow(1, 0, (err, microStatus) => {
           if (err) {
             console.error(`Error: ${err}`);
