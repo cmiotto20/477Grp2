@@ -1,2 +1,2 @@
-ledStatus:1
-microStatus:0
+ledStatus|1
+microStatus|0
