@@ -1,8 +1,8 @@
 <template>
   <div class="container">
-    <h1>MOUSE Controls Main Page</h1>
-    <button @click="toggleLight()">Toggle light</button>
-    <button @click="sendMessage()">Send Message</button>
+    <div id="controlBoxTitle">mouse Controls Main Page</div>
+    <button @click="toggleLight()" class="btnControls">Toggle light</button>
+    <button @click="sendMessage()" class="btnControls">Send Message</button>
 
     <!-- Microcontroller connection button -->
     <button class="connected-button" :class="{ 'connected': micro_conn, 'not-connected': !micro_conn }"> Microcontroller Connection</button>
@@ -11,23 +11,23 @@
     <div class="joypad-container">
       <div class="arrow-button-row">
         <div class="arrow-button-container">
-          <button @click="moveAction('U')" class="arrow-button arrow-up"></button>
+          <button @click="moveAction('U')" class="arrow-button arrow-up">▲</button>
         </div>
       </div>
 
       <div class="arrow-button-row">
         <div class="arrow-button-container">
-          <button @click="moveAction('L')" class="arrow-button arrow-left"></button>
+          <button @click="moveAction('L')" class="arrow-button arrow-left">▲</button>
         </div>
 
         <div class="arrow-button-container">
-          <button @click="moveAction('R')" class="arrow-button arrow-right"></button>
+          <button @click="moveAction('R')" class="arrow-button arrow-right">▲</button>
         </div>
       </div>
 
       <div class="arrow-button-row">
         <div class="arrow-button-container">
-          <button @click="moveAction('D')" class="arrow-button arrow-down"></button>
+          <button @click="moveAction('D')" class="arrow-button arrow-down">▲</button>
         </div>
       </div>
     </div>

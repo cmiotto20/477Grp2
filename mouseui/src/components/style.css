@@ -1,3 +1,8 @@
+@font-face {
+  font-family: 'Star Wars';
+  src: url('../assets/Starjedi.ttf');
+}
+
 body {
   background-color: black;
   color: blue;
@@ -7,16 +12,57 @@ body {
   justify-content: center;
   height: 100vh;
   margin: 0;
+  background-image: url('../assets/imperial.jpg');
+  background-size: cover; 
+  background-position: center; 
+  background-repeat: no-repeat;
+  font-family: 'Star Wars', sans-serif;
+  font-weight: 100;
 }
 
 .container {
   text-align: center;
+  background: rgb(40,40,40,.9);
+  border: solid;
+  border-color:black;
+  width: 50vw;
+  height: 60vh;
+  clip-path: polygon(
+    var(--corner)              0%,
+    calc(100% - var(--corner)) 0%,
+    100% var(--corner),
+    100% calc(100% - var(--corner)),
+    calc(100% - var(--corner)) 100%,
+    var(--corner)              100%,
+    0% calc(100% - var(--corner)),
+    0% var(--corner)
+  );
+  --corner: 20px
 }
 
 .joypad-container {
+  position: relative;
+  top: 20%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  background: rgb(15,15,15,.9);
+  left: 22.5%;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  width: 55%;
+  height: 40%;
+  clip-path: polygon(
+    var(--corner)              0%,
+    calc(100% - var(--corner)) 0%,
+    100% var(--corner),
+    100% calc(100% - var(--corner)),
+    calc(100% - var(--corner)) 100%,
+    var(--corner)              100%,
+    0% calc(100% - var(--corner)),
+    0% var(--corner)
+  );
+  --corner: 20px
 }
 
 .arrow-button-row {
@@ -36,33 +82,80 @@ body {
   line-height: 0;
   vertical-align: middle;
   background-color: transparent;
+  border: none;
 }
 
 .arrow-up {
-  margin-bottom: 5px;
-  border-width: 0 50px 50px 50px;
-  border-color: transparent transparent blue transparent;
+  position: relative;
+  top: -5px;
+  right: 45px;
+  display:inline-block;
+  width: 50px;
+  height: 50px;
+  color: rgb(90,170,255);
+  text-shadow: 0 0px 30px rgb(10,60,255);
+  font-size: 100px;
+  -webkit-transform:scale(1.5,1); /* Safari and Chrome */
+  -moz-transform:scale(1.5,1); /* Firefox */
+  -ms-transform:scale(1.5,1); /* IE 9 */
+  -o-transform:scale(1.5,1); /* Opera */
+  transform:scale(1.5,1); /* W3C */
 }
 
 .arrow-left {
-  margin-right: 60px;
-  border-width: 50px 50px 50px 0;
-  border-color: transparent blue transparent transparent;
+  position: relative;
+  top: 80px;
+  right: 65px;
+  display:inline-block;
+  width: 50px;
+  height: 50px;
+  color: rgb(90,170,255);
+  text-shadow: 0 0px 30px rgb(10,60,255);
+  font-size: 100px;
+  -webkit-transform:scale(1.5,1); /* Safari and Chrome */
+  -moz-transform:scale(1.5,1); /* Firefox */
+  -ms-transform:scale(1.5,1); /* IE 9 */
+  -o-transform:scale(1.5,1); /* Opera */
+  transform:scale(1,1.5) rotate(270deg); /* W3C */
 }
 
 .arrow-right {
-  margin-left: 60px;
-  border-width: 50px 0 50px 50px;
-  border-color: transparent transparent transparent blue;
+  position: relative;
+  top: -12.5px;
+  left: 65px;
+  display:inline-block;
+  width: 50px;
+  height: 50px;
+  color: rgb(90,170,255);
+  text-shadow: 0 0px 30px rgb(10,60,255);
+  font-size: 100px;
+  -webkit-transform:scale(1.5,1); /* Safari and Chrome */
+  -moz-transform:scale(1.5,1); /* Firefox */
+  -ms-transform:scale(1.5,1); /* IE 9 */
+  -o-transform:scale(1.5,1); /* Opera */
+  transform:scale(1,1.5) rotate(90deg); /* W3C */
 }
 
 .arrow-down {
-  margin-top: 5px;
-  border-width: 50px 50px 0 50px;
-  border-color: blue transparent transparent transparent;
+  position: relative;
+  top: 75px;
+  left: 45px;
+  display:inline-block;
+  width: 50px;
+  height: 50px;
+  color: rgb(90,170,255);
+  text-shadow: 0 0px 30px rgb(10,60,255);
+  font-size: 100px;
+  -webkit-transform:scale(1.5,1); /* Safari and Chrome */
+  -moz-transform:scale(1.5,1); /* Firefox */
+  -ms-transform:scale(1.5,1); /* IE 9 */
+  -o-transform:scale(1.5,1); /* Opera */
+  transform:scale(1.5,1) rotate(180deg); /* W3C */
 }
 
 .connected-button {
+  position: relative;
+  top: 10%;
   padding: 10px 20px;
   margin: 5px;
   border: none;
@@ -78,4 +171,15 @@ body {
 .connected-button.not-connected {
   background-color: red;
   color: white;
+}
+
+.btnControls {
+  position: relative;
+  top: 10%;
+}
+
+#controlBoxTitle {
+  position: relative;
+  top: 7%;
+  font-size: 3vw;
 }
