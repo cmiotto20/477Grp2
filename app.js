@@ -6,7 +6,7 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
-import {toggleRow, getRowStatus} from './apiFunctions.mjs'
+import {toggleRow, getRowStatus, setRow} from './apiFunctions.mjs'
 
 //declaring global variables to track socket clients
 const clients = [];
@@ -58,14 +58,25 @@ wss.on('connection', (ws) => {
         break;
 
       case "m":
-        micro_conn = 1;
-        console.log('Micro connected')
-        ws.send(`[micro]: 1`);
+        setRow(1, 1, (err, microStatus) => {
+          if (err) {
+            console.error(`Error: ${err}`);
+          } else {
+            console.log(`Result: ${microStatus}`);
+            ws.send(`[micro]: ${microStatus}`);
+          }
+        }); 
         break;
       
       case "micro_conn": {
-        const conn_status = micro_conn;
-        ws.send(`[micro_conn]: ${conn_status}`);
+        getRowStatus(1, (err, microStatus) => {
+          if (err) {
+            console.error(`Error: ${err}`);
+          } else {
+            console.log(`Result: ${microStatus}`);
+            ws.send(`[micro_conn]: ${microStatus}`);
+          }
+        }); 
         break;
       }
 
@@ -152,13 +163,14 @@ wss.on('connection', (ws) => {
         clients.splice(client_idx, 1);
         console.log(`Webpage client disconnected (total: ${clients.length})`);
         return;
-      }
-      //otherwise check if removing micro client
-      if(micro_conn == ws){
-        console.log('Microcontroller client disconnected');
-        micro_conn = null;
-        broadcastMsg('[micro]: 0');
-        return;
+      } else if (clients.length() == 1) { // bandaid fix so that if only 1 client is connected (web ui) then that means the micro isnt connected, i know big assumption, but unless we find a good way to tell if the micro has disconnected, this is the best i got 
+        setRow(1, 0, (err, microStatus) => {
+          if (err) {
+            console.error(`Error: ${err}`);
+          } else {
+            console.log(`MicroStatus: ${microStatus}`);
+          }
+        }); 
       }
       console.log('Error: closing unidentified connection');
   });

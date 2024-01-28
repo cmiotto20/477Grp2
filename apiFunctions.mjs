@@ -40,6 +40,41 @@ export function toggleRow(row, callback) {
   });
 }
 
+export function setRow(row, val, callback) {
+  const filePath = './apiData.txt';
+
+  fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error(err);
+      callback(err);
+      return;
+    }
+      
+    const lines = data.split('\n');
+    let firstLine = lines[row];
+    const parts = firstLine.split(':');
+    const textAfterColon = parts[1].trim();
+    
+    let valStatus = val;
+
+    console.log(`testing ${parts[0]}: ${valStatus}`);
+    
+    lines[row] = `${parts[0]}:${valStatus}`;
+    
+    const updatedContent = lines.join('\n');
+    
+    fs.writeFile(filePath, updatedContent, 'utf8', (err) => {
+      if (err) {
+        console.error(err);
+        callback(err);
+        return;
+      }
+
+      callback(null, valStatus);
+    });
+  });
+}
+
 export function getRowStatus(row, callback) {
 
   const filePath = './apiData.txt';
