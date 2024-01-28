@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-export function toggleRow(callback, row) {
+export function toggleRow(row, callback) {
   const filePath = './apiData.txt';
 
   fs.readFile(filePath, 'utf8', (err, data) => {
