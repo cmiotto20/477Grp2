@@ -6,7 +6,7 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
-import {toggleLight, getLightStatus} from './apiFunctions.mjs'
+import {toggleRow, getLightStatus} from './apiFunctions.mjs'
 
 //declaring global variables to track socket clients
 const clients = [];
@@ -75,7 +75,7 @@ wss.on('connection', (ws) => {
         break;
 
       case "toggle light":
-        toggleLight((err, ledStatus) => {
+        toggleRow(0, (err, ledStatus) => {
           if (err) {
             console.error(`Error: ${err}`);
           } else {

@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-export function toggleLight(callback) {
+export function toggleRow(callback, row) {
   const filePath = './apiData.txt';
 
   fs.readFile(filePath, 'utf8', (err, data) => {
@@ -11,20 +11,20 @@ export function toggleLight(callback) {
     }
       
     const lines = data.split('\n');
-    let firstLine = lines[0];
+    let firstLine = lines[row];
     const parts = firstLine.split(':');
     const textAfterColon = parts[1].trim();
     
-    let ledStatus;
+    let valStatus;
     if (textAfterColon === "0") {
-      ledStatus = "1";
+      valStatus = "1";
     } else {
-      ledStatus = "0";
+      valStatus = "0";
     }
 
-    console.log(`testing ledStatus: ${ledStatus}`);
+    console.log(`testing ${parts[0]}: ${valStatus}`);
     
-    lines[0] = `ledStatus:${ledStatus}`;
+    lines[row] = `${parts[0]}:${valStatus}`;
     
     const updatedContent = lines.join('\n');
     
@@ -35,7 +35,7 @@ export function toggleLight(callback) {
         return;
       }
 
-      callback(null, ledStatus);
+      callback(null, valStatus);
     });
   });
 }
