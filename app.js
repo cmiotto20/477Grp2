@@ -75,9 +75,9 @@ wss.on('connection', (ws) => {
             console.error(`Error: ${err}`);
           } else {
             const currentTime = new Date();
-            const timeDifference = Math.abs(currentTime - microStatus);
-            
-            console.log(`Got last micro time of ${microStatus}`)
+            const microTime = new Date(microStatus);
+            const timeDifference = Math.abs(currentTime - microTime);
+            console.log(`Got last micro time of ${microTime}`)
             console.log(`Time difference: ${timeDifference}`);
             if (timeDifference > 10000) {
               console.log("The time difference is more than 10 seconds.");
