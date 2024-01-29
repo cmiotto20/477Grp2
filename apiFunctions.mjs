@@ -1,5 +1,19 @@
 import fs from 'fs';
 
+function parseString(inputString) {
+  const regex = /([a-zA-Z])(\d{1,2})/;
+  
+  const match = inputString.match(regex);
+  
+  if (match) {
+    const letter = match[1];
+    const number = parseInt(match[2], 10); 
+    return { letter, number };
+  } else {
+    return null;
+  }
+}
+
 export function toggleRow(row, callback) {
   const filePath = './apiData.txt';
 
@@ -56,6 +70,47 @@ export function setRow(row, val, callback) {
     const textAfterColon = parts[1].trim();
     
     let valStatus = val;
+
+    console.log(`testing ${parts[0]}| ${valStatus}`);
+    
+    lines[row] = `${parts[0]}|${valStatus}`;
+    
+    const updatedContent = lines.join('\n');
+    
+    fs.writeFile(filePath, updatedContent, 'utf8', (err) => {
+      if (err) {
+        console.error(err);
+        callback(err);
+        return;
+      }
+
+      callback(null, valStatus);
+    });
+  });
+}
+
+export function increaseRow(row, val, callback) {
+  const filePath = './apiData.txt';
+
+  fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error(err);
+      callback(err);
+      return;
+    }
+      
+    const lines = data.split('\n');
+    let firstLine = lines[row];
+    const parts = firstLine.split('|');
+    const textAfterColon = parts[1].trim();
+    
+    let valStatus;
+    if (textAfterColon.includes(val)) {
+      parsedVal = parseString(inputString);
+      valStatus = `${parsedVal[0]}${parsedVal[1]}`;
+    } else {
+      valStatus = `${val}1`;
+    }
 
     console.log(`testing ${parts[0]}| ${valStatus}`);
     

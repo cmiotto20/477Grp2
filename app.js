@@ -6,7 +6,7 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
-import {toggleRow, getRowStatus, setRow} from './apiFunctions.mjs'
+import {toggleRow, getRowStatus, setRow, increaseRow} from './apiFunctions.mjs'
 
 //declaring global variables to track socket clients
 const clients = [];
@@ -133,48 +133,48 @@ wss.on('connection', (ws) => {
 
       case "mv R":
         console.log("Received move R command");
-        setRow(2, 'R', (err, motorDirection) => {
+        increaseRow(2, 'R', (err, motorDirectionSpeed) => {
           if (err) {
             console.error(`Error: ${err}`);
           } else {
-            console.log(`Result: ${motorDirection}`);
-            ws.send(`[motor]: ${motorDirection}`);
+            console.log(`Result: ${motorDirectionSpeed}`);
+            ws.send(`[motor]: ${motorDirectionSpeed}`);
           }
         }); 
         break;
       
       case "mv L":
         console.log("Received move L command");
-        setRow(2, 'L', (err, motorDirection) => {
+        increaseRow(2, 'L', (err, motorDirectionSpeed) => {
           if (err) {
             console.error(`Error: ${err}`);
           } else {
-            console.log(`Result: ${motorDirection}`);
-            ws.send(`[motor]: ${motorDirection}`);
+            console.log(`Result: ${motorDirectionSpeed}`);
+            ws.send(`[motor]: ${motorDirectionSpeed}`);
           }
         }); 
         break;
 
       case "mv U":
         console.log("Received move U command");
-        setRow(2, 'U', (err, motorDirection) => {
+        increaseRow(2, 'U', (err, motorDirectionSpeed) => {
           if (err) {
             console.error(`Error: ${err}`);
           } else {
-            console.log(`Result: ${motorDirection}`);
-            ws.send(`[motor]: ${motorDirection}`);
+            console.log(`Result: ${motorDirectionSpeed}`);
+            ws.send(`[motor]: ${motorDirectionSpeed}`);
           }
         }); 
         break;
 
       case "mv D":
         console.log("Received move D command");
-        setRow(2, 'D', (err, motorDirection) => {
+        increaseRow(2, 'D', (err, motorDirectionSpeed) => {
           if (err) {
             console.error(`Error: ${err}`);
           } else {
-            console.log(`Result: ${motorDirection}`);
-            ws.send(`[motor]: ${motorDirection}`);
+            console.log(`Result: ${motorDirectionSpeed}`);
+            ws.send(`[motor]: ${motorDirectionSpeed}`);
           }
         }); 
         break;
