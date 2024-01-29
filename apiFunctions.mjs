@@ -106,7 +106,7 @@ export function increaseRow(row, val, callback) {
     
     let valStatus;
     if (textAfterColon.includes(val)) {
-      parsedVal = parseString(textAfterColon);
+      let parsedVal = parseString(textAfterColon);
       valStatus = `${parsedVal[0]}${parsedVal[1]}`;
     } else {
       valStatus = `${val}1`;
