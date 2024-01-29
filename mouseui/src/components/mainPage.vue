@@ -1,11 +1,15 @@
 <template>
   <div class="container">
     <div id="controlBoxTitle">mouse Controls Main Page</div>
-    <button @click="toggleLight()" class="btnControls">Toggle light</button>
-    <button @click="sendMessage()" class="btnControls">Send Message</button>
+    <div class="outerBtnGroup">
+      <div class="innerBtnGroup">
+        <button @click="toggleLight()" class="btnControls">Toggle light</button>
+        <button @click="sendMessage()" class="btnControls">Send Message</button>
+      </div>
 
-    <!-- Microcontroller connection button -->
-    <button class="connected-button" :class="{ 'connected': micro_conn, 'not-connected': !micro_conn }"> Microcontroller Connection</button>
+      <!-- Microcontroller connection button -->
+      <button class="connected-button" :class="{ 'connected': micro_conn, 'not-connected': !micro_conn }"> Microcontroller Connection</button>
+    </div>
 
     <!-- Joypad layout for arrow buttons -->
     <div class="joypad-container">
