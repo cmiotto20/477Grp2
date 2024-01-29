@@ -138,7 +138,7 @@ wss.on('connection', (ws) => {
             console.error(`Error: ${err}`);
           } else {
             console.log(`Result: ${motorDirection}`);
-            ws.send(`${motorDirection}`);
+            ws.send(`[motor]: ${motorDirection}`);
           }
         }); 
         break;
@@ -150,7 +150,7 @@ wss.on('connection', (ws) => {
             console.error(`Error: ${err}`);
           } else {
             console.log(`Result: ${motorDirection}`);
-            ws.send(`${motorDirection}`);
+            ws.send(`[motor]: ${motorDirection}`);
           }
         }); 
         break;
@@ -162,7 +162,7 @@ wss.on('connection', (ws) => {
             console.error(`Error: ${err}`);
           } else {
             console.log(`Result: ${motorDirection}`);
-            ws.send(`${motorDirection}`);
+            ws.send(`[motor]: ${motorDirection}`);
           }
         }); 
         break;
@@ -174,7 +174,7 @@ wss.on('connection', (ws) => {
             console.error(`Error: ${err}`);
           } else {
             console.log(`Result: ${motorDirection}`);
-            ws.send(`${motorDirection}`);
+            ws.send(`[motor]: ${motorDirection}`);
           }
         }); 
         break;
