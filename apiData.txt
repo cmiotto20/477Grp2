@@ -1,2 +1,3 @@
 ledStatus|1
 microStatus|0
+motorDirection|R

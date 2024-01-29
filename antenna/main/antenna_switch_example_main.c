@@ -7,31 +7,29 @@
 #include "esp_event.h"
 #include "esp_log.h"
 #include "nvs_flash.h"
-
 #include "lwip/err.h"
 #include "lwip/sys.h"
 #include "antenna_switch.h"
-
 #include <stdio.h>
 #include "esp_event.h"
 #include "nvs_flash.h"
 #include "esp_http_client.h"
 #include "esp_websocket_client.h"
 #include "freertos/semphr.h"
-
 #include "driver/gpio.h"
 
+// Constants
 #define GPIO_PIN GPIO_NUM_5
 #define DATA_PIN    12
 #define CLOCK_PIN   14
 #define LATCH_PIN   4
-
-#define bitSet(value, bit) ((value) |= (1UL << (bit)))
-
 #define SSID "Secret2.0"
 #define PASS "dogtime!"
 
-static const char *TAG = "websocket_example";
+// Macros
+#define bitSet(value, bit) ((value) |= (1UL << (bit)))
+
+static const char *TAG = "websocket";
 esp_websocket_client_handle_t client;
 
 static void wifi_event_handler(void *event_handler_arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
@@ -79,6 +77,7 @@ void wifi_connection()
     esp_wifi_connect();
 }
 
+// Shift out binary bits to shift registers to control LEDs
 void shiftOut(uint8_t bits) {
     for (uint8_t i = 0; i < 8; i++)  {
         gpio_set_level(DATA_PIN, (bits & (1 << (7 - i))) ? 1 : 0);
@@ -89,6 +88,7 @@ void shiftOut(uint8_t bits) {
     gpio_set_level(LATCH_PIN, 0);
 }
 
+// Initializes the GPIO pins needed for the shift register chain
 void initialize_gpio() {
     gpio_config_t io_conf = {
         .pin_bit_mask = (1ULL<<DATA_PIN) | (1ULL<<CLOCK_PIN) | (1ULL<<LATCH_PIN),
@@ -100,6 +100,7 @@ void initialize_gpio() {
     gpio_config(&io_conf);
 }
 
+// Given an upper and lower bound, turn on LEDs within the 24 LED array
 void setLEDRange(int left, int right) {
     int ledBits = 0;
     for(int i = left; i < right; i++) {
@@ -108,6 +109,44 @@ void setLEDRange(int left, int right) {
         shiftOut(ledBits>>8);
         shiftOut(ledBits);
         gpio_set_level(LATCH_PIN, 1);
+    }
+}
+
+void checkToTurnOnLEDsFromWebSocket(esp_websocket_event_data_t *data) {
+    const char *ledOn = "[ledStatus]: 1";
+    const char *ledOff = "[ledStatus]: 0";
+    if (data->data_len == strlen(ledOn) && memcmp(data->data_ptr, ledOn, data->data_len) == 0) {
+        gpio_set_level(LATCH_PIN, 0);
+        shiftOut(0);
+        gpio_set_level(LATCH_PIN, 1);
+        gpio_set_level(LATCH_PIN, 0);
+        setLEDRange(0,8);
+        printf("GPIO state set to HIGH\n");
+    } else if(data->data_len == strlen(ledOff) && memcmp(data->data_ptr, ledOff, data->data_len) == 0) {
+        int ledBits = 0;
+        gpio_set_level(LATCH_PIN, 0);
+        shiftOut(ledBits);
+        gpio_set_level(LATCH_PIN, 1);
+        gpio_set_level(LATCH_PIN, 0);
+        setLEDRange(8,16);
+        printf("GPIO state set to LOW\n");
+    }
+}
+
+void checkToTurnOnMotorsFromWebSocket(esp_websocket_event_data_t *data) {
+    const char *moveRight = "R";
+    const char *moveLeft = "L";
+    const char *moveUp = "U";
+    const char *moveDown = "D";
+    
+    if (data->data_len == strlen(moveRight) && memcmp(data->data_ptr, moveRight, data->data_len) == 0) {
+        printf("Motors begin moving right\n");
+    } else if (data->data_len == strlen(moveLeft) && memcmp(data->data_ptr, moveLeft, data->data_len) == 0) {
+        printf("Motors begin moving left\n");
+    } else if (data->data_len == strlen(moveUp) && memcmp(data->data_ptr, moveUp, data->data_len) == 0) {
+        printf("Motors begin moving forward\n");
+    } else if (data->data_len == strlen(moveDown) && memcmp(data->data_ptr, moveDown, data->data_len) == 0) {
+        printf("Motors begin moving backwards\n");
     }
 }
 
@@ -124,35 +163,9 @@ static void on_websocket_event(void *handler_args, esp_event_base_t base, int32_
         case WEBSOCKET_EVENT_DATA:
             ESP_LOGI(TAG, "WebSocket Received Data");
             //ESP_LOGI(TAG, "Received data: %.*s", data->data_len, (char*)data->data_ptr);
-            // Assuming the target string is "Hello, WebSocket!"
-            const char *ledOn = "[ledStatus]: 1";
-            const char *ledOff = "[ledStatus]: 0";
 
-            gpio_config_t io_conf = {
-                    .pin_bit_mask = (1ULL << GPIO_PIN),
-                    .mode = GPIO_MODE_OUTPUT,
-                    .intr_type = GPIO_INTR_DISABLE,
-                    .pull_up_en = 0,
-                    .pull_down_en = 0,
-            };
-            gpio_config(&io_conf);
-
-            if (data->data_len == strlen(ledOn) && memcmp(data->data_ptr, ledOn, data->data_len) == 0) {
-                gpio_set_level(LATCH_PIN, 0);
-                shiftOut(0);
-                gpio_set_level(LATCH_PIN, 1);
-                gpio_set_level(LATCH_PIN, 0);
-                setLEDRange(0,8);
-                printf("GPIO state set to HIGH\n");
-            } else if(data->data_len == strlen(ledOff) && memcmp(data->data_ptr, ledOff, data->data_len) == 0) {
-                int ledBits = 0;
-                gpio_set_level(LATCH_PIN, 0);
-                shiftOut(ledBits);
-                gpio_set_level(LATCH_PIN, 1);
-                gpio_set_level(LATCH_PIN, 0);
-                setLEDRange(8,16);
-                printf("GPIO state set to LOW\n");
-            }
+            checkToTurnOnLEDsFromWebSocket(data);
+            checkToTurnOnMotorsFromWebSocket(data);
             break;
         default:
             break;
@@ -188,8 +201,11 @@ static void ws_client_task(void *pvParameters) {
         // Send WebSocket Text Message
         const char *message = "gL";
         esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
-
         // Wait for a while before sending the next message
+        vTaskDelay(500 / portTICK_PERIOD_MS);
+
+        message = "gD";
+        esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
         vTaskDelay(500 / portTICK_PERIOD_MS);
 
         if(sendConnectionStatusCounter % 5 == 0) {

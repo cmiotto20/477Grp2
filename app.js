@@ -120,48 +120,63 @@ wss.on('connection', (ws) => {
         }); 
         break;
 
+      case "gD": // Get Motor Direction
+        getRowStatus(2, (err, motorDirection) => {
+          if (err) {
+            console.error(`Error: ${err}`);
+          } else {
+            console.log(`${motorDirection}`);
+            ws.send(`${motorDirection}`);
+          }
+        }); 
+        break;
+
       case "mv R":
         console.log("Received move R command");
-        if(micro_conn !== null){
-          console.log("Sending move R to micro");
-          //can send data to microcontroller connection here 
-          //i.e. micro_conn.send('R');
-          return;
-        }
-        console.log("No micro connection");
+        setRow(2, 'R', (err, motorDirection) => {
+          if (err) {
+            console.error(`Error: ${err}`);
+          } else {
+            console.log(`Result: ${motorDirection}`);
+            ws.send(`${motorDirection}`);
+          }
+        }); 
         break;
       
       case "mv L":
         console.log("Received move L command");
-        if(micro_conn !== null){
-          console.log("Sending move L to micro");
-          //can send data to microcontroller connection here 
-          //i.e. micro_conn.send('L');
-          return;
-        }
-        console.log("No micro connection");
+        setRow(2, 'L', (err, motorDirection) => {
+          if (err) {
+            console.error(`Error: ${err}`);
+          } else {
+            console.log(`Result: ${motorDirection}`);
+            ws.send(`${motorDirection}`);
+          }
+        }); 
         break;
 
       case "mv U":
         console.log("Received move U command");
-        if(micro_conn !== null){
-          console.log("Sending move U to micro");
-          //can send data to microcontroller connection here 
-          //i.e. micro_conn.send('U');
-          return;
-        }
-        console.log("No micro connection");
+        setRow(2, 'U', (err, motorDirection) => {
+          if (err) {
+            console.error(`Error: ${err}`);
+          } else {
+            console.log(`Result: ${motorDirection}`);
+            ws.send(`${motorDirection}`);
+          }
+        }); 
         break;
 
       case "mv D":
         console.log("Received move D command");
-        if(micro_conn !== null){
-          console.log("Sending move D to micro");
-          //can send data to microcontroller connection here 
-          //i.e. micro_conn.send('D');
-          return;
-        }
-        console.log("No micro connection");
+        setRow(2, 'D', (err, motorDirection) => {
+          if (err) {
+            console.error(`Error: ${err}`);
+          } else {
+            console.log(`Result: ${motorDirection}`);
+            ws.send(`${motorDirection}`);
+          }
+        }); 
         break;
 
       default: 
