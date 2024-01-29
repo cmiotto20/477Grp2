@@ -8,7 +8,7 @@ function parseString(inputString) {
   if (match) {
     const letter = match[1];
     const number = parseInt(match[2], 10); 
-    return { letter, number };
+    return [letter, number];
   } else {
     return null;
   }
