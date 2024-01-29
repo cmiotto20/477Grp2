@@ -122,6 +122,12 @@ export default {
           break;
         } 
 
+        case "motor": {
+          const motormsg = this.getDataStream(event);
+          console.log(`motor msg: ${motormsg}`); 
+          break;
+        } 
+
         case "micro_conn": {
           this.micro_conn = parseInt(this.getDataStream(event)) == 1 ? true : false; 
           console.log(`micro_conn received: ${this.micro_conn}`);
