@@ -4,7 +4,12 @@
     <div class="outerBtnGroup">
       <div class="innerBtnGroup">
         <button @click="toggleLight()" class="btnControls">Toggle light</button>
-        <button @click="sendMessage()" class="btnControls">Send Message</button>
+        <button @click="sendMessage()" class="btnControls">Send Message</button> </div> <div class="innerBtnGroup">
+        <button @click="recordInputs()" class="btnControls">Record</button>
+        <button @click= "playbackInputs()" class="btnControls">Play Back</button>
+      </div>
+      <div class ="innerBtnGroup">
+        <button @click="stopRecordInputs()" class="btnControls">Stop Record</button>
       </div>
 
       <!-- Microcontroller connection button -->
@@ -71,10 +76,22 @@ export default {
         return result[1].trim().split(/\s+/); //separates elements by whitespace
       }
     },
+    recordInputs() {
+      console.log("hit record");
+      this.socket.send("[record]");
+    },
+    playbackInputs(){
+      console.log("hit playback");
+      this.socket.send("[playback]");
+    },
+    stopRecordInputs(){
+      console.log("hit stop record");
+      this.socket.send("[done rec]");
+    }
   },
   mounted() {
-    this.socket = new WebSocket('ws://174.129.215.96:3000');
-    //this.socket = new WebSocket('ws://localhost:3000');
+    //this.socket = new WebSocket('ws://174.129.215.96:3000');
+    this.socket = new WebSocket('ws://localhost:3000');
 
     //wait for socket connection to be established
     this.socket.onopen = () => {
