@@ -11,36 +11,48 @@
       <div class ="innerBtnGroup">
         <button @click="stopRecordInputs()" class="btnControls">Stop Record</button>
       </div>
+    <div id="containerBody">
+      <div id="leftHalf">
+        <div class="outerBtnGroup">
+          <div class="innerBtnGroup">
+            <button @click="toggleLight()" class="btnControls">Toggle light</button>
+            <button @click="sendMessage()" class="btnControls">Send Message</button>
+          </div>
 
-      <!-- Microcontroller connection button -->
-      <button class="connected-button" :class="{ 'connected': micro_conn, 'not-connected': !micro_conn }"> Microcontroller Connection</button>
+          <!-- Microcontroller connection button -->
+          <button class="connected-button" :class="{ 'connected': micro_conn, 'not-connected': !micro_conn }"> Microcontroller Connection</button>
+        </div>
+
+        <!-- Joypad layout for arrow buttons -->
+        <div class="joypad-container">
+          <div class="arrow-button-row">
+            <div class="arrow-button-container">
+              <button @click="moveAction('U')" class="arrow-button arrow-up">▲</button>
+            </div>
+          </div>
+
+          <div class="arrow-button-row">
+            <div class="arrow-button-container">
+              <button @click="moveAction('L')" class="arrow-button arrow-left">▲</button>
+            </div>
+
+            <div class="arrow-button-container">
+              <button @click="moveAction('R')" class="arrow-button arrow-right">▲</button>
+            </div>
+          </div>
+
+          <div class="arrow-button-row">
+            <div class="arrow-button-container">
+              <button @click="moveAction('D')" class="arrow-button arrow-down">▲</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="rightHalf">
+        <div id="messageBox">
+        </div>
+      </div>
     </div>
-
-    <!-- Joypad layout for arrow buttons -->
-    <div class="joypad-container">
-      <div class="arrow-button-row">
-        <div class="arrow-button-container">
-          <button @click="moveAction('U')" class="arrow-button arrow-up">▲</button>
-        </div>
-      </div>
-
-      <div class="arrow-button-row">
-        <div class="arrow-button-container">
-          <button @click="moveAction('L')" class="arrow-button arrow-left">▲</button>
-        </div>
-
-        <div class="arrow-button-container">
-          <button @click="moveAction('R')" class="arrow-button arrow-right">▲</button>
-        </div>
-      </div>
-
-      <div class="arrow-button-row">
-        <div class="arrow-button-container">
-          <button @click="moveAction('D')" class="arrow-button arrow-down">▲</button>
-        </div>
-      </div>
-    </div>
-
   </div>
 </template>
 
