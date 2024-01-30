@@ -28,6 +28,7 @@ body {
   border-color:black;
   width: 1200px;
   height: 700px;
+  flex-direction: row;
   clip-path: polygon(
     var(--corner)              0%,
     calc(100% - var(--corner)) 0%,
@@ -41,6 +42,29 @@ body {
   --corner: 20px
 }
 
+#containerBody {
+  position: relative;
+  top: 50px;
+  display: flex;
+  flex-direction: row;
+}
+
+#leftHalf{
+  width: 900px;
+}
+
+#rightHalf {
+  margin-right: 30px;
+}
+
+#messageBox {
+  border: solid;
+  border-color: blue;
+  height: 100%;
+  width: 300px;
+  background: black;
+}
+
 .innerBtnGroup{
   display: flex;
   flex-direction: column;
@@ -48,7 +72,7 @@ body {
 
 .outerBtnGroup {
   position: relative;
-  top: 30px;
+  top: 0px;
   left: 37.5%;
   display: flex;
   flex-direction: row;
@@ -56,7 +80,7 @@ body {
 
 .joypad-container {
   position: relative;
-  top: 12%;
+  top: 10%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -64,7 +88,7 @@ body {
   left: 22.5%;
   padding-top: 20px;
   padding-bottom: 20px;
-  width: 600px;
+  width: 500px;
   height: 225px;
   clip-path: polygon(
     var(--corner)              0%,
@@ -212,6 +236,6 @@ body {
 
 #controlBoxTitle {
   position: relative;
-  top: 7%;
+  top: 3%;
   font-size: 60px;
 }
