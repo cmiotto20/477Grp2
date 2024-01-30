@@ -73,7 +73,7 @@ body {
 .outerBtnGroup {
   position: relative;
   top: 0px;
-  left: 37.5%;
+  left: 20%;
   display: flex;
   flex-direction: row;
 }
@@ -85,7 +85,7 @@ body {
   flex-direction: column;
   align-items: center;
   background: rgb(15,15,15,.9);
-  left: 22.5%;
+  left: 21%;
   padding-top: 20px;
   padding-bottom: 20px;
   width: 500px;

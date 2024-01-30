@@ -1,19 +1,16 @@
 <template>
   <div class="container">
     <div id="controlBoxTitle">mouse Controls Main Page</div>
-    <div class="outerBtnGroup">
-      <div class="innerBtnGroup">
-        <button @click="toggleLight()" class="btnControls">Toggle light</button>
-        <button @click="sendMessage()" class="btnControls">Send Message</button> </div> <div class="innerBtnGroup">
-        <button @click="recordInputs()" class="btnControls">Record</button>
-        <button @click= "playbackInputs()" class="btnControls">Play Back</button>
-      </div>
-      <div class ="innerBtnGroup">
-        <button @click="stopRecordInputs()" class="btnControls">Stop Record</button>
-      </div>
     <div id="containerBody">
       <div id="leftHalf">
         <div class="outerBtnGroup">
+          <div class="innerBtnGroup">
+            <button @click="recordInputs()" class="btnControls">Record</button>
+            <button @click= "playbackInputs()" class="btnControls">Play Back</button>
+          </div>
+          <div class ="innerBtnGroup">
+            <button @click="stopRecordInputs()" class="btnControls">Stop Record</button>
+          </div>
           <div class="innerBtnGroup">
             <button @click="toggleLight()" class="btnControls">Toggle light</button>
             <button @click="sendMessage()" class="btnControls">Send Message</button>
@@ -49,8 +46,7 @@
         </div>
       </div>
       <div id="rightHalf">
-        <div id="messageBox">
-        </div>
+        <div id="messageBox"></div>
       </div>
     </div>
   </div>
