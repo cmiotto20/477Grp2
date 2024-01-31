@@ -103,8 +103,8 @@ export default {
     }
   },
   mounted() {
-    this.socket = new WebSocket('ws://174.129.215.96:3000');
-    //this.socket = new WebSocket('ws://localhost:3000');
+    //this.socket = new WebSocket('ws://174.129.215.96:3000');
+    this.socket = new WebSocket('ws://localhost:3000');
 
     //wait for socket connection to be established
     this.socket.onopen = () => {
@@ -134,8 +134,13 @@ export default {
         case "detected": {
           const time = this.getDataStream(event);
           alert(`Motion Detected! [${time}]`);
-          console.log(`Motion Detected! [${time}]`); 
-          this.messages_for_message_box.push(`Motion Detected! ${time}`);
+          console.log(`Motion Detected! [${time}]`);
+          var time_msg = ""
+          for (const timecomp of time){
+            if(timecomp.trim() === "") continue;
+            time_msg += timecomp.trim() + " "
+          }
+          this.messages_for_message_box.push(`Motion Detected! ${time_msg}`);
           break;
         }
         
