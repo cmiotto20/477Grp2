@@ -7,10 +7,12 @@ const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
 import {toggleRow, getRowStatus, setRow, increaseRow} from './apiFunctions.mjs'
+import {clearRecord, recordAction, readRecord} from './recordFunctions.mjs'
 
 //declaring global variables to track socket clients
 const clients = [];
 var micro_conn = null;
+var recording = false;
 
 function broadcastMsg(msg){
   for (const client of clients){
@@ -25,7 +27,7 @@ function processUltrasonic(datastream){
 
 function movementAlert(){
   const currentDate = new Date();
-  const formatTime = currentDate.toLocaleString();
+  const formatTime = currentDate.toLocaleString('en-US', {timeZone: 'America/New_York', hour12: true});
   //TODO: add motion detection data to db file
   console.log(`Detected movement at ${formatTime}`);
   const msg = `[detected]: ${formatTime}`;
@@ -131,7 +133,8 @@ wss.on('connection', (ws) => {
         }); 
         break;
 
-      case "mv R":
+      case "mv R": {
+        const startTime = new Date();
         console.log("Received move R command");
         increaseRow(2, 'R', (err, motorDirectionSpeed) => {
           if (err) {
@@ -141,9 +144,17 @@ wss.on('connection', (ws) => {
             ws.send(`[motor]: ${motorDirectionSpeed}`);
           }
         }); 
+        if(recordAction){
+          const endTime = new Date();  
+          //pass in time taken - delay from start of processing
+          recordAction('R', endTime - (endTime - startTime)); 
+        }
+
         break;
+      }
       
-      case "mv L":
+      case "mv L": {
+        const startTime = new Date();
         console.log("Received move L command");
         increaseRow(2, 'L', (err, motorDirectionSpeed) => {
           if (err) {
@@ -152,10 +163,17 @@ wss.on('connection', (ws) => {
             console.log(`Result: ${motorDirectionSpeed}`);
             ws.send(`[motor]: ${motorDirectionSpeed}`);
           }
-        }); 
+        });
+        if(recordAction){
+          const endTime = new Date();  
+          //pass in time taken - delay from start of processing
+          recordAction('L', endTime - (endTime - startTime)); 
+        }
         break;
+      }
 
-      case "mv U":
+      case "mv U": {
+        const startTime = new Date();
         console.log("Received move U command");
         increaseRow(2, 'U', (err, motorDirectionSpeed) => {
           if (err) {
@@ -165,9 +183,16 @@ wss.on('connection', (ws) => {
             ws.send(`[motor]: ${motorDirectionSpeed}`);
           }
         }); 
+        if(recordAction){
+          const endTime = new Date();  
+          //pass in time taken - delay from start of processing
+          recordAction('U', endTime - (endTime - startTime)); 
+        }
         break;
+      }
 
-      case "mv D":
+      case "mv D": {
+        const startTime = new Date();
         console.log("Received move D command");
         increaseRow(2, 'D', (err, motorDirectionSpeed) => {
           if (err) {
@@ -177,6 +202,66 @@ wss.on('connection', (ws) => {
             ws.send(`[motor]: ${motorDirectionSpeed}`);
           }
         }); 
+        if(recordAction){
+          const endTime = new Date();  
+          //pass in time taken - delay from start of processing
+          recordAction('D', endTime - (endTime - startTime)); 
+        }
+        break;
+      }
+
+      case "record":
+        clearRecord();
+        recording = true;
+        console.log("received record command");
+        break;
+
+     case "playback":
+        console.log("received playback command");
+
+        readRecord((err, record_data) => {
+          if (err) {
+            console.error(err);
+          } else {
+            console.log(record_data);
+
+            const playbackAsync = async () => {
+              let prev_time = 0;
+
+              for (let i = 0; i < record_data.length; i++) {
+                const dir = record_data[i].direction;
+                const time = record_data[i].time;
+
+                console.log(`playback: ${dir}`);
+                //creates asynchronous promise that we use to block
+                await new Promise(resolve => { 
+                  setTimeout(() => {
+                    increaseRow(2, dir, (err, motorDirectionSpeed) => {
+                      if (err) {
+                        console.error(`Error: ${err}`);
+                      } else {
+                        console.log(`Result: ${motorDirectionSpeed}`);
+                        ws.send(`[motor]: ${motorDirectionSpeed}`);
+                      }
+                      resolve(); //signals delay completion 
+                    });
+                  }, time - prev_time); //delay time
+                });
+
+                // Set prev_time to the current time value for next iteration
+                prev_time = time;
+              }
+              console.log("playback comlete");
+            };
+
+            playbackAsync(); //recursive call for next element
+          }
+        });
+        break;
+
+      case "done rec":
+        recording = false;
+        console.log("received stop recording command");
         break;
 
       default: 

@@ -112,7 +112,7 @@ export function increaseRow(row, val, callback) {
       valStatus = `${val}1`;
     }
 
-    console.log(`testing ${parts[0]}| ${valStatus}`);
+    console.log(`testing ${parts[0]}|${valStatus}`);
     
     lines[row] = `${parts[0]}|${valStatus}`;
     
