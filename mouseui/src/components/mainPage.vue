@@ -46,7 +46,11 @@
         </div>
       </div>
       <div id="rightHalf">
-        <div id="messageBox"></div>
+        <div id="messageBox">
+          <div v-for="message in messages_for_message_box" :key="message">
+            {{ message }}
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -60,6 +64,7 @@ export default {
       messages: [],
       socket: null,
       micro_conn: false,
+      messages_for_message_box: []
     };
   },
   props: {
@@ -98,8 +103,8 @@ export default {
     }
   },
   mounted() {
-    //this.socket = new WebSocket('ws://174.129.215.96:3000');
-    this.socket = new WebSocket('ws://localhost:3000');
+    this.socket = new WebSocket('ws://174.129.215.96:3000');
+    //this.socket = new WebSocket('ws://localhost:3000');
 
     //wait for socket connection to be established
     this.socket.onopen = () => {
@@ -130,6 +135,7 @@ export default {
           const time = this.getDataStream(event);
           alert(`Motion Detected! [${time}]`);
           console.log(`Motion Detected! [${time}]`); 
+          this.messages_for_message_box.push(`Motion Detected! ${time}`);
           break;
         }
         
@@ -144,12 +150,6 @@ export default {
           console.log(`LED Status: ${status}`);
           break;
         }
-
-        case "hello": {
-          const hellomsg = this.getDataStream(event);
-          console.log(`hello msg: ${hellomsg}`); 
-          break;
-        } 
 
         case "motor": {
           const motormsg = this.getDataStream(event);
