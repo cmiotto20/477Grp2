@@ -1,41 +1,58 @@
 <template>
   <div class="container">
     <div id="controlBoxTitle">mouse Controls Main Page</div>
-    <div class="outerBtnGroup">
-      <div class="innerBtnGroup">
-        <button @click="toggleLight()" class="btnControls">Toggle light</button>
-        <button @click="sendMessage()" class="btnControls">Send Message</button>
-      </div>
+    <div id="containerBody">
+      <div id="leftHalf">
+        <div class="outerBtnGroup">
+          <div class="innerBtnGroup">
+            <button @click="recordInputs()" class="btnControls">Record</button>
+            <button @click= "playbackInputs()" class="btnControls">Play Back</button>
+          </div>
+          <div class ="innerBtnGroup">
+            <button @click="stopRecordInputs()" class="btnControls">Stop Record</button>
+          </div>
+          <div class="innerBtnGroup">
+            <button @click="toggleLight()" class="btnControls">Toggle light</button>
+            <button @click="sendMessage()" class="btnControls">Send Message</button>
+          </div>
 
-      <!-- Microcontroller connection button -->
-      <button class="connected-button" :class="{ 'connected': micro_conn, 'not-connected': !micro_conn }"> Microcontroller Connection</button>
+          <!-- Microcontroller connection button -->
+          <button class="connected-button" :class="{ 'connected': micro_conn, 'not-connected': !micro_conn }"> Microcontroller Connection</button>
+        </div>
+
+        <!-- Joypad layout for arrow buttons -->
+        <div class="joypad-container">
+          <div class="arrow-button-row">
+            <div class="arrow-button-container">
+              <button @click="moveAction('U')" class="arrow-button arrow-up">▲</button>
+            </div>
+          </div>
+
+          <div class="arrow-button-row">
+            <div class="arrow-button-container">
+              <button @click="moveAction('L')" class="arrow-button arrow-left">▲</button>
+            </div>
+
+            <div class="arrow-button-container">
+              <button @click="moveAction('R')" class="arrow-button arrow-right">▲</button>
+            </div>
+          </div>
+
+          <div class="arrow-button-row">
+            <div class="arrow-button-container">
+              <button @click="moveAction('D')" class="arrow-button arrow-down">▲</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="rightHalf">
+        <div id="messageBox">
+          <div v-for="message in messages_for_message_box" :key="message">
+            {{ message }}
+          </div>
+        </div>
+      </div>
     </div>
-
-    <!-- Joypad layout for arrow buttons -->
-    <div class="joypad-container">
-      <div class="arrow-button-row">
-        <div class="arrow-button-container">
-          <button @click="moveAction('U')" class="arrow-button arrow-up">▲</button>
-        </div>
-      </div>
-
-      <div class="arrow-button-row">
-        <div class="arrow-button-container">
-          <button @click="moveAction('L')" class="arrow-button arrow-left">▲</button>
-        </div>
-
-        <div class="arrow-button-container">
-          <button @click="moveAction('R')" class="arrow-button arrow-right">▲</button>
-        </div>
-      </div>
-
-      <div class="arrow-button-row">
-        <div class="arrow-button-container">
-          <button @click="moveAction('D')" class="arrow-button arrow-down">▲</button>
-        </div>
-      </div>
-    </div>
-
   </div>
 </template>
 
@@ -47,6 +64,7 @@ export default {
       messages: [],
       socket: null,
       micro_conn: false,
+      messages_for_message_box: []
     };
   },
   props: {
@@ -71,6 +89,18 @@ export default {
         return result[1].trim().split(/\s+/); //separates elements by whitespace
       }
     },
+    recordInputs() {
+      console.log("hit record");
+      this.socket.send("[record]");
+    },
+    playbackInputs(){
+      console.log("hit playback");
+      this.socket.send("[playback]");
+    },
+    stopRecordInputs(){
+      console.log("hit stop record");
+      this.socket.send("[done rec]");
+    }
   },
   mounted() {
     this.socket = new WebSocket('ws://174.129.215.96:3000');
@@ -104,7 +134,13 @@ export default {
         case "detected": {
           const time = this.getDataStream(event);
           alert(`Motion Detected! [${time}]`);
-          console.log(`Motion Detected! [${time}]`); 
+          console.log(`Motion Detected! [${time}]`);
+          var time_msg = ""
+          for (const timecomp of time){
+            if(timecomp.trim() === "") continue;
+            time_msg += timecomp.trim() + " "
+          }
+          this.messages_for_message_box.push(`Motion Detected! ${time_msg}`);
           break;
         }
         
@@ -119,12 +155,6 @@ export default {
           console.log(`LED Status: ${status}`);
           break;
         }
-
-        case "hello": {
-          const hellomsg = this.getDataStream(event);
-          console.log(`hello msg: ${hellomsg}`); 
-          break;
-        } 
 
         case "motor": {
           const motormsg = this.getDataStream(event);

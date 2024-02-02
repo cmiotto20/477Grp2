@@ -28,6 +28,7 @@ body {
   border-color:black;
   width: 1200px;
   height: 700px;
+  flex-direction: row;
   clip-path: polygon(
     var(--corner)              0%,
     calc(100% - var(--corner)) 0%,
@@ -41,6 +42,29 @@ body {
   --corner: 20px
 }
 
+#containerBody {
+  position: relative;
+  top: 50px;
+  display: flex;
+  flex-direction: row;
+}
+
+#leftHalf{
+  width: 900px;
+}
+
+#rightHalf {
+  margin-right: 30px;
+}
+
+#messageBox {
+  border: solid;
+  border-color: blue;
+  height: 100%;
+  width: 300px;
+  background: black;
+}
+
 .innerBtnGroup{
   display: flex;
   flex-direction: column;
@@ -48,23 +72,23 @@ body {
 
 .outerBtnGroup {
   position: relative;
-  top: 30px;
-  left: 37.5%;
+  top: 0px;
+  left: 20%;
   display: flex;
   flex-direction: row;
 }
 
 .joypad-container {
   position: relative;
-  top: 12%;
+  top: 10%;
   display: flex;
   flex-direction: column;
   align-items: center;
   background: rgb(15,15,15,.9);
-  left: 22.5%;
+  left: 21%;
   padding-top: 20px;
   padding-bottom: 20px;
-  width: 600px;
+  width: 500px;
   height: 225px;
   clip-path: polygon(
     var(--corner)              0%,
@@ -173,11 +197,11 @@ body {
   padding: 10px 20px;
   margin: 5px;
   border: none;
-  cursor: pointer;
   font-size: 16px;
   border-radius: 10px;
   width: 140px;
   height: 140px;
+  color: white;
 }
 
 .connected-button.connected {
@@ -212,6 +236,6 @@ body {
 
 #controlBoxTitle {
   position: relative;
-  top: 7%;
+  top: 3%;
   font-size: 60px;
 }
