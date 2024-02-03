@@ -6,10 +6,11 @@
         <div class="outerBtnGroup">
           <div class="innerBtnGroup">
             <button @click="recordInputs()" class="btnControls">Record</button>
-            <button @click= "playbackInputs()" class="btnControls">Play Back</button>
+            <button @click= "playbackInputs()" class="btnControls">Start Playback</button>
           </div>
           <div class ="innerBtnGroup">
             <button @click="stopRecordInputs()" class="btnControls">Stop Record</button>
+            <button @click="stopPlayback()" class="btnControls">Stop Playback</button>
           </div>
           <div class="innerBtnGroup">
             <button @click="toggleLight()" class="btnControls">Toggle light</button>
@@ -100,11 +101,15 @@ export default {
     stopRecordInputs(){
       console.log("hit stop record");
       this.socket.send("[done rec]");
+    },
+    stopPlayback(){
+      console.log("stop playback");
+      this.socket.send("[stp play]");
     }
   },
   mounted() {
-    this.socket = new WebSocket('ws://174.129.215.96:3000');
-    //this.socket = new WebSocket('ws://localhost:3000');
+    //this.socket = new WebSocket('ws://174.129.215.96:3000');
+    this.socket = new WebSocket('ws://localhost:3000');
 
     //wait for socket connection to be established
     this.socket.onopen = () => {
@@ -165,6 +170,12 @@ export default {
         case "micro_conn": {
           this.micro_conn = parseInt(this.getDataStream(event)) == 1 ? true : false; 
           console.log(`micro_conn received: ${this.micro_conn}`);
+          break;
+        }
+
+        case "p/r err": {
+          alert("Cannot playback and record simultaneously! Press stop on running process");
+          console.log("playback/recording error");
           break;
         }
 
