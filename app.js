@@ -13,6 +13,7 @@ import {clearRecord, recordAction, readRecord} from './recordFunctions.mjs'
 const clients = [];
 var micro_conn = null;
 var recording = false;
+var playback = false;
 
 function broadcastMsg(msg){
   for (const client of clients){
@@ -211,58 +212,94 @@ wss.on('connection', (ws) => {
       }
 
       case "record":
-        clearRecord();
-        recording = true;
         console.log("received record command");
+        clearRecord();
+        //cannot record and playback simultaneously
+        if(playback){
+          broadcastMsg("[p/r err]"); 
+          break;
+        }
+        recording = true;
         break;
 
-     case "playback":
+      case "playback":
         console.log("received playback command");
+        // cannot record and playback simultaneously
+        if (recording) {
+          broadcastMsg("[p/r err]");
+          break;
+        }
 
-        readRecord((err, record_data) => {
-          if (err) {
-            console.error(err);
-          } else {
-            console.log(record_data);
+        playback = true;
 
-            const playbackAsync = async () => {
-              let prev_time = 0;
-
-              for (let i = 0; i < record_data.length; i++) {
-                const dir = record_data[i].direction;
-                const time = record_data[i].time;
-
-                console.log(`playback: ${dir}`);
-                //creates asynchronous promise that we use to block
-                await new Promise(resolve => { 
-                  setTimeout(() => {
-                    increaseRow(2, dir, (err, motorDirectionSpeed) => {
-                      if (err) {
-                        console.error(`Error: ${err}`);
-                      } else {
-                        console.log(`Result: ${motorDirectionSpeed}`);
-                        ws.send(`[motor]: ${motorDirectionSpeed}`);
-                      }
-                      resolve(); //signals delay completion 
-                    });
-                  }, time - prev_time); //delay time
-                });
-
-                // Set prev_time to the current time value for next iteration
-                prev_time = time;
-              }
-              console.log("playback comlete");
-            };
-
-            playbackAsync(); //recursive call for next element
+        const performPlayback = () => {
+          if (!playback) {
+            // Break out of the recursion if playback is false
+            console.log("playback aborted");
+            return;
           }
-        });
+
+          readRecord((err, record_data) => {
+            if (err) {
+              console.error(err);
+            } else {
+              console.log(record_data);
+
+              const playbackAsync = async () => {
+                let prev_time = 0;
+
+                for (let i = 0; i < record_data.length; i++) {
+                  if(!playback){
+                    break;
+                  }
+                  const dir = record_data[i].direction;
+                  const time = record_data[i].time;
+
+                  console.log(`playback: ${dir}`);
+                  // creates asynchronous promise that we use to block
+                  await new Promise((resolve) => {
+                    setTimeout(() => {
+                      increaseRow(2, dir, (err, motorDirectionSpeed) => {
+                        if (err) {
+                          console.error(`Error: ${err}`);
+                        } else {
+                          console.log(`Result: ${motorDirectionSpeed}`);
+                          ws.send(`[motor]: ${motorDirectionSpeed}`);
+                        }
+                        resolve(); // signals delay completion
+                      });
+                    }, time - prev_time); // delay time
+                  });
+
+                  // Set prev_time to the current time value for the next iteration
+                  prev_time = time;
+                }
+                console.log("playback complete");
+
+                if (playback) {
+                  // Call the function recursively if playback is still true
+                  performPlayback();
+                }
+              };
+
+              playbackAsync();
+            }
+          });
+        };
+
+        performPlayback();
         break;
 
       case "done rec":
         recording = false;
         console.log("received stop recording command");
         break;
+
+      case "stp play":
+        playback = false;
+        console.log("received stop playback command");
+        break;
+
 
       default: 
         console.log('Error: invalid socket read');
