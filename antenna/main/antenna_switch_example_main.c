@@ -17,6 +17,11 @@
 #include "esp_websocket_client.h"
 #include "freertos/semphr.h"
 #include "driver/gpio.h"
+#include <ctype.h>
+#include <stdio.h>
+#include "driver/i2c.h"
+#include "esp_log.h"
+#include "driver/i2c.h"
 
 // Constants
 #define GPIO_PIN GPIO_NUM_5
@@ -31,6 +36,16 @@
 
 static const char *TAG = "websocket";
 esp_websocket_client_handle_t client;
+
+uint8_t i2c_rx_data[5];
+i2c_config_t conf = {
+	.mode = I2C_MODE_MASTER,
+	.sda_io_num = 1,
+	.scl_io_num = 2,
+	.sda_pullup_en = GPIO_PULLUP_ENABLE,
+	.scl_pullup_en = GPIO_PULLUP_ENABLE,
+	.master.clk_speed = 50000,
+};
 
 static void wifi_event_handler(void *event_handler_arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
 {
@@ -75,6 +90,23 @@ void wifi_connection()
     esp_wifi_start();
     // 4- Wi-Fi Connect Phase
     esp_wifi_connect();
+}
+
+uint8_t scanSonar(void) {
+    uint8_t data_t[4];
+	data_t[0] = 224;
+    i2c_master_write_to_device(I2C_NUM_0, 0x70, data_t, 1, 1000/portTICK_PERIOD_MS);
+    vTaskDelay(50/portTICK_PERIOD_MS);
+	data_t[0] = 81;
+    i2c_master_write_to_device(I2C_NUM_0, 0x70, data_t, 1, 1000/portTICK_PERIOD_MS);
+    vTaskDelay(50/portTICK_PERIOD_MS);
+    data_t[0] = 225;
+    i2c_master_write_to_device(I2C_NUM_0, 0x70, data_t, 1, 1000/portTICK_PERIOD_MS);
+    vTaskDelay(50/portTICK_PERIOD_MS);
+	i2c_master_read_from_device(I2C_NUM_0, 0x70, i2c_rx_data, 5, 1000/portTICK_PERIOD_MS);
+	printf("%d", i2c_rx_data[1]);
+	vTaskDelay(50/portTICK_PERIOD_MS);
+    return i2c_rx_data[1];
 }
 
 // Shift out binary bits to shift registers to control LEDs
@@ -139,14 +171,22 @@ void checkToTurnOnMotorsFromWebSocket(esp_websocket_event_data_t *data) {
     const char *moveUp = "U";
     const char *moveDown = "D";
     
-    if (data->data_len == strlen(moveRight) && memcmp(data->data_ptr, moveRight, data->data_len) == 0) {
-        printf("Motors begin moving right\n");
-    } else if (data->data_len == strlen(moveLeft) && memcmp(data->data_ptr, moveLeft, data->data_len) == 0) {
-        printf("Motors begin moving left\n");
-    } else if (data->data_len == strlen(moveUp) && memcmp(data->data_ptr, moveUp, data->data_len) == 0) {
-        printf("Motors begin moving forward\n");
-    } else if (data->data_len == strlen(moveDown) && memcmp(data->data_ptr, moveDown, data->data_len) == 0) {
-        printf("Motors begin moving backwards\n");
+    if (data->data_len > 0) {
+        char direction = data->data_ptr[0];
+
+        if (direction == *moveRight || direction == *moveLeft || direction == *moveUp || direction == *moveDown) {
+            int number = 0;
+            const char *numberStr = data->data_ptr + 1; 
+
+            while (*numberStr && isdigit((unsigned char)*numberStr)) {
+                number = number * 10 + (*numberStr - '0');
+                numberStr++;
+            }
+
+            printf("Motors begin moving %c%d\n", direction, number);
+        } else {
+            printf("Invalid direction: %c\n", direction);
+        }
     }
 }
 
@@ -212,12 +252,17 @@ static void ws_client_task(void *pvParameters) {
             message = "m";
             esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
             vTaskDelay(500 / portTICK_PERIOD_MS);
+
+            scanSonar();
         }
     }
 }
 
 void app_main(void)
 {
+    i2c_param_config(I2C_NUM_0, &conf);
+    ESP_ERROR_CHECK(i2c_driver_install(I2C_NUM_0, I2C_MODE_MASTER, 0, 0, 0));
+    
     wifi_connection();
     vTaskDelay(1000 / portTICK_PERIOD_MS);
 
