@@ -6,7 +6,7 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
-import {toggleRow, getRowStatus, setRow, increaseRow} from './apiFunctions.mjs'
+import {toggleRow, getRowStatus, setRow, increaseRow, prependRow} from './apiFunctions.mjs'
 import {clearRecord, recordAction, readRecord} from './recordFunctions.mjs'
 
 //declaring global variables to track socket clients
@@ -105,7 +105,14 @@ wss.on('connection', (ws) => {
         break;
 
       case "s":
-        console.log(`Sonar sensor data: ${data}`);
+        console.log(`Received new sonar sensor data: ${data}`);
+        prependRow(3, data, (err, newSonarRow) => {
+          if (err) {
+            console.error(`Error: ${err}`);
+          } else {
+            console.log(`Result: ${newSonarRow}`);
+          }
+        }); 
         break;
 
       case "toggle light":

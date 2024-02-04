@@ -155,3 +155,39 @@ export function getRowStatus(row, callback) {
     callback(null, returnString);
   });
 }
+
+export function prependRow(row, val, callback) {
+  const filePath = './apiData.txt';
+
+  fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error(err);
+      callback(err);
+      return;
+    }
+      
+    const lines = data.split('\n');
+    let firstLine = lines[row];
+    const parts = firstLine.split('|');
+    const textAfterColon = parts[1].trim();
+        
+    let valArr = JSON.parse(textAfterColon);
+    valArr.pop();
+    valArr.unshift(null);
+    valArr[0] = val;
+    
+    lines[row] = `${parts[0]}|${valArr}`;
+    
+    const updatedContent = lines.join('\n');
+    
+    fs.writeFile(filePath, updatedContent, 'utf8', (err) => {
+      if (err) {
+        console.error(err);
+        callback(err);
+        return;
+      }
+
+      callback(null, valArr);
+    });
+  });
+}
