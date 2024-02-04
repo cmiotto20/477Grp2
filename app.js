@@ -6,7 +6,7 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
-import {toggleRow, getRowStatus, setRow, increaseRow, prependRow} from './apiFunctions.mjs'
+import {toggleRow, getRowStatus, setRow, increaseRow, prependRow, checkRowForInArrVal} from './apiFunctions.mjs'
 import {clearRecord, recordAction, readRecord} from './recordFunctions.mjs'
 
 //declaring global variables to track socket clients
@@ -114,6 +114,22 @@ wss.on('connection', (ws) => {
           }
         }); 
         break;
+
+        case "checkSonar":
+          console.log(`Received request for checking movement`);
+          checkRowForInArrVal(3, (err, movement) => {
+            if (err) {
+              console.error(`Error: ${err}`);
+            } else {
+              console.log(`Result: ${movement}`);
+              if(movement > 1) {
+                ws.send(`[sonar]: ${true}`);
+              } else {
+                ws.send(`[sonar]: ${false}`);
+              }
+            }
+          }); 
+          break;
 
       case "toggle light":
         toggleRow(0, (err, ledStatus) => {

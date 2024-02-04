@@ -118,6 +118,9 @@ export default {
 
       this.socket.send("[micro_conn]");
       console.log("Checking for micro connection msg sent");
+
+      this.socket.send("[checkSonar]");
+      console.log("Checking for sonar movement");
     };
 
     this.socket.onmessage = (event) => {
@@ -170,6 +173,13 @@ export default {
         case "micro_conn": {
           this.micro_conn = parseInt(this.getDataStream(event)) == 1 ? true : false; 
           console.log(`micro_conn received: ${this.micro_conn}`);
+          break;
+        }
+
+        case "sonar": {
+          let movement = parseInt(this.getDataStream(event)) == 1 ? true : false; 
+          console.log(`sonar received: ${movement}`);
+          this.messages_for_message_box.push(`Motion Detected!`);
           break;
         }
 
