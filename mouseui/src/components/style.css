@@ -70,6 +70,7 @@ body {
   flex-direction: column;
 }
 
+
 .outerBtnGroup {
   position: relative;
   top: 0px;
@@ -121,6 +122,10 @@ body {
   vertical-align: middle;
   background-color: transparent;
   border: none;
+}
+
+.arrow-button:active { 
+  color: white;
 }
 
 .arrow-up {
@@ -232,6 +237,10 @@ body {
   height: 95px;
   text-align: center;
   border-radius: 10px;
+}
+
+.btnControls:active {
+  background: #5AAAFF;
 }
 
 #controlBoxTitle {
