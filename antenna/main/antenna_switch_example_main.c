@@ -253,7 +253,11 @@ static void ws_client_task(void *pvParameters) {
             esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
             vTaskDelay(500 / portTICK_PERIOD_MS);
 
-            scanSonar();
+            char *sonarMsg = (char *)malloc(10 * sizeof(char));
+            uint8_t sonarData = scanSonar();
+            snprintf(sonarMsg, 10, "[s]%u", sonarData);
+            esp_websocket_client_send_text(client, sonarMsg, strlen(sonarMsg), portMAX_DELAY);
+            free(sonarMsg);
         }
     }
 }

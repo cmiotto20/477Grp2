@@ -105,6 +105,7 @@ wss.on('connection', (ws) => {
 
       case "s":
         console.log(`Sonar sensor data: ${data}`);
+        break;
 
       case "toggle light":
         toggleRow(0, (err, ledStatus) => {
