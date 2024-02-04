@@ -50,7 +50,8 @@ wss.on('connection', (ws) => {
       command = message;
     } else {
       command = result[1];
-      data = result[2]
+      const bracketIndex = message.indexOf(']');
+      data = message.substring(bracketIndex + 1);
     }
 
     console.log(`Received: ${message}`); 
