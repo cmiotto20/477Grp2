@@ -21,7 +21,7 @@ function broadcastMsg(msg){
   }
 }
 
-function processUltrasonic(datastream){
+function processSonar(datastream){
   //TODO: Process ultrasonic data stream and report movement detection
   // if alert, call movementAlert()
 }
@@ -44,11 +44,13 @@ wss.on('connection', (ws) => {
     const result = message.match(regex);
     //check if regex match
     let command;
+    let data;
     if(!result || result.length <= 1){
       // console.log("Error: could not parse [command] format");
       command = message;
     } else {
       command = result[1];
+      data = result[2]
     }
 
     console.log(`Received: ${message}`); 
@@ -100,6 +102,9 @@ wss.on('connection', (ws) => {
         //ws.send(`[hello]: Hi There`);
         movementAlert();
         break;
+
+      case "s":
+        console.log(`Sonar sensor data: ${data}`);
 
       case "toggle light":
         toggleRow(0, (err, ledStatus) => {
