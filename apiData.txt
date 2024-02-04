@@ -1,3 +1,4 @@
 ledStatus|0
 microStatus|0
 motorDirection|R1
+sonarSensorData1|[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]

@@ -6,7 +6,7 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
-import {toggleRow, getRowStatus, setRow, increaseRow} from './apiFunctions.mjs'
+import {toggleRow, getRowStatus, setRow, increaseRow, prependRow, checkRowForInArrVal} from './apiFunctions.mjs'
 import {clearRecord, recordAction, readRecord} from './recordFunctions.mjs'
 
 //declaring global variables to track socket clients
@@ -21,7 +21,7 @@ function broadcastMsg(msg){
   }
 }
 
-function processUltrasonic(datastream){
+function processSonar(datastream){
   //TODO: Process ultrasonic data stream and report movement detection
   // if alert, call movementAlert()
 }
@@ -44,11 +44,14 @@ wss.on('connection', (ws) => {
     const result = message.match(regex);
     //check if regex match
     let command;
+    let data;
     if(!result || result.length <= 1){
       // console.log("Error: could not parse [command] format");
       command = message;
     } else {
       command = result[1];
+      const bracketIndex = message.indexOf(']');
+      data = message.substring(bracketIndex + 1);
     }
 
     console.log(`Received: ${message}`); 
@@ -100,6 +103,33 @@ wss.on('connection', (ws) => {
         //ws.send(`[hello]: Hi There`);
         movementAlert();
         break;
+
+      case "s":
+        console.log(`Received new sonar sensor data: ${data}`);
+        prependRow(3, data, (err, newSonarRow) => {
+          if (err) {
+            console.error(`Error: ${err}`);
+          } else {
+            console.log(`Result: ${newSonarRow}`);
+          }
+        }); 
+        break;
+
+        case "checkSonar":
+          console.log(`Received request for checking movement`);
+          checkRowForInArrVal(3, (err, movement) => {
+            if (err) {
+              console.error(`Error: ${err}`);
+            } else {
+              console.log(`Result: ${movement}`);
+              if(movement > 1) {
+                ws.send(`[sonar]: ${true}`);
+              } else {
+                ws.send(`[sonar]: ${false}`);
+              }
+            }
+          }); 
+          break;
 
       case "toggle light":
         toggleRow(0, (err, ledStatus) => {
