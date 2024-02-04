@@ -211,7 +211,7 @@ export function checkRowForInArrVal(row, callback) {
     let newArr = []
     for(let i = 0; i < 20; i++) {
       if(valArr[i] != -1) {
-        newArr.append(valArr[i]);
+        newArr.push(valArr[i]);
       } else {
         break;
       }
