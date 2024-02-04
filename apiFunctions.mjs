@@ -176,7 +176,7 @@ export function prependRow(row, val, callback) {
     valArr.unshift(null);
     valArr[0] = val;
     
-    lines[row] = `${parts[0]}|${valArr}`;
+    lines[row] = `${parts[0]}|[${valArr}]`;
     
     const updatedContent = lines.join('\n');
     
