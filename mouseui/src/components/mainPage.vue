@@ -5,8 +5,8 @@
       <div id="leftHalf">
         <div class="outerBtnGroup">
           <div class="innerBtnGroup">
-            <button @click="recordInputs()" class="btnControls">Record</button>
-            <button @click= "playbackInputs()" class="btnControls">Start Playback</button>
+            <button @click="recordInputs()" class="btnControls" :class="{'live':recording,}">Start Record</button>
+            <button @click= "playbackInputs()" class="btnControls" :class="{'live':playback,}">Start Playback</button>
           </div>
           <div class ="innerBtnGroup">
             <button @click="stopRecordInputs()" class="btnControls">Stop Record</button>
@@ -65,7 +65,9 @@ export default {
       messages: [],
       socket: null,
       micro_conn: false,
-      messages_for_message_box: []
+      messages_for_message_box: [],
+      recording: false,
+      playback: false
     };
   },
   props: {
@@ -186,6 +188,18 @@ export default {
         case "p/r err": {
           alert("Cannot playback and record simultaneously! Press stop on running process");
           console.log("playback/recording error");
+          break;
+        }
+
+        case "recording status": {
+          console.log("received recording status");
+          this.recording = parseInt(this.getDataStream(event)) == 1 ? true : false;
+          break;
+        }
+
+        case "playback status": {
+          console.log("received playback status");
+          this.playback = parseInt(this.getDataStream(event)) == 1 ? true : false;
           break;
         }
 
