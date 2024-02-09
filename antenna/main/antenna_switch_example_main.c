@@ -19,33 +19,32 @@
 #include "driver/gpio.h"
 #include <ctype.h>
 #include <stdio.h>
-#include "driver/i2c.h"
 #include "esp_log.h"
-#include "driver/i2c.h"
+
 
 // Constants
 #define GPIO_PIN GPIO_NUM_5
 #define DATA_PIN    12
 #define CLOCK_PIN   14
 #define LATCH_PIN   4
+#define stepperDriverPin0 GPIO_NUM_10
+#define stepperDriverPin1 GPIO_NUM_11
+#define stepperDriverPin2 GPIO_NUM_9
+#define stepperDriverPin3 GPIO_NUM_13
 #define SSID "Secret2.0"
 #define PASS "dogtime!"
+
+int _step = 0;
+bool dir = true;
+
+int state = 0; // 0 is manual moving, 1 is scanning
+int sendConnectionStatusCounter = 0; // resets at 6000
 
 // Macros
 #define bitSet(value, bit) ((value) |= (1UL << (bit)))
 
 static const char *TAG = "websocket";
 esp_websocket_client_handle_t client;
-
-uint8_t i2c_rx_data[5];
-i2c_config_t conf = {
-	.mode = I2C_MODE_MASTER,
-	.sda_io_num = 1,
-	.scl_io_num = 2,
-	.sda_pullup_en = GPIO_PULLUP_ENABLE,
-	.scl_pullup_en = GPIO_PULLUP_ENABLE,
-	.master.clk_speed = 50000,
-};
 
 static void wifi_event_handler(void *event_handler_arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
 {
@@ -90,23 +89,6 @@ void wifi_connection()
     esp_wifi_start();
     // 4- Wi-Fi Connect Phase
     esp_wifi_connect();
-}
-
-uint8_t scanSonar(void) {
-    uint8_t data_t[4];
-	data_t[0] = 224;
-    i2c_master_write_to_device(I2C_NUM_0, 0x70, data_t, 1, 1000/portTICK_PERIOD_MS);
-    vTaskDelay(50/portTICK_PERIOD_MS);
-	data_t[0] = 81;
-    i2c_master_write_to_device(I2C_NUM_0, 0x70, data_t, 1, 1000/portTICK_PERIOD_MS);
-    vTaskDelay(50/portTICK_PERIOD_MS);
-    data_t[0] = 225;
-    i2c_master_write_to_device(I2C_NUM_0, 0x70, data_t, 1, 1000/portTICK_PERIOD_MS);
-    vTaskDelay(50/portTICK_PERIOD_MS);
-	i2c_master_read_from_device(I2C_NUM_0, 0x70, i2c_rx_data, 5, 1000/portTICK_PERIOD_MS);
-	printf("%d", i2c_rx_data[1]);
-	vTaskDelay(50/portTICK_PERIOD_MS);
-    return i2c_rx_data[1];
 }
 
 // Shift out binary bits to shift registers to control LEDs
@@ -236,7 +218,6 @@ static void ws_client_task(void *pvParameters) {
         }
 
     
-    int sendConnectionStatusCounter = 0;
     while (1) {
         // Send WebSocket Text Message
         const char *message = "gL";
@@ -244,34 +225,143 @@ static void ws_client_task(void *pvParameters) {
         // Wait for a while before sending the next message
         vTaskDelay(500 / portTICK_PERIOD_MS);
 
-        message = "gD";
-        esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
-        vTaskDelay(500 / portTICK_PERIOD_MS);
+        if(state == 0) {
+            message = "gD";
+            esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
+            vTaskDelay(500 / portTICK_PERIOD_MS);
+        } else if(state == 1) {
+            /*char *sonarMsg = (char *)malloc(10 * sizeof(char));
+            uint8_t sonarData = scanSonar();
+            snprintf(sonarMsg, 10, "[s]%u", sonarData);
+            printf("Sending sonar message: %s\n", sonarMsg);
+            esp_websocket_client_send_text(client, sonarMsg, strlen(sonarMsg), portMAX_DELAY);
+            free(sonarMsg);*/
+        }
 
         if(sendConnectionStatusCounter % 5 == 0) {
             message = "m";
             esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
             vTaskDelay(500 / portTICK_PERIOD_MS);
 
-            char *sonarMsg = (char *)malloc(10 * sizeof(char));
-            uint8_t sonarData = scanSonar();
-            snprintf(sonarMsg, 10, "[s]%u", sonarData);
-            printf("Sending sonar message: %s\n", sonarMsg);
-            esp_websocket_client_send_text(client, sonarMsg, strlen(sonarMsg), portMAX_DELAY);
-            free(sonarMsg);
+            if(sendConnectionStatusCounter % 60 == 0 && sendConnectionStatusCounter != 0) {
+                state = 1; // scanning mode
+                printf("state set to 1\n");
+            } else if(sendConnectionStatusCounter % 80 == 0) {
+                printf("state set to 0\n");
+                state = 0; // manual movement mode
+            }
+
+            if(sendConnectionStatusCounter == 6000) {
+                sendConnectionStatusCounter = 0;
+            }
         }
+        sendConnectionStatusCounter++;
+    }
+}
+
+void setupStepperDriverPins() {
+    gpio_config_t io_conf = {
+        .pin_bit_mask = (1ULL<<stepperDriverPin0) | (1ULL<<stepperDriverPin1) | (1ULL<<stepperDriverPin2) | (1ULL<<stepperDriverPin3),
+        .mode = GPIO_MODE_OUTPUT,
+        .intr_type = GPIO_INTR_DISABLE,
+        .pull_down_en = 0,
+        .pull_up_en = 0,
+    };
+    gpio_config(&io_conf);
+}
+
+void stepper(void *pvParameters) {
+    while (true) {
+        if(state == 1) {
+            switch (_step) {
+                case 0:
+                    gpio_set_level(stepperDriverPin0, 0);
+                    gpio_set_level(stepperDriverPin1, 0);
+                    gpio_set_level(stepperDriverPin2, 0);
+                    gpio_set_level(stepperDriverPin3, 1);
+                    break;
+                case 1:
+                    gpio_set_level(stepperDriverPin0, 0);
+                    gpio_set_level(stepperDriverPin1, 0);
+                    gpio_set_level(stepperDriverPin2, 1);
+                    gpio_set_level(stepperDriverPin3, 1);
+                    break;
+                case 2:
+                    gpio_set_level(stepperDriverPin0, 0);
+                    gpio_set_level(stepperDriverPin1, 0);
+                    gpio_set_level(stepperDriverPin2, 1);
+                    gpio_set_level(stepperDriverPin3, 0);
+                    break;
+                case 3:
+                    gpio_set_level(stepperDriverPin0, 0);
+                    gpio_set_level(stepperDriverPin1, 1);
+                    gpio_set_level(stepperDriverPin2, 1);
+                    gpio_set_level(stepperDriverPin3, 0);
+                    break;
+                case 4:
+                    gpio_set_level(stepperDriverPin0, 0);
+                    gpio_set_level(stepperDriverPin1, 1);
+                    gpio_set_level(stepperDriverPin2, 0);
+                    gpio_set_level(stepperDriverPin3, 0);
+                    break;
+                case 5:
+                    gpio_set_level(stepperDriverPin0, 1);
+                    gpio_set_level(stepperDriverPin1, 1);
+                    gpio_set_level(stepperDriverPin2, 0);
+                    gpio_set_level(stepperDriverPin3, 0);
+                    break;
+                case 6:
+                    gpio_set_level(stepperDriverPin0, 1);
+                    gpio_set_level(stepperDriverPin1, 0);
+                    gpio_set_level(stepperDriverPin2, 0);
+                    gpio_set_level(stepperDriverPin3, 0);
+                    break;
+                case 7:
+                    gpio_set_level(stepperDriverPin0, 1);
+                    gpio_set_level(stepperDriverPin1, 0);
+                    gpio_set_level(stepperDriverPin2, 0);
+                    gpio_set_level(stepperDriverPin3, 1);
+                    break;
+                default:
+                    gpio_set_level(stepperDriverPin0, 0);
+                    gpio_set_level(stepperDriverPin1, 0);
+                    gpio_set_level(stepperDriverPin2, 0);
+                    gpio_set_level(stepperDriverPin3, 0);
+                    break;
+            }
+
+            if (dir) {
+                _step++;
+            } else {
+                _step--;
+            }
+
+            if (_step > 7) {
+                _step = 0;
+            }
+
+            if (_step < 0) {
+                _step = 7;
+            }
+        } else {
+            gpio_set_level(stepperDriverPin0, 0);
+            gpio_set_level(stepperDriverPin1, 0);
+            gpio_set_level(stepperDriverPin2, 0);
+            gpio_set_level(stepperDriverPin3, 0);
+        }
+        vTaskDelay(1/portTICK_PERIOD_MS);
     }
 }
 
 void app_main(void)
-{
-    i2c_param_config(I2C_NUM_0, &conf);
-    ESP_ERROR_CHECK(i2c_driver_install(I2C_NUM_0, I2C_MODE_MASTER, 0, 0, 0));
-    
+{   
     wifi_connection();
     vTaskDelay(1000 / portTICK_PERIOD_MS);
 
     initialize_gpio();
 
     xTaskCreate(&ws_client_task, "ws_client_task", 8192, NULL, 5, NULL);
+    
+    setupStepperDriverPins();
+    xTaskCreate(&stepper, "stepper", 8192, NULL, 5, NULL);
 }
