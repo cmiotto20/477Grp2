@@ -22,7 +22,7 @@ function broadcastMsg(msg){
 }
 
 function processSonar(datastream){
-  //TODO: Process ultrasonic data stream and report movement detection
+  //TODO: Process sonar data stream and report movement detection
   // if alert, call movementAlert()
 }
 
@@ -250,6 +250,7 @@ wss.on('connection', (ws) => {
           break;
         }
         recording = true;
+        broadcastMsg("[recording status]: 1");
         break;
 
       case "playback":
@@ -261,6 +262,7 @@ wss.on('connection', (ws) => {
         }
 
         playback = true;
+        broadcastMsg("[playback status]: 1");
 
         const performPlayback = () => {
           if (!playback) {
@@ -322,11 +324,13 @@ wss.on('connection', (ws) => {
 
       case "done rec":
         recording = false;
+        broadcastMsg("[recording status]: 0");
         console.log("received stop recording command");
         break;
 
       case "stp play":
         playback = false;
+        broadcastMsg("[playback status]: 0");
         console.log("received stop playback command");
         break;
 
