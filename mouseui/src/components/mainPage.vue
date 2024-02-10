@@ -182,8 +182,12 @@ export default {
         }
 
         case "movementDetection": {
-          let movement = this.getDataStream(event); 
-          console.log(`movement detection received: ${movement}`);
+          let movement = (event.data).substring(21);
+          let processedString = movement.replace(/,/g, '","');
+          processedString = processedString.replace(/\[/g, '["');
+          processedString = processedString.replace(/\]/g, '"]');
+          let valArr = JSON.parse(processedString); 
+          console.log(`movement detection received: ${valArr}`);
           if(movement) {
             this.messages_for_message_box.push(`Motion Detected!`);
           }
