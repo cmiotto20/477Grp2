@@ -14,6 +14,7 @@ const clients = [];
 var micro_conn = null;
 var recording = false;
 var playback = false;
+let currentTime;
 
 function broadcastMsg(msg){
   for (const client of clients){
@@ -27,8 +28,8 @@ function processSonar(datastream){
 }
 
 function movementAlert(){
-  const currentDate = new Date();
-  const formatTime = currentDate.toLocaleString('en-US', {timeZone: 'America/New_York', hour12: true});
+  currentTime = new Date();
+  const formatTime = currentTime.toLocaleString('en-US', {timeZone: 'America/New_York', hour12: true});
   //TODO: add motion detection data to db file
   console.log(`Detected movement at ${formatTime}`);
   const msg = `[detected]: ${formatTime}`;
@@ -64,7 +65,7 @@ wss.on('connection', (ws) => {
         break;
 
       case "m":
-        let currentTime = new Date();
+        currentTime = new Date();
         setRow(1, currentTime, (err, microStatus) => {
           if (err) {
             console.error(`Error: ${err}`);
@@ -80,7 +81,7 @@ wss.on('connection', (ws) => {
           if (err) {
             console.error(`Error: ${err}`);
           } else {
-            const currentTime = new Date();
+            currentTime = new Date();
             const microTime = new Date(microStatus);
             const timeDifference = Math.abs(currentTime - microTime);
             console.log(`Got last micro time of ${microTime}`)
