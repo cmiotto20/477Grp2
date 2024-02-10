@@ -51,7 +51,7 @@
       </div>
       <div id="rightHalf">
         <div id="messageBox">
-          <div v-for="message in messages_for_message_box" :key="message">
+          <div class="message" v-for="message in messages_for_message_box" :key="message">
             {{ message }}
           </div>
         </div>
@@ -183,14 +183,18 @@ export default {
 
         case "movementDetection": {
           let movement = (event.data).substring(21);
+          console.log(`movement: ${movement}`)
+          movement = `[${movement}]`
           let processedString = movement.replace(/,/g, '","');
           processedString = processedString.replace(/\[/g, '["');
           processedString = processedString.replace(/\]/g, '"]');
           let valArr = JSON.parse(processedString); 
           console.log(`movement detection received: ${valArr}`);
-          if(movement) {
-            this.messages_for_message_box.push(`Motion Detected!`);
-          }
+          valArr.forEach((time) => {
+            if(time != "") {
+              this.messages_for_message_box.push(`Motion Detected at ${time}!`);
+            } 
+          });
           break;
         }
 

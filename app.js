@@ -152,9 +152,6 @@ wss.on('connection', (ws) => {
               movement = JSON.parse(processedString);
               let updatedMovement = [];
               for(let i = 0; i < movement.length; i++) {
-                if(movement[i] == -1) {
-                  break;
-                }
                 if(movement[i] != 0) {
                   updatedMovement.push(movement[i]);
                 }
