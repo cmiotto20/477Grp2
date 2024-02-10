@@ -176,7 +176,7 @@ export function prependRow(row, val, callback) {
     let valArr = JSON.parse(processedString);
     valArr.pop();
     valArr.unshift(null);
-    valArr[0] = `${val}`;
+    valArr[0] = `"${val}"`;
     
     lines[row] = `${parts[0]}|[${valArr}]`;
     
