@@ -190,7 +190,7 @@ export function prependRow(row, val, callback) {
         return;
       }
 
-      callback(null, lines[row]);
+      callback(null, valArr);
     });
   });
 }
@@ -222,7 +222,7 @@ export function checkRowForInArrVal(row, callback) {
     const smallestElement = Math.min(...newArr);
     const largestElement = Math.max(...newArr);
     const difference = largestElement - smallestElement;
-      
+    
     callback(null, difference);
   });
 }
