@@ -104,8 +104,8 @@ wss.on('connection', (ws) => {
         movementAlert();
         break;
 
-      case "s":
-        console.log(`Received new sonar sensor data: ${data}`);
+      case "d":
+        console.log(`Received new movement detection data: ${data}`);
         prependRow(3, data, (err, newSonarRow) => {
           if (err) {
             console.error(`Error: ${err}`);
@@ -115,17 +115,17 @@ wss.on('connection', (ws) => {
         }); 
         break;
 
-        case "checkSonar":
-          console.log(`Received request for checking movement`);
+        case "checkMovementDetection":
+          console.log(`Received request for checking movement detection`);
           checkRowForInArrVal(3, (err, movement) => {
             if (err) {
               console.error(`Error: ${err}`);
             } else {
               console.log(`Result: ${movement}`);
               if(movement > 1) {
-                ws.send(`[sonar]: ${true}`);
+                ws.send(`[movementDetection]: ${true}`);
               } else {
-                ws.send(`[sonar]: ${false}`);
+                ws.send(`[movementDetection]: ${false}`);
               }
             }
           }); 

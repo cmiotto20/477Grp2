@@ -10,17 +10,12 @@
 #include "lwip/err.h"
 #include "lwip/sys.h"
 #include "antenna_switch.h"
-#include <stdio.h>
-#include "esp_event.h"
-#include "nvs_flash.h"
 #include "esp_http_client.h"
 #include "esp_websocket_client.h"
 #include "freertos/semphr.h"
 #include "driver/gpio.h"
 #include <ctype.h>
 #include <stdio.h>
-#include "esp_log.h"
-
 
 // Constants
 #define GPIO_PIN GPIO_NUM_5
@@ -34,9 +29,9 @@
 #define SSID "Secret2.0"
 #define PASS "dogtime!"
 
+// Globals
 int _step = 0;
 bool dir = true;
-
 int state = 0; // 0 is manual moving, 1 is scanning
 int sendConnectionStatusCounter = 0; // resets at 6000
 
@@ -67,8 +62,7 @@ static void wifi_event_handler(void *event_handler_arg, esp_event_base_t event_b
     }
 }
 
-void wifi_connection()
-{
+void wifi_connection() {
     nvs_flash_init();
     // 1 - Wi-Fi/LwIP Init Phase
     esp_netif_init();                    // TCP/IP initiation 					s1.1
@@ -103,7 +97,7 @@ void shiftOut(uint8_t bits) {
 }
 
 // Initializes the GPIO pins needed for the shift register chain
-void initialize_gpio() {
+void initialize_gpio_for_SR() {
     gpio_config_t io_conf = {
         .pin_bit_mask = (1ULL<<DATA_PIN) | (1ULL<<CLOCK_PIN) | (1ULL<<LATCH_PIN),
         .mode = GPIO_MODE_OUTPUT,
@@ -187,7 +181,9 @@ static void on_websocket_event(void *handler_args, esp_event_base_t base, int32_
             //ESP_LOGI(TAG, "Received data: %.*s", data->data_len, (char*)data->data_ptr);
 
             checkToTurnOnLEDsFromWebSocket(data);
-            checkToTurnOnMotorsFromWebSocket(data);
+            if(state == 0) {
+                checkToTurnOnMotorsFromWebSocket(data);
+            }
             break;
         default:
             break;
@@ -230,12 +226,12 @@ static void ws_client_task(void *pvParameters) {
             esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
             vTaskDelay(500 / portTICK_PERIOD_MS);
         } else if(state == 1) {
-            /*char *sonarMsg = (char *)malloc(10 * sizeof(char));
-            uint8_t sonarData = scanSonar();
-            snprintf(sonarMsg, 10, "[s]%u", sonarData);
-            printf("Sending sonar message: %s\n", sonarMsg);
-            esp_websocket_client_send_text(client, sonarMsg, strlen(sonarMsg), portMAX_DELAY);
-            free(sonarMsg);*/
+            char *movementMsg = (char *)malloc(4 * sizeof(char));
+            bool movementDetectionStatus = 0; // temp until we get PIR sensor
+            snprintf(movementMsg, 10, "[d]%u", movementDetectionStatus);
+            printf("Sending movement message: %s\n", movementMsg);
+            esp_websocket_client_send_text(client, movementMsg, strlen(movementMsg), portMAX_DELAY);
+            free(movementMsg);
         }
 
         if(sendConnectionStatusCounter % 5 == 0) {
@@ -338,9 +334,7 @@ void stepper(void *pvParameters) {
 
             if (_step > 7) {
                 _step = 0;
-            }
-
-            if (_step < 0) {
+            } else if (_step < 0) {
                 _step = 7;
             }
         } else {
@@ -358,10 +352,9 @@ void app_main(void)
     wifi_connection();
     vTaskDelay(1000 / portTICK_PERIOD_MS);
 
-    initialize_gpio();
+    initialize_gpio_for_SR();
+    setupStepperDriverPins();
 
     xTaskCreate(&ws_client_task, "ws_client_task", 8192, NULL, 5, NULL);
-    
-    setupStepperDriverPins();
     xTaskCreate(&stepper, "stepper", 8192, NULL, 5, NULL);
 }
