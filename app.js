@@ -145,7 +145,11 @@ wss.on('connection', (ws) => {
             if (err) {
               console.error(`Error: ${err}`);
             } else {
-              console.log(`Result: ${movement}, ${typeof movement}`);
+              console.log(`Result: ${movement}`);
+              let processedString = movement.replace(/,/g, '","');
+              processedString = processedString.replace(/\[/g, '["');
+              processedString = processedString.replace(/\]/g, '"]');
+              movement = JSON.parse(processedString);
               let updatedMovement = [];
               for(let i = 0; i < movement.length; i++) {
                 if(movement[i] == -1) {
