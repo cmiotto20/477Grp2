@@ -155,7 +155,7 @@ wss.on('connection', (ws) => {
                   updatedMovement.push(movement[i]);
                 }
               }
-              ws.send(`[movementDetection]: ${movement}`);
+              ws.send(`[movementDetection]: ${updatedMovement}`);
             }
           }); 
           break;
