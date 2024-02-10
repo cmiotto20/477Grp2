@@ -148,7 +148,12 @@ wss.on('connection', (ws) => {
               console.log(`Result: ${movement}`);
               updatedMovement = [];
               for(let i = 0; i < movement.length; i++) {
-                updatedMovement.push(movement[i]);
+                if(movement[i] == -1) {
+                  break;
+                }
+                if(movement[i] != 0) {
+                  updatedMovement.push(movement[i]);
+                }
               }
               ws.send(`[movementDetection]: ${movement}`);
             }
