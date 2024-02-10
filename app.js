@@ -241,6 +241,24 @@ wss.on('connection', (ws) => {
         break;
       }
 
+      case "mv S": {
+        const startTime = new Date();
+        console.log("Received move S command");
+        setRow(2, 'S', (err) => {
+          if (err) {
+            console.error(`Error: ${err}`);
+          } else {
+            console.log(`Updated apiData.txt to be stopped`);
+          }
+        }); 
+        if(recordAction){
+          const endTime = new Date();  
+          //pass in time taken - delay from start of processing
+          recordAction('S', endTime - (endTime - startTime)); 
+        }
+        break;
+      }
+
       case "record":
         console.log("received record command");
         clearRecord();

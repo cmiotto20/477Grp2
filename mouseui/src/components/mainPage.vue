@@ -44,6 +44,9 @@
               <button @click="moveAction('D')" class="arrow-button arrow-down">▲</button>
             </div>
           </div>
+
+          <button @click="moveAction('S')" id="stopBtn">STOP</button>
+
         </div>
       </div>
       <div id="rightHalf">

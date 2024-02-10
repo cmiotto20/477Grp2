@@ -146,6 +146,7 @@ void checkToTurnOnMotorsFromWebSocket(esp_websocket_event_data_t *data) {
     const char *moveLeft = "L";
     const char *moveUp = "U";
     const char *moveDown = "D";
+    const char *stop = "S";
     
     if (data->data_len > 0) {
         char direction = data->data_ptr[0];
@@ -160,6 +161,8 @@ void checkToTurnOnMotorsFromWebSocket(esp_websocket_event_data_t *data) {
             }
 
             printf("Motors begin moving %c%d\n", direction, number);
+        } else if (direction == *stop) {
+            printf("Stop motors\n");
         } else {
             printf("Invalid direction: %c\n", direction);
         }
