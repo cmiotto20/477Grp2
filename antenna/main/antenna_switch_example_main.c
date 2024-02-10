@@ -264,9 +264,9 @@ static void ws_client_task(void *pvParameters) {
                 state = 1; // scanning mode
                 printf("state set to 1\n");
 
-                // Sending -1 to establish a new location is being scanned for apiData.txt
+                // Sending 2 to establish a new location is being scanned for apiData.txt
                 char *movementMsg = (char *)malloc(4 * sizeof(char));
-                bool movementDetectionStatus = -1;
+                bool movementDetectionStatus = 2;
                 snprintf(movementMsg, 10, "[d]%u", movementDetectionStatus);
                 printf("Sending movement message: %s\n", movementMsg);
                 esp_websocket_client_send_text(client, movementMsg, strlen(movementMsg), portMAX_DELAY);
