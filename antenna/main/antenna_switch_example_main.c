@@ -264,14 +264,6 @@ static void ws_client_task(void *pvParameters) {
             if(sendConnectionStatusCounter % 60 == 0 && sendConnectionStatusCounter != 0) {
                 state = 1; // scanning mode
                 printf("state set to 1\n");
-
-                // Sending -1 to establish a new location is being scanned for apiData.txt
-                char *movementMsg = (char *)malloc(5 * sizeof(char));
-                movementDetectionStatus = -1;
-                snprintf(movementMsg, 10, "[d]%d", movementDetectionStatus);
-                printf("Sending movement message: %s\n", movementMsg);
-                esp_websocket_client_send_text(client, movementMsg, strlen(movementMsg), portMAX_DELAY);
-                free(movementMsg);
             } else if(sendConnectionStatusCounter % 80 == 0) {
                 printf("state set to 0\n");
                 state = 0; // manual movement mode

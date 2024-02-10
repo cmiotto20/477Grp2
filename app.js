@@ -107,9 +107,10 @@ wss.on('connection', (ws) => {
 
         case "d": // Receive new movement detection data from micro
           currentTime = new Date();
+          const formatTime = currentTime.toLocaleString('en-US', {timeZone: 'America/New_York', hour12: true});
           console.log(`Received new movement detection data: ${data}`);
           if(data == 1) {
-            prependRow(4, currentTime, (err, newMovementLogRow) => {
+            prependRow(4, formatTime, (err, newMovementLogRow) => {
               if (err) {
                 console.error(`Error: ${err}`);
               } else {
@@ -128,7 +129,6 @@ wss.on('connection', (ws) => {
           break;
 
       case "c": // clear movementLogRow
-        currentTime = new Date();
         console.log(`Received request to clear movementLog`);
         setRow(4, '[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]', (err, newMovementLogRow) => {
           if (err) {
