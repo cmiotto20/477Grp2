@@ -2,3 +2,4 @@ ledStatus|0
 microStatus|0
 motorDirection|R1
 movementDetectionData|[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+movementDetectionLogs|[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]

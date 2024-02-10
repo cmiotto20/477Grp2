@@ -64,7 +64,7 @@ wss.on('connection', (ws) => {
         break;
 
       case "m":
-        const currentTime = new Date();
+        let currentTime = new Date();
         setRow(1, currentTime, (err, microStatus) => {
           if (err) {
             console.error(`Error: ${err}`);
@@ -104,13 +104,33 @@ wss.on('connection', (ws) => {
         movementAlert();
         break;
 
-      case "d":
-        console.log(`Received new movement detection data: ${data}`);
-        prependRow(3, data, (err, newSonarRow) => {
+        case "d": // Receive new movement detection data from micro
+          currentTime = new Date();
+          console.log(`Received new movement detection data: ${data}`);
+          prependRow(3, data, (err, newMovementDataRow) => {
+            if (err) {
+              console.error(`Error: ${err}`);
+            } else {
+              console.log(`Result: ${newMovementDataRow}`);
+            }
+          }); 
+          prependRow(4, currentTime, (err, newMovementLogRow) => {
+            if (err) {
+              console.error(`Error: ${err}`);
+            } else {
+              console.log(`Result: ${newMovementLogRow}`);
+            }
+          }); 
+          break;
+
+      case "c": // clear movementLogRow
+        currentTime = new Date();
+        console.log(`Received request to clear movementLog`);
+        setRow(4, [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], (err, newMovementLogRow) => {
           if (err) {
             console.error(`Error: ${err}`);
           } else {
-            console.log(`Result: ${newSonarRow}`);
+            console.log(`Result: ${newMovementLogRow}`);
           }
         }); 
         break;

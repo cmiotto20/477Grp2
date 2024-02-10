@@ -147,24 +147,27 @@ void checkToTurnOnMotorsFromWebSocket(esp_websocket_event_data_t *data) {
     const char *moveUp = "U";
     const char *moveDown = "D";
     const char *stop = "S";
+    const char *differentCommand = "[";
     
     if (data->data_len > 0) {
         char direction = data->data_ptr[0];
 
-        if (direction == *moveRight || direction == *moveLeft || direction == *moveUp || direction == *moveDown) {
-            int number = 0;
-            const char *numberStr = data->data_ptr + 1; 
+        if(direction != *differentCommand) {
+            if (direction == *moveRight || direction == *moveLeft || direction == *moveUp || direction == *moveDown) {
+                int number = 0;
+                const char *numberStr = data->data_ptr + 1; 
 
-            while (*numberStr && isdigit((unsigned char)*numberStr)) {
-                number = number * 10 + (*numberStr - '0');
-                numberStr++;
+                while (*numberStr && isdigit((unsigned char)*numberStr)) {
+                    number = number * 10 + (*numberStr - '0');
+                    numberStr++;
+                }
+
+                printf("Motors begin moving %c%d\n", direction, number);
+            } else if (direction == *stop) {
+                printf("Stop motors\n");
+            } else {
+                printf("Invalid direction: %c\n", direction);
             }
-
-            printf("Motors begin moving %c%d\n", direction, number);
-        } else if (direction == *stop) {
-            printf("Stop motors\n");
-        } else {
-            printf("Invalid direction: %c\n", direction);
         }
     }
 }
@@ -216,10 +219,13 @@ static void ws_client_task(void *pvParameters) {
             vTaskDelay(1000 / portTICK_PERIOD_MS);
         }
 
-    
+    // send request to reset movementLog in apiData.txt
+    const char *message = "c";
+    esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
+    vTaskDelay(500 / portTICK_PERIOD_MS);
     while (1) {
         // Send WebSocket Text Message
-        const char *message = "gL";
+        message = "gL";
         esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
         // Wait for a while before sending the next message
         vTaskDelay(500 / portTICK_PERIOD_MS);
@@ -245,6 +251,14 @@ static void ws_client_task(void *pvParameters) {
             if(sendConnectionStatusCounter % 60 == 0 && sendConnectionStatusCounter != 0) {
                 state = 1; // scanning mode
                 printf("state set to 1\n");
+
+                // Sending -1 to establish a new location is being scanned for apiData.txt
+                char *movementMsg = (char *)malloc(4 * sizeof(char));
+                bool movementDetectionStatus = -1;
+                snprintf(movementMsg, 10, "[d]%u", movementDetectionStatus);
+                printf("Sending movement message: %s\n", movementMsg);
+                esp_websocket_client_send_text(client, movementMsg, strlen(movementMsg), portMAX_DELAY);
+                free(movementMsg);
             } else if(sendConnectionStatusCounter % 80 == 0) {
                 printf("state set to 0\n");
                 state = 0; // manual movement mode
