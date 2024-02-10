@@ -181,7 +181,9 @@ export default {
         case "movementDetection": {
           let movement = parseInt(this.getDataStream(event)) == 1 ? true : false; 
           console.log(`movement detection received: ${movement}`);
-          this.messages_for_message_box.push(`Motion Detected!`);
+          if(movement) {
+            this.messages_for_message_box.push(`Motion Detected!`);
+          }
           break;
         }
 
