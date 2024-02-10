@@ -108,8 +108,16 @@ wss.on('connection', (ws) => {
         case "d": // Receive new movement detection data from micro
           currentTime = new Date();
           console.log(`Received new movement detection data: ${data}`);
-          if(data) {
+          if(data == 1) {
             prependRow(4, currentTime, (err, newMovementLogRow) => {
+              if (err) {
+                console.error(`Error: ${err}`);
+              } else {
+                console.log(`Result: ${newMovementLogRow}`);
+              }
+            }); 
+          } else if(data == -1) {
+            prependRow(4, -1, (err, newMovementLogRow) => {
               if (err) {
                 console.error(`Error: ${err}`);
               } else {
