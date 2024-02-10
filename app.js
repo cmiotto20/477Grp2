@@ -127,7 +127,7 @@ wss.on('connection', (ws) => {
       case "c": // clear movementLogRow
         currentTime = new Date();
         console.log(`Received request to clear movementLog`);
-        setRow(4, [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], (err, newMovementLogRow) => {
+        setRow(4, '[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]', (err, newMovementLogRow) => {
           if (err) {
             console.error(`Error: ${err}`);
           } else {

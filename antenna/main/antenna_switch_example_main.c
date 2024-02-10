@@ -16,6 +16,9 @@
 #include "driver/gpio.h"
 #include <ctype.h>
 #include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
+
 
 // Constants
 #define GPIO_PIN GPIO_NUM_5
@@ -236,7 +239,16 @@ static void ws_client_task(void *pvParameters) {
             vTaskDelay(500 / portTICK_PERIOD_MS);
         } else if(state == 1) {
             char *movementMsg = (char *)malloc(4 * sizeof(char));
-            bool movementDetectionStatus = 0; // temp until we get PIR sensor
+
+            // temp until we get PIR sensor to simulate distances
+            int random_number;
+            srand(time(NULL));
+            random_number = rand() % 101;
+            bool movementDetectionStatus = 0;
+            if(random_number < 5) {
+                movementDetectionStatus = 1;
+            }
+
             snprintf(movementMsg, 10, "[d]%u", movementDetectionStatus);
             printf("Sending movement message: %s\n", movementMsg);
             esp_websocket_client_send_text(client, movementMsg, strlen(movementMsg), portMAX_DELAY);
