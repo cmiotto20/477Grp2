@@ -187,7 +187,7 @@ export function prependRow(row, val, callback) {
         return;
       }
 
-      callback(null, valArr);
+      callback(null, lines[row]);
     });
   });
 }
