@@ -155,6 +155,7 @@ wss.on('connection', (ws) => {
                   updatedMovement.push(movement[i]);
                 }
               }
+              console.log(`Updated movement: ${updatedMovement}`)
               ws.send(`[movementDetection]: ${updatedMovement}`);
             }
           }); 
