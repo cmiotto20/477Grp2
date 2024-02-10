@@ -146,7 +146,7 @@ wss.on('connection', (ws) => {
               console.error(`Error: ${err}`);
             } else {
               console.log(`Result: ${movement}`);
-              updatedMovement = [];
+              let updatedMovement = [];
               for(let i = 0; i < movement.length; i++) {
                 if(movement[i] == -1) {
                   break;
