@@ -172,6 +172,8 @@ export function prependRow(row, val, callback) {
     const textAfterColon = parts[1].trim();
     
     let processedString = textAfterColon.replace(/,/g, '","');
+    processedString = textAfterColon.replace(/\[/g, '["');
+    processedString = textAfterColon.replace(/\]/g, '"]');
     let valArr = JSON.parse(processedString);
     valArr.pop();
     valArr.unshift(null);
