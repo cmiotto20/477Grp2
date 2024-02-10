@@ -108,20 +108,15 @@ wss.on('connection', (ws) => {
         case "d": // Receive new movement detection data from micro
           currentTime = new Date();
           console.log(`Received new movement detection data: ${data}`);
-          prependRow(3, data, (err, newMovementDataRow) => {
-            if (err) {
-              console.error(`Error: ${err}`);
-            } else {
-              console.log(`Result: ${newMovementDataRow}`);
-            }
-          }); 
-          prependRow(4, currentTime, (err, newMovementLogRow) => {
-            if (err) {
-              console.error(`Error: ${err}`);
-            } else {
-              console.log(`Result: ${newMovementLogRow}`);
-            }
-          }); 
+          if(data) {
+            prependRow(4, currentTime, (err, newMovementLogRow) => {
+              if (err) {
+                console.error(`Error: ${err}`);
+              } else {
+                console.log(`Result: ${newMovementLogRow}`);
+              }
+            }); 
+          }
           break;
 
       case "c": // clear movementLogRow
@@ -138,16 +133,12 @@ wss.on('connection', (ws) => {
 
         case "checkMovementDetection":
           console.log(`Received request for checking movement detection`);
-          checkRowForInArrVal(3, (err, movement) => {
+          getRowStatus(4, (err, movement) => {
             if (err) {
               console.error(`Error: ${err}`);
             } else {
               console.log(`Result: ${movement}`);
-              if(movement > 1) {
-                ws.send(`[movementDetection]: ${true}`);
-              } else {
-                ws.send(`[movementDetection]: ${false}`);
-              }
+              ws.send(`[movementDetection]: ${movement}`);
             }
           }); 
           break;
