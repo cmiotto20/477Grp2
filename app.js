@@ -116,7 +116,7 @@ wss.on('connection', (ws) => {
                 console.log(`Result: ${newMovementLogRow}`);
               }
             }); 
-          } else if(data == 2) {
+          } else if(data == -1) {
             prependRow(4, -1, (err, newMovementLogRow) => {
               if (err) {
                 console.error(`Error: ${err}`);

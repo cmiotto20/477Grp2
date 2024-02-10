@@ -233,6 +233,8 @@ static void ws_client_task(void *pvParameters) {
         // Wait for a while before sending the next message
         vTaskDelay(500 / portTICK_PERIOD_MS);
 
+        int movementDetectionStatus = 0;
+
         if(state == 0) {
             message = "gD";
             esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
@@ -244,12 +246,11 @@ static void ws_client_task(void *pvParameters) {
             int random_number;
             srand(time(NULL));
             random_number = rand() % 101;
-            bool movementDetectionStatus = 0;
             if(random_number < 5) {
                 movementDetectionStatus = 1;
             }
 
-            snprintf(movementMsg, 10, "[d]%u", movementDetectionStatus);
+            snprintf(movementMsg, 10, "[d]%d", movementDetectionStatus);
             printf("Sending movement message: %s\n", movementMsg);
             esp_websocket_client_send_text(client, movementMsg, strlen(movementMsg), portMAX_DELAY);
             free(movementMsg);
@@ -264,10 +265,10 @@ static void ws_client_task(void *pvParameters) {
                 state = 1; // scanning mode
                 printf("state set to 1\n");
 
-                // Sending 2 to establish a new location is being scanned for apiData.txt
-                char *movementMsg = (char *)malloc(4 * sizeof(char));
-                bool movementDetectionStatus = 2;
-                snprintf(movementMsg, 10, "[d]%u", movementDetectionStatus);
+                // Sending -1 to establish a new location is being scanned for apiData.txt
+                char *movementMsg = (char *)malloc(5 * sizeof(char));
+                movementDetectionStatus = -1;
+                snprintf(movementMsg, 10, "[d]%d", movementDetectionStatus);
                 printf("Sending movement message: %s\n", movementMsg);
                 esp_websocket_client_send_text(client, movementMsg, strlen(movementMsg), portMAX_DELAY);
                 free(movementMsg);
