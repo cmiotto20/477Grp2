@@ -170,11 +170,14 @@ export function prependRow(row, val, callback) {
     let firstLine = lines[row];
     const parts = firstLine.split('|');
     const textAfterColon = parts[1].trim();
-        
-    let valArr = JSON.parse(textAfterColon);
+    
+    let processedString = textAfterColon.replace(/,/g, '","');
+    processedString = processedString.replace(/\[/g, '["');
+    processedString = processedString.replace(/\]/g, '"]');
+    let valArr = JSON.parse(processedString);
     valArr.pop();
     valArr.unshift(null);
-    valArr[0] = val;
+    valArr[0] = `${val}`;
     
     lines[row] = `${parts[0]}|[${valArr}]`;
     
@@ -219,7 +222,7 @@ export function checkRowForInArrVal(row, callback) {
     const smallestElement = Math.min(...newArr);
     const largestElement = Math.max(...newArr);
     const difference = largestElement - smallestElement;
-      
+    
     callback(null, difference);
   });
 }

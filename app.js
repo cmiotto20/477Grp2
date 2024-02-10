@@ -14,6 +14,7 @@ const clients = [];
 var micro_conn = null;
 var recording = false;
 var playback = false;
+let currentTime;
 
 function broadcastMsg(msg){
   for (const client of clients){
@@ -27,8 +28,8 @@ function processSonar(datastream){
 }
 
 function movementAlert(){
-  const currentDate = new Date();
-  const formatTime = currentDate.toLocaleString('en-US', {timeZone: 'America/New_York', hour12: true});
+  currentTime = new Date();
+  const formatTime = currentTime.toLocaleString('en-US', {timeZone: 'America/New_York', hour12: true});
   //TODO: add motion detection data to db file
   console.log(`Detected movement at ${formatTime}`);
   const msg = `[detected]: ${formatTime}`;
@@ -64,7 +65,7 @@ wss.on('connection', (ws) => {
         break;
 
       case "m":
-        const currentTime = new Date();
+        currentTime = new Date();
         setRow(1, currentTime, (err, microStatus) => {
           if (err) {
             console.error(`Error: ${err}`);
@@ -80,7 +81,7 @@ wss.on('connection', (ws) => {
           if (err) {
             console.error(`Error: ${err}`);
           } else {
-            const currentTime = new Date();
+            currentTime = new Date();
             const microTime = new Date(microStatus);
             const timeDifference = Math.abs(currentTime - microTime);
             console.log(`Got last micro time of ${microTime}`)
@@ -104,29 +105,60 @@ wss.on('connection', (ws) => {
         movementAlert();
         break;
 
-      case "s":
-        console.log(`Received new sonar sensor data: ${data}`);
-        prependRow(3, data, (err, newSonarRow) => {
+        case "d": // Receive new movement detection data from micro
+          currentTime = new Date();
+          let formatTime = currentTime.toLocaleString('en-US', {timeZone: 'America/New_York', hour12: true});
+          formatTime = formatTime.replace(/,/g, ' ');
+          console.log(`Received new movement detection data: ${data}`);
+          if(data == 1) {
+            prependRow(4, formatTime, (err, newMovementLogRow) => {
+              if (err) {
+                console.error(`Error: ${err}`);
+              } else {
+                console.log(`Result: ${newMovementLogRow}`);
+              }
+            }); 
+          } else if(data == -1) {
+            prependRow(4, -1, (err, newMovementLogRow) => {
+              if (err) {
+                console.error(`Error: ${err}`);
+              } else {
+                console.log(`Result: ${newMovementLogRow}`);
+              }
+            }); 
+          }
+          break;
+
+      case "c": // clear movementLogRow
+        console.log(`Received request to clear movementLog`);
+        setRow(4, '[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]', (err, newMovementLogRow) => {
           if (err) {
             console.error(`Error: ${err}`);
           } else {
-            console.log(`Result: ${newSonarRow}`);
+            console.log(`Result: ${newMovementLogRow}`);
           }
         }); 
         break;
 
-        case "checkSonar":
-          console.log(`Received request for checking movement`);
-          checkRowForInArrVal(3, (err, movement) => {
+        case "checkMovementDetection":
+          console.log(`Received request for checking movement detection`);
+          getRowStatus(4, (err, movement) => {
             if (err) {
               console.error(`Error: ${err}`);
             } else {
               console.log(`Result: ${movement}`);
-              if(movement > 1) {
-                ws.send(`[sonar]: ${true}`);
-              } else {
-                ws.send(`[sonar]: ${false}`);
+              let processedString = movement.replace(/,/g, '","');
+              processedString = processedString.replace(/\[/g, '["');
+              processedString = processedString.replace(/\]/g, '"]');
+              movement = JSON.parse(processedString);
+              let updatedMovement = [];
+              for(let i = 0; i < movement.length; i++) {
+                if(movement[i] != 0) {
+                  updatedMovement.push(movement[i]);
+                }
               }
+              console.log(`Updated movement: ${updatedMovement}`)
+              ws.send(`[movementDetection]: ${updatedMovement}`);
             }
           }); 
           break;
@@ -237,6 +269,24 @@ wss.on('connection', (ws) => {
           const endTime = new Date();  
           //pass in time taken - delay from start of processing
           recordAction('D', endTime - (endTime - startTime)); 
+        }
+        break;
+      }
+
+      case "mv S": {
+        const startTime = new Date();
+        console.log("Received move S command");
+        setRow(2, 'S', (err) => {
+          if (err) {
+            console.error(`Error: ${err}`);
+          } else {
+            console.log(`Updated apiData.txt to be stopped`);
+          }
+        }); 
+        if(recordAction){
+          const endTime = new Date();  
+          //pass in time taken - delay from start of processing
+          recordAction('S', endTime - (endTime - startTime)); 
         }
         break;
       }

@@ -44,11 +44,14 @@
               <button @click="moveAction('D')" class="arrow-button arrow-down">▲</button>
             </div>
           </div>
+
+          <button @click="moveAction('S')" id="stopBtn">STOP</button>
+
         </div>
       </div>
       <div id="rightHalf">
         <div id="messageBox">
-          <div v-for="message in messages_for_message_box" :key="message">
+          <div class="message" v-for="message in messages_for_message_box" :key="message">
             {{ message }}
           </div>
         </div>
@@ -121,8 +124,8 @@ export default {
       this.socket.send("[micro_conn]");
       console.log("Checking for micro connection msg sent");
 
-      this.socket.send("[checkSonar]");
-      console.log("Checking for sonar movement");
+      this.socket.send("[checkMovementDetection]");
+      console.log("Checking for movement detection");
     };
 
     this.socket.onmessage = (event) => {
@@ -178,10 +181,20 @@ export default {
           break;
         }
 
-        case "sonar": {
-          let movement = parseInt(this.getDataStream(event)) == 1 ? true : false; 
-          console.log(`sonar received: ${movement}`);
-          this.messages_for_message_box.push(`Motion Detected!`);
+        case "movementDetection": {
+          let movement = (event.data).substring(21);
+          console.log(`movement: ${movement}`)
+          movement = `[${movement}]`
+          let processedString = movement.replace(/,/g, '","');
+          processedString = processedString.replace(/\[/g, '["');
+          processedString = processedString.replace(/\]/g, '"]');
+          let valArr = JSON.parse(processedString); 
+          console.log(`movement detection received: ${valArr}`);
+          valArr.forEach((time) => {
+            if(time != "") {
+              this.messages_for_message_box.push(`Motion Detected at ${time}!`);
+            } 
+          });
           break;
         }
 
