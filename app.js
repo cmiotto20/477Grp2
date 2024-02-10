@@ -108,7 +108,7 @@ wss.on('connection', (ws) => {
         case "d": // Receive new movement detection data from micro
           currentTime = new Date();
           let formatTime = currentTime.toLocaleString('en-US', {timeZone: 'America/New_York', hour12: true});
-          formatTime.replace(/,/g, ' ');
+          formatTime = formatTime.replace(/,/g, ' ');
           console.log(`Received new movement detection data: ${data}`);
           if(data == 1) {
             prependRow(4, formatTime, (err, newMovementLogRow) => {
