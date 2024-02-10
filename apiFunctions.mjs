@@ -170,8 +170,10 @@ export function prependRow(row, val, callback) {
     let firstLine = lines[row];
     const parts = firstLine.split('|');
     const textAfterColon = parts[1].trim();
-        
-    let valArr = JSON.parse(`${textAfterColon}`);
+    
+    const processedString = textAfterColon.replace(/(Sat|Sun|Mon|Tue|Wed|Thu|Fri)\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s(\d{1,2})\s(\d{4})\s(\d{2}):(\d{2}):(\d{2})\sGMT\+0000\s\(Coordinated\sUniversal\sTime\)/, '"$1 $2 $3 $4 $5:$6:$7 GMT+0000"');
+
+    let valArr = JSON.parse(processedString);
     valArr.pop();
     valArr.unshift(null);
     valArr[0] = `${val}`;
