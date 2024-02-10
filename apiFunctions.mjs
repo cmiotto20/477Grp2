@@ -169,12 +169,13 @@ export function prependRow(row, val, callback) {
     const lines = data.split('\n');
     let firstLine = lines[row];
     const parts = firstLine.split('|');
-    const textAfterColon = parts[1];
+    const textAfterColon = parts[1].trim();
     
-    let valArr = JSON.parse(textAfterColon);
+    let processedString = textAfterColon.replace(/,/g, '","');
+    let valArr = JSON.parse(processedString);
     valArr.pop();
     valArr.unshift(null);
-    valArr[0] = `"${val}"`;
+    valArr[0] = `${val}`;
     
     lines[row] = `${parts[0]}|[${valArr}]`;
     
