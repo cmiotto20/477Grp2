@@ -13,5 +13,8 @@
     ],
     "idf.port": "/dev/cu.wlan-debug",
     "idf.pythonBinPath": "/Users/bdkirkendall/.espressif/python_env/idf5.3_py3.9_env/bin/python",
-    "idf.toolsPath": "/Users/bdkirkendall/.espressif"
+    "idf.toolsPath": "/Users/bdkirkendall/.espressif",
+    "files.associations": {
+        "bdc_motor.h": "c"
+    }
 }
