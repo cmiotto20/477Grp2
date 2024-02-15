@@ -5,4 +5,5 @@
   (lib (name "LM3940IMP-3.3_NOPB")(type "KiCad")(uri "C:/Users/arhal/Documents/College_Year_3/ECE_477/477Grp2/pcb/downloaded_components/LM3940IMP-3.3_NOPB.kicad_sym")(options "")(descr ""))
   (lib (name "SN74HC595NSR")(type "KiCad")(uri "C:/Users/arhal/Documents/College_Year_3/ECE_477/477Grp2/pcb/downloaded_components/SN74HC595NSR.kicad_sym")(options "")(descr ""))
   (lib (name "ULN2003APG")(type "KiCad")(uri "C:/Users/arhal/Documents/College_Year_3/ECE_477/477Grp2/pcb/downloaded_components/ULN2003APG.kicad_sym")(options "")(descr ""))
+  (lib (name "LM62460RPHR")(type "KiCad")(uri "C:/Users/arhal/Documents/College_Year_3/ECE_477/477Grp2/pcb/downloaded_components/LM62460RPHR.kicad_sym")(options "")(descr ""))
 )
