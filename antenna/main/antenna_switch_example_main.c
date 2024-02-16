@@ -380,3 +380,30 @@ void app_main(void)
     xTaskCreate(&ws_client_task, "ws_client_task", 8192, NULL, 5, NULL);
     xTaskCreate(&stepper, "stepper", 8192, NULL, 5, NULL);
 }
+
+/*#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "driver/gpio.h"
+
+#define GPIO_INPUT_IO_0     2
+
+void app_main(void) {
+    gpio_config_t io_conf;
+
+    // Configure the GPIO pin as input
+    io_conf.intr_type = GPIO_INTR_DISABLE; // Disable interrupts
+    io_conf.mode = GPIO_MODE_INPUT;
+    io_conf.pin_bit_mask = (1ULL << GPIO_INPUT_IO_0);
+    io_conf.pull_up_en = GPIO_PULLUP_DISABLE;
+    io_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;
+    gpio_config(&io_conf);
+
+    while (1) {
+        // Read GPIO state
+        int level = gpio_get_level(GPIO_INPUT_IO_0);
+        printf("GPIO[%d] state: %d\n", GPIO_INPUT_IO_0, level);
+
+        vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1 second
+    }
+}
+*/
