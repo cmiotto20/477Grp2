@@ -126,6 +126,9 @@ export default {
 
       this.socket.send("[checkMovementDetection]");
       console.log("Checking for movement detection");
+
+      this.socket.send("[state]");
+      console.log("Checking micro state");
     };
 
     this.socket.onmessage = (event) => {
@@ -178,6 +181,12 @@ export default {
         case "micro_conn": {
           this.micro_conn = parseInt(this.getDataStream(event)) == 1 ? true : false; 
           console.log(`micro_conn received: ${this.micro_conn}`);
+          break;
+        }
+
+        case "state": {
+          this.micro_state = parseInt(this.getDataStream(event)) == 1 ? true : false; 
+          console.log(`micro_state received: ${this.micro_state}`);
           break;
         }
 
