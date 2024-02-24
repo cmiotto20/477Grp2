@@ -19,6 +19,7 @@
 
           <!-- Microcontroller connection button -->
           <button class="connected-button" :class="{ 'connected': micro_conn, 'not-connected': !micro_conn }"> Microcontroller Connection</button>
+          <button id="state_container" :class="{ 'scanning': micro_state, 'manual': !micro_state }"> {{ state_message }} </button>
         </div>
 
         <!-- Joypad layout for arrow buttons -->
@@ -70,7 +71,9 @@ export default {
       micro_conn: false,
       messages_for_message_box: [],
       recording: false,
-      playback: false
+      playback: false,
+      micro_state: 0,
+      state_message: "Manual Movement"
     };
   },
   props: {
@@ -185,8 +188,20 @@ export default {
         }
 
         case "state": {
-          this.micro_state = parseInt(this.getDataStream(event)) == 1 ? true : false; 
+          this.micro_state = parseInt(this.getDataStream(event)[0]); 
           console.log(`micro_state received: ${this.micro_state}`);
+          switch(this.micro_state) {
+            case 0:
+              this.state_message = "Manual Movement";
+              break;
+            case 1:
+              this.state_message = "Scanning";
+              break;
+            case 2:
+              this.state_message = "Playback";
+              break;
+          }
+
           break;
         }
 

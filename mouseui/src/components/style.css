@@ -203,27 +203,52 @@ body {
 
 .connected-button {
   position: relative;
-  top: 50px;
+  top: 21px;
   padding: 10px 20px;
   margin: 5px;
   border: none;
   font-size: 16px;
   border-radius: 10px;
   width: 140px;
-  height: 140px;
+  height: 100px;
   color: white;
 }
 
 .connected-button.connected {
-  background-color: green;
+  background-color: rgb(40,180,60);
   color: white;
-  box-shadow: 0px 0px 15px 10px green;
+  box-shadow: 0px 0px 15px 4px green;
 }
 
 .connected-button.not-connected {
   background-color: rgb(255,80,60, .85);
   color: white;
-  box-shadow: 0px 0px 20px 5px red;
+  box-shadow: 0px 0px 15px 4px red;
+}
+
+#state_container {
+  border: none;
+  position: relative;
+  top: 140px;
+  right: 145px;
+  border: none;
+  border-radius: 10px;
+  width: 140px;
+  height: 80px;
+  padding: 10px 20px;
+  color: white;
+}
+
+#state_container.manual {
+  background-color: rgb(30,70,255, .85);
+  box-shadow: 0px 0px 15px 4px blue;
+  font-size: 16px;
+}
+
+#state_container.scanning {
+  background-color: rgb(255,80,60, .85);
+  box-shadow: 0px 0px 15px 4px red;
+  font-size: 16px;
 }
 
 .btnControls {
