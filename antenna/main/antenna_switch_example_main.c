@@ -18,13 +18,14 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
-
+#include "rom/ets_sys.h"
 
 // Constants
 #define GPIO_PIN GPIO_NUM_5
 #define DATA_PIN    12
 #define CLOCK_PIN   14
 #define LATCH_PIN   4
+#define GPIO_INPUT_IO_0   2
 #define stepperDriverPin0 GPIO_NUM_10
 #define stepperDriverPin1 GPIO_NUM_11
 #define stepperDriverPin2 GPIO_NUM_9
@@ -37,6 +38,7 @@ int _step = 0;
 bool dir = true;
 int state = 0; // 0 is manual moving, 1 is scanning
 int sendConnectionStatusCounter = 0; // resets at 6000
+int motionDetected = 0;
 
 // Macros
 #define bitSet(value, bit) ((value) |= (1UL << (bit)))
@@ -109,6 +111,32 @@ void initialize_gpio_for_SR() {
         .pull_up_en = 0,
     };
     gpio_config(&io_conf);
+}
+
+void IRAM_ATTR gpio_isr_handler(void* arg) {
+    uint32_t gpio_num = (uint32_t) arg;
+    int level = gpio_get_level(gpio_num);
+    motionDetected = !motionDetected;
+    ets_printf("GPIO[%ld] state: %d\n", gpio_num, level);
+}
+
+
+void initialize_gpio_for_PIR() {
+    gpio_config_t io_conf;
+
+    // Configure the GPIO pin as input
+    io_conf.intr_type = GPIO_INTR_ANYEDGE; // Interrupt on rising or falling edge
+    io_conf.mode = GPIO_MODE_INPUT;
+    io_conf.pin_bit_mask = (1ULL << GPIO_INPUT_IO_0);
+    io_conf.pull_up_en = GPIO_PULLUP_DISABLE;
+    io_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;
+    gpio_config(&io_conf);
+
+    // Install ISR service
+    gpio_install_isr_service(0);
+
+    // Hook ISR handler for specific GPIO pin
+    gpio_isr_handler_add(GPIO_INPUT_IO_0, gpio_isr_handler, (void*) GPIO_INPUT_IO_0);
 }
 
 // Given an upper and lower bound, turn on LEDs within the 24 LED array
@@ -233,24 +261,13 @@ static void ws_client_task(void *pvParameters) {
         // Wait for a while before sending the next message
         vTaskDelay(500 / portTICK_PERIOD_MS);
 
-        int movementDetectionStatus = 0;
-
         if(state == 0) {
             message = "gD";
             esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
             vTaskDelay(500 / portTICK_PERIOD_MS);
         } else if(state == 1) {
             char *movementMsg = (char *)malloc(4 * sizeof(char));
-
-            // temp until we get PIR sensor to simulate distances
-            int random_number;
-            srand(time(NULL));
-            random_number = rand() % 101;
-            if(random_number < 5) {
-                movementDetectionStatus = 1;
-            }
-
-            snprintf(movementMsg, 10, "[d]%d", movementDetectionStatus);
+            snprintf(movementMsg, 10, "[d]%d", motionDetected);
             printf("Sending movement message: %s\n", movementMsg);
             esp_websocket_client_send_text(client, movementMsg, strlen(movementMsg), portMAX_DELAY);
             free(movementMsg);
@@ -264,9 +281,15 @@ static void ws_client_task(void *pvParameters) {
             if(sendConnectionStatusCounter % 60 == 0 && sendConnectionStatusCounter != 0) {
                 state = 1; // scanning mode
                 printf("state set to 1\n");
+                char *stateMsg = (char *)malloc(5 * sizeof(char));
+                snprintf(stateMsg, 5, "[s]%d", state);
+                esp_websocket_client_send_text(client, stateMsg, strlen(stateMsg), portMAX_DELAY);
             } else if(sendConnectionStatusCounter % 80 == 0) {
                 printf("state set to 0\n");
                 state = 0; // manual movement mode
+                char *stateMsg = (char *)malloc(5 * sizeof(char));
+                snprintf(stateMsg, 5, "[s]%d", state);
+                esp_websocket_client_send_text(client, stateMsg, strlen(stateMsg), portMAX_DELAY);
             }
 
             if(sendConnectionStatusCounter == 6000) {
@@ -376,34 +399,8 @@ void app_main(void)
 
     initialize_gpio_for_SR();
     setupStepperDriverPins();
+    initialize_gpio_for_PIR();
 
     xTaskCreate(&ws_client_task, "ws_client_task", 8192, NULL, 5, NULL);
     xTaskCreate(&stepper, "stepper", 8192, NULL, 5, NULL);
 }
-
-/*#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "driver/gpio.h"
-
-#define GPIO_INPUT_IO_0     2
-
-void app_main(void) {
-    gpio_config_t io_conf;
-
-    // Configure the GPIO pin as input
-    io_conf.intr_type = GPIO_INTR_DISABLE; // Disable interrupts
-    io_conf.mode = GPIO_MODE_INPUT;
-    io_conf.pin_bit_mask = (1ULL << GPIO_INPUT_IO_0);
-    io_conf.pull_up_en = GPIO_PULLUP_DISABLE;
-    io_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;
-    gpio_config(&io_conf);
-
-    while (1) {
-        // Read GPIO state
-        int level = gpio_get_level(GPIO_INPUT_IO_0);
-        printf("GPIO[%d] state: %d\n", GPIO_INPUT_IO_0, level);
-
-        vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1 second
-    }
-}
-*/

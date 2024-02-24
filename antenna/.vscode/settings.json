@@ -6,7 +6,8 @@
     "event_groups.h": "c",
     "future": "c",
     "system_error": "c",
-    "xmemory0": "c"
+    "xmemory0": "c",
+    "freertos.h": "c"
   },
   "idf.adapterTargetName": "esp32s3",
   "idf.openOcdConfigs": [

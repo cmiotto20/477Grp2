@@ -132,28 +132,51 @@ wss.on('connection', (ws) => {
         }); 
         break;
 
-        case "checkMovementDetection":
-          console.log(`Received request for checking movement detection`);
-          getRowStatus(4, (err, movement) => {
+      case "s": // get state from micro
+          console.log("Received state:", data)
+          getRowStatus(3, (err, state) => {
             if (err) {
               console.error(`Error: ${err}`);
             } else {
-              console.log(`Result: ${movement}`);
-              let processedString = movement.replace(/,/g, '","');
-              processedString = processedString.replace(/\[/g, '["');
-              processedString = processedString.replace(/\]/g, '"]');
-              movement = JSON.parse(processedString);
-              let updatedMovement = [];
-              for(let i = 0; i < movement.length; i++) {
-                if(movement[i] != 0) {
-                  updatedMovement.push(movement[i]);
-                }
-              }
-              console.log(`Updated movement: ${updatedMovement}`)
-              ws.send(`[movementDetection]: ${updatedMovement}`);
+              console.log(`Got state: ${state}`)
+              ws.send(`[state]: ${state}`);
             }
           }); 
-          break;
+        break;
+
+        case "state": // get state for web server
+        console.log("Received request to get state:")
+        setRow(3, data, (err, state) => {
+          if (err) {
+            console.error(`Error: ${err}`);
+          } else {
+            console.log(`Result: ${state}`);
+          }
+        }); 
+      break;
+
+      case "checkMovementDetection":
+        console.log(`Received request for checking movement detection`);
+        getRowStatus(4, (err, movement) => {
+          if (err) {
+            console.error(`Error: ${err}`);
+          } else {
+            console.log(`Result: ${movement}`);
+            let processedString = movement.replace(/,/g, '","');
+            processedString = processedString.replace(/\[/g, '["');
+            processedString = processedString.replace(/\]/g, '"]');
+            movement = JSON.parse(processedString);
+            let updatedMovement = [];
+            for(let i = 0; i < movement.length; i++) {
+              if(movement[i] != 0) {
+                updatedMovement.push(movement[i]);
+              }
+            }
+            console.log(`Updated movement: ${updatedMovement}`)
+            ws.send(`[movementDetection]: ${updatedMovement}`);
+          }
+        }); 
+        break;
 
       case "toggle light":
         toggleRow(0, (err, ledStatus) => {
