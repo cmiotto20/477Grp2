@@ -132,7 +132,7 @@ wss.on('connection', (ws) => {
         }); 
         break;
 
-      case "s": // get state from micro
+      case "state": // get state for web server
           console.log("Received state:", data)
           getRowStatus(3, (err, state) => {
             if (err) {
@@ -144,8 +144,8 @@ wss.on('connection', (ws) => {
           }); 
         break;
 
-        case "state": // get state for web server
-        console.log("Received request to get state:")
+        case "s":// get state from micro
+        console.log("Received request to get state:", data);
         setRow(3, data, (err, state) => {
           if (err) {
             console.error(`Error: ${err}`);
