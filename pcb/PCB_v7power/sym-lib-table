@@ -7,5 +7,4 @@
   (lib (name "ULN2003APG")(type "KiCad")(uri "C:/Users/arhal/Documents/College_Year_3/ECE_477/477Grp2/pcb/downloaded_components/ULN2003APG.kicad_sym")(options "")(descr ""))
   (lib (name "LM62460RPHR")(type "KiCad")(uri "C:/Users/arhal/Documents/College_Year_3/ECE_477/477Grp2/pcb/downloaded_components/LM62460RPHR.kicad_sym")(options "")(descr ""))
   (lib (name "custom")(type "KiCad")(uri "C:/Users/arhal/Documents/College_Year_3/ECE_477/477Grp2/pcb/downloaded_components/custom.kicad_sym")(options "")(descr ""))
-  (lib (name "MTA_156")(type "KiCad")(uri "C:/Users/arhal/Documents/College_Year_3/ECE_477/477Grp2/pcb/downloaded_components/MTA_156.kicad_sym")(options "")(descr ""))
 )
