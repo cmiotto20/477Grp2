@@ -1,0 +1,13 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "Espressif")(type "KiCad")(uri "C:/Users/arhal/Documents/College_Year_3/ECE_477/477Grp2/pcb/downloaded_components/Espressif.pretty")(options "")(descr ""))
+  (lib (name "LM3940IMP-3.3_NOPB")(type "KiCad")(uri "C:/Users/arhal/Documents/College_Year_3/ECE_477/477Grp2/pcb/downloaded_components/LM3940IMP-3.3_NOPB.pretty")(options "")(descr ""))
+  (lib (name "SN74HC595NSR")(type "KiCad")(uri "C:/Users/arhal/Documents/College_Year_3/ECE_477/477Grp2/pcb/downloaded_components/SN74HC595NSR.pretty")(options "")(descr ""))
+  (lib (name "TPS51385RJNR")(type "KiCad")(uri "C:/Users/arhal/Documents/College_Year_3/ECE_477/477Grp2/pcb/downloaded_components/TPS51385RJNR.pretty")(options "")(descr ""))
+  (lib (name "ULN2003APG")(type "KiCad")(uri "C:/Users/arhal/Documents/College_Year_3/ECE_477/477Grp2/pcb/downloaded_components/ULN2003APG.pretty")(options "")(descr ""))
+  (lib (name "LM62460RPHR")(type "KiCad")(uri "C:/Users/arhal/Documents/College_Year_3/ECE_477/477Grp2/pcb/downloaded_components/LM62460RPHR.pretty")(options "")(descr ""))
+  (lib (name "SPM6530T-1R0M120")(type "KiCad")(uri "C:/Users/arhal/Documents/College_Year_3/ECE_477/477Grp2/pcb/downloaded_components/B5B-XH-A_LF__SN_/SPM6530T-1R0M120.pretty")(options "")(descr ""))
+  (lib (name "LTC2944IDD_PBF")(type "KiCad")(uri "C:/Users/arhal/Documents/College_Year_3/ECE_477/477Grp2/pcb/downloaded_components/LTC2944IDD_PBF")(options "")(descr ""))
+  (lib (name "L8050QLT1G")(type "KiCad")(uri "C:/Users/arhal/Documents/College_Year_3/ECE_477/477Grp2/pcb/downloaded_components/L8050QLT1G.pretty")(options "")(descr ""))
+  (lib (name "MTA_156")(type "KiCad")(uri "C:/Users/arhal/Documents/College_Year_3/ECE_477/477Grp2/pcb/downloaded_components/MTA_156.pretty")(options "")(descr ""))
+)
