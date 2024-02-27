@@ -36,12 +36,12 @@ $<TARGET_FILE:__idf_esp_driver_i2s>
 $<TARGET_FILE:__idf_sdmmc>
 $<TARGET_FILE:__idf_esp_driver_sdmmc>
 $<TARGET_FILE:__idf_esp_driver_sdspi>
-$<TARGET_FILE:__idf_esp_driver_sdio>
-$<TARGET_FILE:__idf_esp_driver_dac>
 $<TARGET_FILE:__idf_esp_driver_rmt>
+$<TARGET_FILE:__idf_esp_driver_tsens>
 $<TARGET_FILE:__idf_esp_driver_sdm>
 $<TARGET_FILE:__idf_esp_driver_i2c>
 $<TARGET_FILE:__idf_esp_driver_ledc>
+$<TARGET_FILE:__idf_esp_driver_usb_serial_jtag>
 $<TARGET_FILE:__idf_driver>
 $<TARGET_FILE:__idf_esp_phy>
 $<TARGET_FILE:__idf_vfs>
@@ -76,6 +76,8 @@ $<TARGET_FILE:__idf_mqtt>
 $<TARGET_FILE:__idf_nvs_sec_provider>
 $<TARGET_FILE:__idf_perfmon>
 $<TARGET_FILE:__idf_spiffs>
+$<TARGET_FILE:__idf_touch_element>
+$<TARGET_FILE:__idf_usb>
 $<TARGET_FILE:__idf_wifi_provisioning>
 $<TARGET_FILE:__idf_espressif__bdc_motor>
 $<TARGET_FILE:__idf_espressif__pid_ctrl>

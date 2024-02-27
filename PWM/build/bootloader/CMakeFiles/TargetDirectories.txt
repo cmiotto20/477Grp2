@@ -12,6 +12,9 @@
 /Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/bootloader/CMakeFiles/size.dir
 /Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/bootloader/CMakeFiles/size-files.dir
 /Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/bootloader/CMakeFiles/size-components.dir
+/Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/bootloader/CMakeFiles/dfu.dir
+/Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/bootloader/CMakeFiles/dfu-list.dir
+/Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/bootloader/CMakeFiles/dfu-flash.dir
 /Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/bootloader/CMakeFiles/edit_cache.dir
 /Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/bootloader/CMakeFiles/rebuild_cache.dir
 /Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/bootloader/esp-idf/CMakeFiles/edit_cache.dir
@@ -57,8 +60,8 @@
 /Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/bootloader/esp-idf/esp_hw_support/CMakeFiles/__idf_esp_hw_support.dir
 /Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/bootloader/esp-idf/esp_hw_support/CMakeFiles/edit_cache.dir
 /Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/bootloader/esp-idf/esp_hw_support/CMakeFiles/rebuild_cache.dir
-/Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/bootloader/esp-idf/esp_hw_support/port/esp32/CMakeFiles/edit_cache.dir
-/Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/bootloader/esp-idf/esp_hw_support/port/esp32/CMakeFiles/rebuild_cache.dir
+/Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/bootloader/esp-idf/esp_hw_support/port/esp32s3/CMakeFiles/edit_cache.dir
+/Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/bootloader/esp-idf/esp_hw_support/port/esp32s3/CMakeFiles/rebuild_cache.dir
 /Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/bootloader/esp-idf/esp_common/CMakeFiles/__idf_esp_common.dir
 /Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/bootloader/esp-idf/esp_common/CMakeFiles/edit_cache.dir
 /Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/bootloader/esp-idf/esp_common/CMakeFiles/rebuild_cache.dir

@@ -36,12 +36,12 @@
 /Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/esp-idf/sdmmc/libsdmmc.a
 /Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/esp-idf/esp_driver_sdmmc/libesp_driver_sdmmc.a
 /Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/esp-idf/esp_driver_sdspi/libesp_driver_sdspi.a
-/Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/esp-idf/esp_driver_sdio/libesp_driver_sdio.a
-/Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/esp-idf/esp_driver_dac/libesp_driver_dac.a
 /Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/esp-idf/esp_driver_rmt/libesp_driver_rmt.a
+/Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/esp-idf/esp_driver_tsens/libesp_driver_tsens.a
 /Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/esp-idf/esp_driver_sdm/libesp_driver_sdm.a
 /Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/esp-idf/esp_driver_i2c/libesp_driver_i2c.a
 /Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/esp-idf/esp_driver_ledc/libesp_driver_ledc.a
+/Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/esp-idf/esp_driver_usb_serial_jtag/libesp_driver_usb_serial_jtag.a
 /Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/esp-idf/driver/libdriver.a
 /Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/esp-idf/esp_phy/libesp_phy.a
 /Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/esp-idf/vfs/libvfs.a
@@ -76,6 +76,8 @@
 /Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/esp-idf/nvs_sec_provider/libnvs_sec_provider.a
 /Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/esp-idf/perfmon/libperfmon.a
 /Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/esp-idf/spiffs/libspiffs.a
+/Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/esp-idf/touch_element/libtouch_element.a
+/Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/esp-idf/usb/libusb.a
 /Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/esp-idf/wifi_provisioning/libwifi_provisioning.a
 /Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/esp-idf/espressif__bdc_motor/libespressif__bdc_motor.a
 /Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build/esp-idf/espressif__pid_ctrl/libespressif__pid_ctrl.a

@@ -14,6 +14,8 @@
 #include "driver/pulse_cnt.h"
 #include "bdc_motor.h"
 #include "pid_ctrl.h"
+#include "driver/gpio.h"
+#include "driver/mcpwm.h"
 
 static const char *TAG = "example";
 
@@ -23,61 +25,92 @@ static const char *TAG = "example";
 #define BDC_MCPWM_TIMER_RESOLUTION_HZ 10000000 // 10MHz, 1 tick = 0.1us
 #define BDC_MCPWM_FREQ_HZ             25000    // 25KHz PWM
 #define BDC_MCPWM_DUTY_TICK_MAX       (BDC_MCPWM_TIMER_RESOLUTION_HZ / BDC_MCPWM_FREQ_HZ) // maximum value we can set for the duty cycle, in ticks
-#define BDC_MCPWM_GPIO_A              7
-#define BDC_MCPWM_GPIO_B              15
 
-#define BDC_ENCODER_GPIO_A            36
-#define BDC_ENCODER_GPIO_B            35
-#define BDC_ENCODER_PCNT_HIGH_LIMIT   1000
-#define BDC_ENCODER_PCNT_LOW_LIMIT    -1000
+#define BDC_MCPWM_STBY                3
+//motor driver 1
+#define BDC_MCPWM_MD1                 1
+#define BDC_MCPWM_MD1_1               5
+#define BDC_MCPWM_MD1_2               6
 
-#define BDC_PID_LOOP_PERIOD_MS        10   // calculate the motor speed every 10ms
-#define BDC_PID_EXPECT_SPEED          400  // expected motor speed, in the pulses counted by the rotary encoder
+//motor driver 2
+#define BDC_MCPWM_MD2                 2 
+#define BDC_MCPWM_MD2_1               7
+#define BDC_MCPWM_MD2_2               8
 
+void motor_init(){
+    gpio_config_t io_conf = {
+        .mode = GPIO_MODE_OUTPUT,
+        .pull_down_en = 0,
+        .pull_up_en = 0, 
+        .intr_type = GPIO_INTR_DISABLE,
+        .pin_bit_mask = (
+                (1ULL<<BDC_MCPWM_MD1) |
+                (1ULL<<BDC_MCPWM_MD1_1) | 
+                (1ULL<<BDC_MCPWM_MD1_2) | 
+                (1ULL<<BDC_MCPWM_MD2)  |
+                (1ULL<<BDC_MCPWM_MD2_1) | 
+                (1ULL<<BDC_MCPWM_MD2_2) 
+            ),
+    };
+    gpio_config(&io_conf);
+
+    gpio_set_level(BDC_MCPWM_STBY, 0);
+
+    mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0A, BDC_MCPWM_MD1);
+    mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM1A, BDC_MCPWM_MD2);
+
+    mcpwm_config_t pwm_config = {
+        .frequency = BDC_MCPWM_FREQ_HZ,
+        .cmpr_a = 50,
+        .cmpr_b = 50,
+        .counter_mode = MCPWM_UP_COUNTER,
+        .duty_mode = MCPWM_DUTY_MODE_0,
+    };
+
+
+    mcpwm_init(MCPWM_UNIT_0, MCPWM_TIMER_0, &pwm_config);
+    mcpwm_init(MCPWM_UNIT_0, MCPWM_TIMER_1, &pwm_config);
+}
+
+void set_left_motor_speed(int speed){
+    mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_GEN_A, speed);
+}
+
+void set_right_motor_speed(int speed){
+    mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_1, MCPWM_GEN_A, speed);
+}
+
+void move_forward(){
+    // Set Ain1 to high 
+    gpio_set_level(BDC_MCPWM_MD1_1, 0);
+    gpio_set_level(BDC_MCPWM_MD2_1, 0);
+    // Set Ain2 to low 
+    gpio_set_level(BDC_MCPWM_MD1_2, 1); 
+    gpio_set_level(BDC_MCPWM_MD2_2, 1);
+}
+
+
+void move_backward(){
+    // Set Ain1 to low 
+    gpio_set_level(BDC_MCPWM_MD1_1, 1);
+    gpio_set_level(BDC_MCPWM_MD2_1, 1);
+    // Set Ain2 to high 
+    gpio_set_level(BDC_MCPWM_MD1_2, 0); 
+    gpio_set_level(BDC_MCPWM_MD2_2, 0);
+}
 
 void app_main(void)
 {
-
-    ESP_LOGI(TAG, "Create First DC motor");
-    bdc_motor_config_t motor_config_left = {
-        .pwm_freq_hz = BDC_MCPWM_FREQ_HZ,
-        .pwma_gpio_num = BDC_MCPWM_GPIO_A,
-        .pwmb_gpio_num = -1, //unused
-    };
-    bdc_motor_mcpwm_config_t mcpwm_config_left = {
-        .group_id = 0,
-        .resolution_hz = BDC_MCPWM_TIMER_RESOLUTION_HZ,
-    };
-    bdc_motor_handle_t motor_left = NULL;
-    ESP_ERROR_CHECK(bdc_motor_new_mcpwm_device(&motor_config_left, &mcpwm_config_left, &motor_left));
-    
-    ESP_LOGI(TAG, "Create Second DC motor");
-    bdc_motor_config_t motor_config_right = {
-        .pwm_freq_hz = BDC_MCPWM_FREQ_HZ,
-        .pwma_gpio_num = BDC_MCPWM_GPIO_B,
-        .pwmb_gpio_num = -1, //unused
-    };
-    bdc_motor_mcpwm_config_t mcpwm_config_right = {
-        .group_id = 0,
-        .resolution_hz = BDC_MCPWM_TIMER_RESOLUTION_HZ,
-    };
-    bdc_motor_handle_t motor_right = NULL;
-    ESP_ERROR_CHECK(bdc_motor_new_mcpwm_device(&motor_config_right, &mcpwm_config_right, &motor_right));
-
-    ESP_LOGI(TAG, "Enable motors");
-    ESP_ERROR_CHECK(bdc_motor_enable(motor_left));
-    ESP_ERROR_CHECK(bdc_motor_enable(motor_right));
-    ESP_LOGI(TAG, "Forward motor");
-    ESP_ERROR_CHECK(bdc_motor_forward(motor_left));
-    ESP_ERROR_CHECK(bdc_motor_forward(motor_right));
-
-    //speed value proportional to pwm duty cycle
-    ESP_ERROR_CHECK(bdc_motor_set_speed(motor_left, 50));
-    ESP_ERROR_CHECK(bdc_motor_set_speed(motor_right, 100));
-
+    motor_init(); 
+    // set_left_motor_speed(25);
+    // set_right_motor_speed(75); 
+    move_forward();
+    int speed = 0;
     while (1) {
-        vTaskDelay(pdMS_TO_TICKS(100));
-        // the following logging format is according to the requirement of serial-studio frame format
+        vTaskDelay(100);
+        set_left_motor_speed(speed);
+        set_right_motor_speed(100 - speed);
+        speed = (speed + 10) % 110;
         // also see the dashboard config file `serial-studio-dashboard.json` for more information
 #if SERIAL_STUDIO_DEBUG
         printf("/*%d*/\r\n", motor_ctrl_ctx.report_pulses);
