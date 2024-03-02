@@ -454,9 +454,9 @@ void app_main(void)
     while(1) {
         move(1, 200, 0); // motor 1, half speed, right
 
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        /*vTaskDelay(1000 / portTICK_PERIOD_MS);
         stop();
-        vTaskDelay(250 / portTICK_PERIOD_MS);
+        vTaskDelay(250 / portTICK_PERIOD_MS);*/
     }
 }
 
