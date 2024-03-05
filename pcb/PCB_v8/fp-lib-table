@@ -11,4 +11,5 @@
   (lib (name "L8050QLT1G")(type "KiCad")(uri "C:/Users/arhal/Documents/College_Year_3/ECE_477/477Grp2/pcb/downloaded_components/L8050QLT1G.pretty")(options "")(descr ""))
   (lib (name "MTA_156")(type "KiCad")(uri "C:/Users/arhal/Documents/College_Year_3/ECE_477/477Grp2/pcb/downloaded_components/MTA_156.pretty")(options "")(descr ""))
   (lib (name "PTPSM86838RCGR")(type "KiCad")(uri "C:/Users/arhal/Documents/College_Year_3/ECE_477/477Grp2/pcb/downloaded_components/PTPSM86838RCGR.pretty")(options "")(descr ""))
+  (lib (name "640445-3")(type "KiCad")(uri "C:/Users/chris/OneDrive/Documents/GitHub/477Grp2/pcb/downloaded_components/640445-3")(options "")(descr ""))
 )
