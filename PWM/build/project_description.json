@@ -1,7 +1,7 @@
 {
     "version":            "1.1",
     "project_name":       "PWM",
-    "project_version":    "7349b9c7-dirty",
+    "project_version":    "a1c9ec14-dirty",
     "project_path":       "/Users/bdkirkendall/Documents/ECE477/477Grp2/PWM",
     "idf_path":           "/Users/bdkirkendall/esp/esp-idf",
     "build_dir":          "/Users/bdkirkendall/Documents/ECE477/477Grp2/PWM/build",
