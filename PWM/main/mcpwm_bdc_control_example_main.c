@@ -128,9 +128,9 @@
 #include "driver/ledc.h"
 
 #define STBY_GPIO   3
-#define PWM_GPIO_R  1
-#define AIN1_GPIO_R 5
-#define AIN2_GPIO_R 6
+#define PWM_GPIO_R  2
+#define AIN1_GPIO_R 7
+#define AIN2_GPIO_R 21
 
 #define PWM_GPIO_L  2 
 #define AIN1_GPIO_L 7
@@ -143,6 +143,15 @@ void turnRight(int speed);
 void move(int motor, int speed, int direction);
 void stop();
 void start();
+void moveRight();
+void moveLeft();
+
+typedef enum {
+    N = 0,
+    E = 1,
+    S = 2,
+    W = 3,
+} CurrDirection;
 
 typedef enum {
     LEFT = 0,
@@ -154,14 +163,23 @@ typedef enum {
     BACKWARD = 1
 } Direction;
 
+CurrDirection curr_direction = N;
 
 void app_main(void)
 {
     init_motor_right();
     init_motor_left();
+    int speed = 130;
 
     while(1) {
-        move(RIGHT, 200, FORWARD); // motor 1, half speed, right
+        move(LEFT, speed, FORWARD); // motor 1, half speed, right
+        vTaskDelay(5000 / portTICK_PERIOD_MS);
+        speed %= 255;
+        speed += 10;
+        move(LEFT, speed, BACKWARD);
+        vTaskDelay(5000 / portTICK_PERIOD_MS);
+        speed %= 255;
+        speed += 10;
 
         /*vTaskDelay(1000 / portTICK_PERIOD_MS);
         stop();
@@ -239,7 +257,7 @@ void move(int motor, int speed, int direction) {
     int inPin1 = 0;
     int inPin2 = 1;
 
-    if(direction == 1) {
+    if(direction == FORWARD) {
         inPin1 = 1;
         inPin2 = 0;
     } else {
@@ -248,7 +266,7 @@ void move(int motor, int speed, int direction) {
     }
     
     //right on motor == 1 and channel is 0
-    if(motor == 1) {
+    if(motor == RIGHT) {
         gpio_set_level(AIN1_GPIO_R, inPin1);
         gpio_set_level(AIN2_GPIO_R, inPin2);
         ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, speed);
@@ -280,3 +298,49 @@ void turnRight(int speed){
     move(LEFT, speed, FORWARD);
     move(RIGHT, speed, BACKWARD);
 }
+
+void moveRight(speed){
+    //makes turn and updates direction
+   turnRight(speed);
+   //could've done with single line mod statement but this is probably better
+   switch(curr_direction){
+    case N:
+        curr_direction = E;
+        break;
+    case E:
+        curr_direction = S;
+        break;
+    case S:
+        curr_direction = W;
+        break;
+    case W:
+        curr_direction = N;
+        break;
+    default:
+        printf("Error, in default switch state for current direction\n");
+        curr_direction = N;
+   }
+}
+
+void moveLeft(){
+    //makes turn and updates direction
+    turnLeft(speed);
+    switch(curr_direction){
+     case N:
+        curr_direction = W;
+        break;
+     case E:
+        curr_direction = N;
+        break;
+     case S: 
+        curr_direction = E;
+        break;
+     case W:
+        curr_direction = S;
+        break;
+     default:
+        printf("Error, in default switch state for current direction\n");
+        curr_direction = N;
+    }
+}
+
