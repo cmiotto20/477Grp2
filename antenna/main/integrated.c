@@ -309,6 +309,7 @@ void checkToTurnOnMotorsFromWebSocket(esp_websocket_event_data_t *data) {
 
             } else if (direction == *stop) {
                 printf("Stop motors\n");
+                stop();
             } else {
                 printf("Invalid direction: %c\n", direction);
             }
@@ -608,11 +609,13 @@ void start() {
 }
 
 moveForward(){
+   start();
    move(RIGHT, moveSpeed, FORWARD);
    move(LEFT, moveSpeed, FORWARD); 
 }
 
 void moveLeft(){
+    start(); 
     //can tweak speed values and directions
     move(RIGHT, turnSpeed, FORWARD);
     move(LEFT, turnSpeed, BACKWARD);
@@ -643,6 +646,7 @@ void moveLeft(){
 }
 
 void moveRight(){
+    start();
     //can tweak speed values and directions
     move(LEFT, turnSpeed, FORWARD);
     move(RIGHT, turnSpeed, BACKWARD);
@@ -673,6 +677,7 @@ void moveRight(){
 }
 
 void move180(){
+    start();
     //can tweak speed values and directions
     move(LEFT, turnSpeed, FORWARD);
     move(RIGHT, turnSpeed, BACKWARD);
