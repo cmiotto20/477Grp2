@@ -230,17 +230,17 @@ void checkToTurnOnMotorsFromWebSocket(esp_websocket_event_data_t *data) {
                 switch(curr_direction){
                     case N:
                         //mouse starts facing north
-                        switch(*direction){
-                            case "U":
+                        switch(direction){
+                            case 'U':
                                 moveForward(); 
                                 break;
-                            case "R":
+                            case 'R':
                                 moveRight();
                                 break;
-                            case "L":
+                            case 'L':
                                 moveLeft();
                                 break;
-                            case "D":
+                            case 'D':
                                 move180();
                                 break;
                             default:
@@ -249,16 +249,16 @@ void checkToTurnOnMotorsFromWebSocket(esp_websocket_event_data_t *data) {
                         break;
                     case E:
                         switch(direction){
-                            case "U":
+                            case 'U':
                                 moveLeft();
                                 break;
-                            case "R":
+                            case 'R':
                                 moveForward();
                                 break;
-                            case "L":
+                            case 'L':
                                 move180();
                                 break;
-                            case "D":
+                            case 'D':
                                 moveRight();
                                 break;
                             default:
@@ -268,16 +268,16 @@ void checkToTurnOnMotorsFromWebSocket(esp_websocket_event_data_t *data) {
                         break;
                     case S:
                         switch(direction){
-                            case "U":
+                            case 'U':
                                 move180();
                                 break;
-                            case "R":
+                            case 'R':
                                 moveLeft();
                                 break;
-                            case "L":
+                            case 'L':
                                 moveRight();
                                 break;
-                            case "D":
+                            case 'D':
                                 moveForward();
                                 break;
                             default:
@@ -287,16 +287,16 @@ void checkToTurnOnMotorsFromWebSocket(esp_websocket_event_data_t *data) {
                         break;
                     case W:
                         switch(direction){
-                            case "U":
+                            case 'U':
                                 moveRight();
                                 break;
-                            case "R":
+                            case 'R':
                                 move180();
                                 break;
-                            case "L":
+                            case 'L':
                                 moveForward();
                                 break;
-                            case "D":
+                            case 'D':
                                 moveLeft();
                                 break;
                             default:
