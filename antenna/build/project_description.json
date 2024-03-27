@@ -1,7 +1,7 @@
 {
     "version":            "1",
     "project_name":       "wifi_antenna",
-    "project_version":    "7b2a4e49-dirty",
+    "project_version":    "c72ae91d-dirty",
     "project_path":       "C:/Users/mgher/Documents/GitHub/477Grp2/antenna",
     "idf_path":           "C:/Users/mgher/esp/esp-idf",
     "build_dir":          "C:/Users/mgher/Documents/GitHub/477Grp2/antenna/build",
