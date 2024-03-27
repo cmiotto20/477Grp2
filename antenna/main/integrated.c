@@ -20,6 +20,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include "rom/ets_sys.h"
+#include "integrated.h"
 
 // Constants
 #define GPIO_PIN GPIO_NUM_5
@@ -229,7 +230,7 @@ void checkToTurnOnMotorsFromWebSocket(esp_websocket_event_data_t *data) {
                 switch(curr_direction){
                     case N:
                         //mouse starts facing north
-                        switch(direction){
+                        switch(*direction){
                             case "U":
                                 moveForward(); 
                                 break;
@@ -608,7 +609,7 @@ void start() {
     gpio_set_level(STBY_GPIO, 1); // disably standby
 }
 
-moveForward(){
+void moveForward(){
    start();
    move(RIGHT, moveSpeed, FORWARD);
    move(LEFT, moveSpeed, FORWARD); 
