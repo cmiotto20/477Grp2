@@ -121,226 +121,294 @@
 
 
 
+// #include <stdio.h>
+// #include "freertos/FreeRTOS.h"
+// #include "freertos/task.h"
+// #include "driver/gpio.h"
+// #include "driver/ledc.h"
+
+// #define STBY_GPIO   3
+// #define PWM_GPIO_R  2
+// #define AIN1_GPIO_R 7
+// #define AIN2_GPIO_R 21
+
+// #define PWM_GPIO_L  2 
+// #define AIN1_GPIO_L 7
+// #define AIN2_GPIO_L 21
+
+// void init_motor_right();
+// void init_motor_left();
+// void turnLeft(int speed);
+// void turnRight(int speed);
+// void move(int motor, int speed, int direction);
+// void stop();
+// void start();
+// void moveRight();
+// void moveLeft();
+
+// typedef enum {
+//     N = 0,
+//     E = 1,
+//     S = 2,
+//     W = 3,
+// } CurrDirection;
+
+// typedef enum {
+//     LEFT = 0,
+//     RIGHT = 1
+// } Motor;
+
+// typedef enum {
+//     FORWARD = 0,
+//     BACKWARD = 1
+// } Direction;
+
+// CurrDirection curr_direction = N;
+
+// void app_main(void)
+// {
+//     init_motor_right();
+//     init_motor_left();
+//     int speed = 130;
+
+//     while(1) {
+//         move(LEFT, speed, FORWARD); // motor 1, half speed, right
+//         vTaskDelay(5000 / portTICK_PERIOD_MS);
+//         speed %= 255;
+//         speed += 10;
+//         move(LEFT, speed, BACKWARD);
+//         vTaskDelay(5000 / portTICK_PERIOD_MS);
+//         speed %= 255;
+//         speed += 10;
+
+//         /*vTaskDelay(1000 / portTICK_PERIOD_MS);
+//         stop();
+//         vTaskDelay(250 / portTICK_PERIOD_MS);*/
+//     }
+// }
+
+// void init_motor_right(){
+//     esp_rom_gpio_pad_select_gpio(STBY_GPIO);
+//     gpio_set_direction(STBY_GPIO, GPIO_MODE_OUTPUT);
+
+//     esp_rom_gpio_pad_select_gpio(PWM_GPIO_R);
+//     gpio_set_direction(PWM_GPIO_R, GPIO_MODE_OUTPUT);
+//     esp_rom_gpio_pad_select_gpio(AIN1_GPIO_R);
+//     gpio_set_direction(AIN1_GPIO_R, GPIO_MODE_OUTPUT);
+//     esp_rom_gpio_pad_select_gpio(AIN2_GPIO_R);
+//     gpio_set_direction(AIN2_GPIO_R, GPIO_MODE_OUTPUT);
+
+//     // Configure LEDC timer
+//     ledc_timer_config_t timer_config = {
+//         .duty_resolution = LEDC_TIMER_8_BIT, // resolution of PWM duty
+//         .freq_hz = 1000,                      // frequency of PWM signal
+//         .speed_mode = LEDC_LOW_SPEED_MODE,    // timer mode
+//         .timer_num = LEDC_TIMER_0             // timer index
+//     };
+//     ledc_timer_config(&timer_config);
+
+//     // Configure LEDC channel for PWM
+//     ledc_channel_config_t channel_config = {
+//         .gpio_num = PWM_GPIO_R,
+//         .speed_mode = LEDC_LOW_SPEED_MODE,
+//         .channel = LEDC_CHANNEL_0,
+//         .intr_type = LEDC_INTR_DISABLE,
+//         .timer_sel = LEDC_TIMER_0,
+//         .duty = 0
+//     };
+//     ledc_channel_config(&channel_config);
+// }
+
+// void init_motor_left(){
+//     //esp_rom_gpio_pad_select_gpio(STBY_GPIO); 
+//     //gpio_set_direction(STBY_GPIO, GPIO_MODE_OUTPUT);
+
+//     esp_rom_gpio_pad_select_gpio(PWM_GPIO_L);
+//     gpio_set_direction(PWM_GPIO_L, GPIO_MODE_OUTPUT);
+//     esp_rom_gpio_pad_select_gpio(AIN1_GPIO_L);
+//     gpio_set_direction(AIN1_GPIO_L, GPIO_MODE_OUTPUT);
+//     esp_rom_gpio_pad_select_gpio(AIN2_GPIO_L);
+//     gpio_set_direction(AIN2_GPIO_L, GPIO_MODE_OUTPUT);
+
+//     // Configure LEDC timer
+//     ledc_timer_config_t timer_config = {
+//         .duty_resolution = LEDC_TIMER_8_BIT, // resolution of PWM duty
+//         .freq_hz = 1000,                      // frequency of PWM signal
+//         .speed_mode = LEDC_LOW_SPEED_MODE,    // timer mode
+//         .timer_num = LEDC_TIMER_0             // timer index
+//     };
+//     ledc_timer_config(&timer_config);
+
+//     // Configure LEDC channel for PWM
+//     ledc_channel_config_t channel_config = {
+//         .gpio_num = PWM_GPIO_L,
+//         .speed_mode = LEDC_LOW_SPEED_MODE,
+//         .channel = LEDC_CHANNEL_1,
+//         .intr_type = LEDC_INTR_DISABLE,
+//         .timer_sel = LEDC_TIMER_0,
+//         .duty = 0
+//     };
+//     ledc_channel_config(&channel_config);
+// }
+
+// void move(int motor, int speed, int direction) {
+//     gpio_set_level(STBY_GPIO, 1); // disable standby
+
+//     int inPin1 = 0;
+//     int inPin2 = 1;
+
+//     if(direction == FORWARD) {
+//         inPin1 = 1;
+//         inPin2 = 0;
+//     } else {
+//         inPin1 = 0;
+//         inPin2 = 1;
+//     }
+    
+//     //right on motor == 1 and channel is 0
+//     if(motor == RIGHT) {
+//         gpio_set_level(AIN1_GPIO_R, inPin1);
+//         gpio_set_level(AIN2_GPIO_R, inPin2);
+//         ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, speed);
+//         ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
+//     } else { //left on motor != 1 and channel is 1
+//         gpio_set_level(AIN1_GPIO_L, inPin1);
+//         gpio_set_level(AIN2_GPIO_L, inPin2);
+//         ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_1, speed);
+//         ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_1);
+//     }
+// }
+
+// void stop() {
+//     gpio_set_level(STBY_GPIO, 0); // enable standby
+// }
+
+// void start() {
+//     gpio_set_level(STBY_GPIO, 1); // disably standby
+// }
+
+// void turnLeft(int speed){
+//     //can tweak speed values and directions
+//     move(RIGHT, speed, FORWARD);
+//     move(LEFT, speed, BACKWARD);
+// }
+
+// void turnRight(int speed){
+//     //can tweak speed values and directions
+//     move(LEFT, speed, FORWARD);
+//     move(RIGHT, speed, BACKWARD);
+// }
+
+// void moveRight(speed){
+//     //makes turn and updates direction
+//    turnRight(speed);
+//    //could've done with single line mod statement but this is probably better
+//    switch(curr_direction){
+//     case N:
+//         curr_direction = E;
+//         break;
+//     case E:
+//         curr_direction = S;
+//         break;
+//     case S:
+//         curr_direction = W;
+//         break;
+//     case W:
+//         curr_direction = N;
+//         break;
+//     default:
+//         printf("Error, in default switch state for current direction\n");
+//         curr_direction = N;
+//    }
+// }
+
+// void moveLeft(){
+//     //makes turn and updates direction
+//     turnLeft(speed);
+//     switch(curr_direction){
+//      case N:
+//         curr_direction = W;
+//         break;
+//      case E:
+//         curr_direction = N;
+//         break;
+//      case S: 
+//         curr_direction = E;
+//         break;
+//      case W:
+//         curr_direction = S;
+//         break;
+//      default:
+//         printf("Error, in default switch state for current direction\n");
+//         curr_direction = N;
+//     }
+// }
+
+#include <string.h>
+#include <ctype.h>
 #include <stdio.h>
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
+#include <time.h>
+#include <stdlib.h>
 #include "driver/gpio.h"
-#include "driver/ledc.h"
+#define GPIO_PIN GPIO_NUM_5
+#define DATA_PIN    12
+#define CLOCK_PIN   14
+#define LATCH_PIN   4
+#define GPIO_INPUT_IO_0   2
+#define stepperDriverPin0 GPIO_NUM_10
+#define stepperDriverPin1 GPIO_NUM_11
+#define stepperDriverPin2 GPIO_NUM_9
+#define stepperDriverPin3 GPIO_NUM_13
+#define SSID "Secret2.0"
+#define PASS "dogtime!"
 
-#define STBY_GPIO   3
-#define PWM_GPIO_R  2
-#define AIN1_GPIO_R 7
-#define AIN2_GPIO_R 21
+#define bitSet(value, bit) ((value) |= (1UL << (bit)))
 
-#define PWM_GPIO_L  2 
-#define AIN1_GPIO_L 7
-#define AIN2_GPIO_L 21
+// Shift out binary bits to shift registers to control LEDs
+void shiftOut(uint8_t bits) {
+    for (uint8_t i = 0; i < 8; i++)  {
+        gpio_set_level(DATA_PIN, (bits & (1 << (7 - i))) ? 1 : 0);
+        gpio_set_level(CLOCK_PIN, 1);
+        gpio_set_level(CLOCK_PIN, 0);
+    }
+    gpio_set_level(LATCH_PIN, 1);
+    gpio_set_level(LATCH_PIN, 0);
+}
 
-void init_motor_right();
-void init_motor_left();
-void turnLeft(int speed);
-void turnRight(int speed);
-void move(int motor, int speed, int direction);
-void stop();
-void start();
-void moveRight();
-void moveLeft();
+// Initializes the GPIO pins needed for the shift register chain
+void initialize_gpio_for_SR() {
+    gpio_config_t io_conf = {
+        .pin_bit_mask = (1ULL<<DATA_PIN) | (1ULL<<CLOCK_PIN) | (1ULL<<LATCH_PIN),
+        .mode = GPIO_MODE_OUTPUT,
+        .intr_type = GPIO_INTR_DISABLE,
+        .pull_down_en = 0,
+        .pull_up_en = 0,
+    };
+    gpio_config(&io_conf);
+}
 
-typedef enum {
-    N = 0,
-    E = 1,
-    S = 2,
-    W = 3,
-} CurrDirection;
-
-typedef enum {
-    LEFT = 0,
-    RIGHT = 1
-} Motor;
-
-typedef enum {
-    FORWARD = 0,
-    BACKWARD = 1
-} Direction;
-
-CurrDirection curr_direction = N;
+// Given an upper and lower bound, turn on LEDs within the 24 LED array
+void setLEDRange(int left, int right) {
+    
+    // Shift in new data
+    int ledBits = 0;
+    for(int i = left; i < right; i++) {
+        bitSet(ledBits, i);
+    }
+    printf("shiftout value: %x\n", ledBits);
+    shiftOut(ledBits>>16);
+    shiftOut(ledBits>>8);
+    shiftOut(ledBits);
+    gpio_set_level(LATCH_PIN, 1);
+}
 
 void app_main(void)
-{
-    init_motor_right();
-    init_motor_left();
-    int speed = 130;
+{   
+    printf("Running in main\n");
+    initialize_gpio_for_SR();
+    //setLEDRange(1, 2);
+    setLEDRange(2, 3);
+    //setLEDRange(1, 3);
+    //setLEDRange(0, 0);
 
-    while(1) {
-        move(LEFT, speed, FORWARD); // motor 1, half speed, right
-        vTaskDelay(5000 / portTICK_PERIOD_MS);
-        speed %= 255;
-        speed += 10;
-        move(LEFT, speed, BACKWARD);
-        vTaskDelay(5000 / portTICK_PERIOD_MS);
-        speed %= 255;
-        speed += 10;
-
-        /*vTaskDelay(1000 / portTICK_PERIOD_MS);
-        stop();
-        vTaskDelay(250 / portTICK_PERIOD_MS);*/
-    }
 }
-
-void init_motor_right(){
-    esp_rom_gpio_pad_select_gpio(STBY_GPIO);
-    gpio_set_direction(STBY_GPIO, GPIO_MODE_OUTPUT);
-
-    esp_rom_gpio_pad_select_gpio(PWM_GPIO_R);
-    gpio_set_direction(PWM_GPIO_R, GPIO_MODE_OUTPUT);
-    esp_rom_gpio_pad_select_gpio(AIN1_GPIO_R);
-    gpio_set_direction(AIN1_GPIO_R, GPIO_MODE_OUTPUT);
-    esp_rom_gpio_pad_select_gpio(AIN2_GPIO_R);
-    gpio_set_direction(AIN2_GPIO_R, GPIO_MODE_OUTPUT);
-
-    // Configure LEDC timer
-    ledc_timer_config_t timer_config = {
-        .duty_resolution = LEDC_TIMER_8_BIT, // resolution of PWM duty
-        .freq_hz = 1000,                      // frequency of PWM signal
-        .speed_mode = LEDC_LOW_SPEED_MODE,    // timer mode
-        .timer_num = LEDC_TIMER_0             // timer index
-    };
-    ledc_timer_config(&timer_config);
-
-    // Configure LEDC channel for PWM
-    ledc_channel_config_t channel_config = {
-        .gpio_num = PWM_GPIO_R,
-        .speed_mode = LEDC_LOW_SPEED_MODE,
-        .channel = LEDC_CHANNEL_0,
-        .intr_type = LEDC_INTR_DISABLE,
-        .timer_sel = LEDC_TIMER_0,
-        .duty = 0
-    };
-    ledc_channel_config(&channel_config);
-}
-
-void init_motor_left(){
-    //esp_rom_gpio_pad_select_gpio(STBY_GPIO); 
-    //gpio_set_direction(STBY_GPIO, GPIO_MODE_OUTPUT);
-
-    esp_rom_gpio_pad_select_gpio(PWM_GPIO_L);
-    gpio_set_direction(PWM_GPIO_L, GPIO_MODE_OUTPUT);
-    esp_rom_gpio_pad_select_gpio(AIN1_GPIO_L);
-    gpio_set_direction(AIN1_GPIO_L, GPIO_MODE_OUTPUT);
-    esp_rom_gpio_pad_select_gpio(AIN2_GPIO_L);
-    gpio_set_direction(AIN2_GPIO_L, GPIO_MODE_OUTPUT);
-
-    // Configure LEDC timer
-    ledc_timer_config_t timer_config = {
-        .duty_resolution = LEDC_TIMER_8_BIT, // resolution of PWM duty
-        .freq_hz = 1000,                      // frequency of PWM signal
-        .speed_mode = LEDC_LOW_SPEED_MODE,    // timer mode
-        .timer_num = LEDC_TIMER_0             // timer index
-    };
-    ledc_timer_config(&timer_config);
-
-    // Configure LEDC channel for PWM
-    ledc_channel_config_t channel_config = {
-        .gpio_num = PWM_GPIO_L,
-        .speed_mode = LEDC_LOW_SPEED_MODE,
-        .channel = LEDC_CHANNEL_1,
-        .intr_type = LEDC_INTR_DISABLE,
-        .timer_sel = LEDC_TIMER_0,
-        .duty = 0
-    };
-    ledc_channel_config(&channel_config);
-}
-
-void move(int motor, int speed, int direction) {
-    gpio_set_level(STBY_GPIO, 1); // disable standby
-
-    int inPin1 = 0;
-    int inPin2 = 1;
-
-    if(direction == FORWARD) {
-        inPin1 = 1;
-        inPin2 = 0;
-    } else {
-        inPin1 = 0;
-        inPin2 = 1;
-    }
-    
-    //right on motor == 1 and channel is 0
-    if(motor == RIGHT) {
-        gpio_set_level(AIN1_GPIO_R, inPin1);
-        gpio_set_level(AIN2_GPIO_R, inPin2);
-        ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, speed);
-        ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
-    } else { //left on motor != 1 and channel is 1
-        gpio_set_level(AIN1_GPIO_L, inPin1);
-        gpio_set_level(AIN2_GPIO_L, inPin2);
-        ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_1, speed);
-        ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_1);
-    }
-}
-
-void stop() {
-    gpio_set_level(STBY_GPIO, 0); // enable standby
-}
-
-void start() {
-    gpio_set_level(STBY_GPIO, 1); // disably standby
-}
-
-void turnLeft(int speed){
-    //can tweak speed values and directions
-    move(RIGHT, speed, FORWARD);
-    move(LEFT, speed, BACKWARD);
-}
-
-void turnRight(int speed){
-    //can tweak speed values and directions
-    move(LEFT, speed, FORWARD);
-    move(RIGHT, speed, BACKWARD);
-}
-
-void moveRight(speed){
-    //makes turn and updates direction
-   turnRight(speed);
-   //could've done with single line mod statement but this is probably better
-   switch(curr_direction){
-    case N:
-        curr_direction = E;
-        break;
-    case E:
-        curr_direction = S;
-        break;
-    case S:
-        curr_direction = W;
-        break;
-    case W:
-        curr_direction = N;
-        break;
-    default:
-        printf("Error, in default switch state for current direction\n");
-        curr_direction = N;
-   }
-}
-
-void moveLeft(){
-    //makes turn and updates direction
-    turnLeft(speed);
-    switch(curr_direction){
-     case N:
-        curr_direction = W;
-        break;
-     case E:
-        curr_direction = N;
-        break;
-     case S: 
-        curr_direction = E;
-        break;
-     case W:
-        curr_direction = S;
-        break;
-     default:
-        printf("Error, in default switch state for current direction\n");
-        curr_direction = N;
-    }
-}
-
