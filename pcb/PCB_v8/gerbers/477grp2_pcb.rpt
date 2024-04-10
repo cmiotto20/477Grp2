@@ -1,4 +1,4 @@
-## Footprint report - date Wed Mar  6 16:21:03 2024
+## Footprint report - date Sun Apr  7 12:41:41 2024
 ## Created by KiCad version 7.0.10
 ## Unit = mm, Angle = deg.
 
@@ -673,82 +673,6 @@ drill  0.000000
 shape_offset  0.000000  0.000000
 $EndPAD
 $EndMODULE  D14
-
-$MODULE D15
-footprint LED_SMD:LED_0805_2012Metric
-attribut smd
-position 58.868428 128.109232  orientation 0.00
-layer front
-$PAD "1"
-Shape Roundrect Layer front
-position -0.937500  0.000000  size  0.975000  1.400000  orientation 0.00
-drill  0.000000
-shape_offset  0.000000  0.000000
-$EndPAD
-$PAD "2"
-Shape Roundrect Layer front
-position  0.937500  0.000000  size  0.975000  1.400000  orientation 0.00
-drill  0.000000
-shape_offset  0.000000  0.000000
-$EndPAD
-$EndMODULE  D15
-
-$MODULE D16
-footprint LED_SMD:LED_0805_2012Metric
-attribut smd
-position 62.447578 130.554144  orientation 0.00
-layer front
-$PAD "1"
-Shape Roundrect Layer front
-position -0.937500  0.000000  size  0.975000  1.400000  orientation 0.00
-drill  0.000000
-shape_offset  0.000000  0.000000
-$EndPAD
-$PAD "2"
-Shape Roundrect Layer front
-position  0.937500  0.000000  size  0.975000  1.400000  orientation 0.00
-drill  0.000000
-shape_offset  0.000000  0.000000
-$EndPAD
-$EndMODULE  D16
-
-$MODULE D17
-footprint LED_SMD:LED_0805_2012Metric
-attribut smd
-position 58.701595 133.169948  orientation 0.00
-layer front
-$PAD "1"
-Shape Roundrect Layer front
-position -0.937500  0.000000  size  0.975000  1.400000  orientation 0.00
-drill  0.000000
-shape_offset  0.000000  0.000000
-$EndPAD
-$PAD "2"
-Shape Roundrect Layer front
-position  0.937500  0.000000  size  0.975000  1.400000  orientation 0.00
-drill  0.000000
-shape_offset  0.000000  0.000000
-$EndPAD
-$EndMODULE  D17
-
-$MODULE D18
-footprint LED_SMD:LED_0805_2012Metric
-attribut smd
-position 64.140692 135.703277  orientation 0.00
-layer front
-$PAD "1"
-Shape Roundrect Layer front
-position -0.937500  0.000000  size  0.975000  1.400000  orientation 0.00
-drill  0.000000
-shape_offset  0.000000  0.000000
-$EndPAD
-$PAD "2"
-Shape Roundrect Layer front
-position  0.937500  0.000000  size  0.975000  1.400000  orientation 0.00
-drill  0.000000
-shape_offset  0.000000  0.000000
-$EndPAD
-$EndMODULE  D18
 
 $MODULE D27
 footprint Connector_PinHeader_2.54mm:PinHeader_2x01_P2.54mm_Vertical

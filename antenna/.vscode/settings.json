@@ -1,6 +1,6 @@
 {
   "C_Cpp.intelliSenseEngine": "default",
-  "idf.portWin": "COM19",
+  "idf.portWin": "COM24",
   "files.associations": {
     "task.h": "c",
     "event_groups.h": "c",

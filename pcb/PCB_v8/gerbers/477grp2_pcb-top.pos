@@ -1,4 +1,4 @@
-### Footprint positions - created on Wed Mar  6 16:20:53 2024 ###
+### Footprint positions - created on Sun Apr  7 12:41:29 2024 ###
 ### Printed by KiCad version 7.0.10
 ## Unit = mm, Angle = deg.
 ## Side : top
@@ -38,10 +38,6 @@ D8        D_TVS               PinHeader_1x02_P2.54mm_Vertical                44.
 D9        D_TVS               PinHeader_1x02_P2.54mm_Vertical                37.0840  -133.0346  180.0000  top
 D10       D_TVS               PinHeader_1x02_P2.54mm_Vertical                37.0840  -121.8544    0.0000  top
 D14       LED                 LED_0805_2012Metric                            46.1991  -163.2762   90.0000  top
-D15       LED                 LED_0805_2012Metric                            58.8684  -128.1092    0.0000  top
-D16       LED                 LED_0805_2012Metric                            62.4476  -130.5541    0.0000  top
-D17       LED                 LED_0805_2012Metric                            58.7016  -133.1699    0.0000  top
-D18       LED                 LED_0805_2012Metric                            64.1407  -135.7033    0.0000  top
 D27       LED                 PinHeader_2x01_P2.54mm_Vertical               152.4000   -81.8211  180.0000  top
 D28       LED                 PinHeader_2x01_P2.54mm_Vertical               144.5162   -76.8211  180.0000  top
 D29       LED                 PinHeader_2x01_P2.54mm_Vertical               152.4000   -71.8211  180.0000  top

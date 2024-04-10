@@ -1,4 +1,4 @@
-/*#include <string.h>
+#include <string.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/event_groups.h"
@@ -14,6 +14,7 @@
 #include "esp_websocket_client.h"
 #include "freertos/semphr.h"
 #include "driver/gpio.h"
+#include "driver/ledc.h"
 #include <ctype.h>
 #include <stdio.h>
 #include <time.h>
@@ -33,12 +34,41 @@
 #define SSID "Secret2.0"
 #define PASS "dogtime!"
 
+#define STBY_GPIO   3
+#define PWM_GPIO_R  1
+#define AIN1_GPIO_R 5
+#define AIN2_GPIO_R 6
+
+#define PWM_GPIO_L  2 
+#define AIN1_GPIO_L 7
+#define AIN2_GPIO_L 21
+
+typedef enum {
+    N = 0,
+    E = 1,
+    S = 2,
+    W = 3,
+} CurrDirection;
+
+typedef enum {
+    LEFT = 0,
+    RIGHT = 1
+} Motor;
+
+typedef enum {
+    FORWARD = 0,
+    BACKWARD = 1
+} Direction;
+
 // Globals
 int _step = 0;
 bool dir = true;
-int state = 0; // 0 is manual moving, 1 is scanning
+int state = 1; // 0 is manual moving, 1 is scanning
 int sendConnectionStatusCounter = 0; // resets at 6000
 int motionDetected = 0;
+CurrDirection curr_direction = N;
+int moveSpeed = 130; //minimum value from testing, up to 255
+int turnSpeed = 150;
 
 // Macros
 #define bitSet(value, bit) ((value) |= (1UL << (bit)))
@@ -46,50 +76,7 @@ int motionDetected = 0;
 static const char *TAG = "websocket";
 esp_websocket_client_handle_t client;
 
-static void wifi_event_handler(void *event_handler_arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
-{
-    switch (event_id)
-    {
-    case WIFI_EVENT_STA_START:
-        printf("WiFi connecting ... \n");
-        break;
-    case WIFI_EVENT_STA_CONNECTED:
-        printf("WiFi connected ... \n");
-        break;
-    case WIFI_EVENT_STA_DISCONNECTED:
-        printf("WiFi lost connection ... \n");
-        break;
-    case IP_EVENT_STA_GOT_IP:
-        printf("WiFi got IP ... \n\n");
-        break;
-    default:
-        break;
-    }
-}
-
-void wifi_connection() {
-    nvs_flash_init();
-    // 1 - Wi-Fi/LwIP Init Phase
-    esp_netif_init();                    // TCP/IP initiation 					s1.1
-    esp_event_loop_create_default();     // event loop 			                s1.2
-    esp_netif_create_default_wifi_sta(); // WiFi station 	                    s1.3
-    wifi_init_config_t wifi_initiation = WIFI_INIT_CONFIG_DEFAULT();
-    esp_wifi_init(&wifi_initiation); // 					                    s1.4
-    // 2 - Wi-Fi Configuration Phase
-    esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, wifi_event_handler, NULL);
-    esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, wifi_event_handler, NULL);
-    wifi_config_t wifi_configuration = {
-        .sta = {
-            .ssid = SSID,
-            .password = PASS,
-        }};
-    esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_configuration);
-    // 3 - Wi-Fi Start Phase
-    esp_wifi_start();
-    // 4- Wi-Fi Connect Phase
-    esp_wifi_connect();
-}
-
+/*---------------------LED--------------------------*/
 // Shift out binary bits to shift registers to control LEDs
 void shiftOut(uint8_t bits) {
     for (uint8_t i = 0; i < 8; i++)  {
@@ -99,44 +86,6 @@ void shiftOut(uint8_t bits) {
     }
     gpio_set_level(LATCH_PIN, 1);
     gpio_set_level(LATCH_PIN, 0);
-}
-
-// Initializes the GPIO pins needed for the shift register chain
-void initialize_gpio_for_SR() {
-    gpio_config_t io_conf = {
-        .pin_bit_mask = (1ULL<<DATA_PIN) | (1ULL<<CLOCK_PIN) | (1ULL<<LATCH_PIN),
-        .mode = GPIO_MODE_OUTPUT,
-        .intr_type = GPIO_INTR_DISABLE,
-        .pull_down_en = 0,
-        .pull_up_en = 0,
-    };
-    gpio_config(&io_conf);
-}
-
-void IRAM_ATTR gpio_isr_handler(void* arg) {
-    uint32_t gpio_num = (uint32_t) arg;
-    int level = gpio_get_level(gpio_num);
-    motionDetected = !motionDetected;
-    ets_printf("GPIO[%ld] state: %d\n", gpio_num, level);
-}
-
-
-void initialize_gpio_for_PIR() {
-    gpio_config_t io_conf;
-
-    // Configure the GPIO pin as input
-    io_conf.intr_type = GPIO_INTR_ANYEDGE; // Interrupt on rising or falling edge
-    io_conf.mode = GPIO_MODE_INPUT;
-    io_conf.pin_bit_mask = (1ULL << GPIO_INPUT_IO_0);
-    io_conf.pull_up_en = GPIO_PULLUP_DISABLE;
-    io_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;
-    gpio_config(&io_conf);
-
-    // Install ISR service
-    gpio_install_isr_service(0);
-
-    // Hook ISR handler for specific GPIO pin
-    gpio_isr_handler_add(GPIO_INPUT_IO_0, gpio_isr_handler, (void*) GPIO_INPUT_IO_0);
 }
 
 // Given an upper and lower bound, turn on LEDs within the 24 LED array
@@ -149,6 +98,18 @@ void setLEDRange(int left, int right) {
         shiftOut(ledBits);
         gpio_set_level(LATCH_PIN, 1);
     }
+}
+
+// Initializes the GPIO pins needed for the shift register chain
+void initialize_gpio_for_SR() {
+    gpio_config_t io_conf = {
+        .pin_bit_mask = (1ULL<<DATA_PIN) | (1ULL<<CLOCK_PIN) | (1ULL<<LATCH_PIN),
+        .mode = GPIO_MODE_OUTPUT,
+        .intr_type = GPIO_INTR_DISABLE,
+        .pull_down_en = 0,
+        .pull_up_en = 0,
+    };
+    gpio_config(&io_conf);
 }
 
 void checkToTurnOnLEDsFromWebSocket(esp_websocket_event_data_t *data) {
@@ -172,134 +133,36 @@ void checkToTurnOnLEDsFromWebSocket(esp_websocket_event_data_t *data) {
     }
 }
 
-void checkToTurnOnMotorsFromWebSocket(esp_websocket_event_data_t *data) {
-    const char *moveRight = "R";
-    const char *moveLeft = "L";
-    const char *moveUp = "U";
-    const char *moveDown = "D";
-    const char *stop = "S";
-    const char *differentCommand = "[";
-    
-    if (data->data_len > 0) {
-        char direction = data->data_ptr[0];
+/*--------------------PIR------------------------*/
 
-        if(direction != *differentCommand) {
-            if (direction == *moveRight || direction == *moveLeft || direction == *moveUp || direction == *moveDown) {
-                int number = 0;
-                const char *numberStr = data->data_ptr + 1; 
-
-                while (*numberStr && isdigit((unsigned char)*numberStr)) {
-                    number = number * 10 + (*numberStr - '0');
-                    numberStr++;
-                }
-
-                printf("Motors begin moving %c%d\n", direction, number);
-            } else if (direction == *stop) {
-                printf("Stop motors\n");
-            } else {
-                printf("Invalid direction: %c\n", direction);
-            }
-        }
-    }
+void IRAM_ATTR gpio_isr_handler(void* arg) {
+    uint32_t gpio_num = (uint32_t) arg;
+    int level = gpio_get_level(gpio_num);
+    motionDetected = !motionDetected;
+    ets_printf("GPIO[%ld] state: %d\n", gpio_num, level);
 }
 
-static void on_websocket_event(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data) {
-    esp_websocket_event_data_t *data = (esp_websocket_event_data_t *)event_data;
+void initialize_gpio_for_PIR() {
+    gpio_config_t io_conf;
 
-    switch (event_id) {
-        case WEBSOCKET_EVENT_CONNECTED:
-            ESP_LOGI(TAG, "WebSocket Connected");
-            break;
-        case WEBSOCKET_EVENT_DISCONNECTED:
-            ESP_LOGI(TAG, "WebSocket Disconnected");
-            break;
-        case WEBSOCKET_EVENT_DATA:
-            ESP_LOGI(TAG, "WebSocket Received Data");
-            //ESP_LOGI(TAG, "Received data: %.*s", data->data_len, (char*)data->data_ptr);
+    // Configure the GPIO pin as input
+    io_conf.intr_type = GPIO_INTR_ANYEDGE; // Interrupt on rising or falling edge
+    io_conf.mode = GPIO_MODE_INPUT;
+    io_conf.pin_bit_mask = (1ULL << GPIO_INPUT_IO_0);
+    io_conf.pull_up_en = GPIO_PULLUP_DISABLE;
+    io_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;
+    gpio_config(&io_conf);
 
-            checkToTurnOnLEDsFromWebSocket(data);
-            if(state == 0) {
-                checkToTurnOnMotorsFromWebSocket(data);
-            }
-            break;
-        default:
-            break;
-    }
+    // Install ISR service
+    gpio_install_isr_service(0);
+
+    // Hook ISR handler for specific GPIO pin
+    // TODO: Uncomment this out when ready to do PIR
+    //gpio_isr_handler_add(GPIO_INPUT_IO_0, gpio_isr_handler, (void*) GPIO_INPUT_IO_0);
 }
 
-static void ws_client_task(void *pvParameters) {
-    // Wait for connection
-        while (!esp_wifi_connect()) {
-            vTaskDelay(1000 / portTICK_PERIOD_MS);
-        }
 
-        // WebSocket Configuration
-        esp_websocket_client_config_t ws_cfg = {
-            .uri = "ws://174.129.215.96:3000", 
-        };
-
-        // Create WebSocket Client
-        client = esp_websocket_client_init(&ws_cfg);
-        esp_websocket_register_events(client, ESP_EVENT_ANY_ID, on_websocket_event, client);
-
-        // Connect to WebSocket Server
-        esp_websocket_client_start(client);
-
-        // Wait for the connection to be established
-        while (esp_websocket_client_is_connected(client) != true) {
-            vTaskDelay(1000 / portTICK_PERIOD_MS);
-        }
-
-    // send request to reset movementLog in apiData.txt
-    const char *message = "c";
-    esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
-    vTaskDelay(500 / portTICK_PERIOD_MS);
-    while (1) {
-        // Send WebSocket Text Message
-        message = "gL";
-        esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
-        // Wait for a while before sending the next message
-        vTaskDelay(500 / portTICK_PERIOD_MS);
-
-        if(state == 0) {
-            message = "gD";
-            esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
-            vTaskDelay(500 / portTICK_PERIOD_MS);
-        } else if(state == 1) {
-            char *movementMsg = (char *)malloc(4 * sizeof(char));
-            snprintf(movementMsg, 10, "[d]%d", motionDetected);
-            printf("Sending movement message: %s\n", movementMsg);
-            esp_websocket_client_send_text(client, movementMsg, strlen(movementMsg), portMAX_DELAY);
-            free(movementMsg);
-        }
-
-        if(sendConnectionStatusCounter % 5 == 0) {
-            message = "m";
-            esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
-            vTaskDelay(500 / portTICK_PERIOD_MS);
-
-            if(sendConnectionStatusCounter % 60 == 0 && sendConnectionStatusCounter != 0) {
-                state = 1; // scanning mode
-                printf("state set to 1\n");
-                char *stateMsg = (char *)malloc(5 * sizeof(char));
-                snprintf(stateMsg, 5, "[s]%d", state);
-                esp_websocket_client_send_text(client, stateMsg, strlen(stateMsg), portMAX_DELAY);
-            } else if(sendConnectionStatusCounter % 80 == 0) {
-                printf("state set to 0\n");
-                state = 0; // manual movement mode
-                char *stateMsg = (char *)malloc(5 * sizeof(char));
-                snprintf(stateMsg, 5, "[s]%d", state);
-                esp_websocket_client_send_text(client, stateMsg, strlen(stateMsg), portMAX_DELAY);
-            }
-
-            if(sendConnectionStatusCounter == 6000) {
-                sendConnectionStatusCounter = 0;
-            }
-        }
-        sendConnectionStatusCounter++;
-    }
-}
-
+/*--------------------STEPPER------------------------*/
 void setupStepperDriverPins() {
     gpio_config_t io_conf = {
         .pin_bit_mask = (1ULL<<stepperDriverPin0) | (1ULL<<stepperDriverPin1) | (1ULL<<stepperDriverPin2) | (1ULL<<stepperDriverPin3),
@@ -392,93 +255,163 @@ void stepper(void *pvParameters) {
     }
 }
 
+/*--------------------WiFi-----------------------*/
+static void wifi_event_handler(void *event_handler_arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
+{
+    switch (event_id)
+    {
+    case WIFI_EVENT_STA_START:
+        printf("WiFi connecting ... \n");
+        break;
+    case WIFI_EVENT_STA_CONNECTED:
+        printf("WiFi connected ... \n");
+        break;
+    case WIFI_EVENT_STA_DISCONNECTED:
+        printf("WiFi lost connection ... \n");
+        break;
+    case IP_EVENT_STA_GOT_IP:
+        printf("WiFi got IP ... \n\n");
+        break;
+    default:
+        break;
+    }
+}
+
+void wifi_connection() {
+    nvs_flash_init();
+    // 1 - Wi-Fi/LwIP Init Phase
+    esp_netif_init();                    // TCP/IP initiation 					s1.1
+    esp_event_loop_create_default();     // event loop 			                s1.2
+    esp_netif_create_default_wifi_sta(); // WiFi station 	                    s1.3
+    wifi_init_config_t wifi_initiation = WIFI_INIT_CONFIG_DEFAULT();
+    esp_wifi_init(&wifi_initiation); // 					                    s1.4
+    // 2 - Wi-Fi Configuration Phase
+    esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, wifi_event_handler, NULL);
+    esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, wifi_event_handler, NULL);
+    wifi_config_t wifi_configuration = {
+        .sta = {
+            .ssid = SSID,
+            .password = PASS,
+        }};
+    esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_configuration);
+    // 3 - Wi-Fi Start Phase
+    esp_wifi_start();
+    printf("------------------Wifi Started-----------------------\n");
+    // 4- Wi-Fi Connect Phase
+    esp_wifi_connect();
+    printf("------------------WIFI CONNECTED---------------------\n");
+}
+
+/*--------------------------Websocket---------------------------------*/
+static void on_websocket_event(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data) {
+    esp_websocket_event_data_t *data = (esp_websocket_event_data_t *)event_data;
+
+    switch (event_id) {
+        case WEBSOCKET_EVENT_CONNECTED:
+            ESP_LOGI(TAG, "WebSocket Connected");
+            break;
+        case WEBSOCKET_EVENT_DISCONNECTED:
+            ESP_LOGI(TAG, "WebSocket Disconnected");
+            break;
+        case WEBSOCKET_EVENT_DATA:
+            ESP_LOGI(TAG, "WebSocket Received Data");
+            //ESP_LOGI(TAG, "Received data: %.*s", data->data_len, (char*)data->data_ptr);
+
+            checkToTurnOnLEDsFromWebSocket(data);
+            if(state == 0) {
+                // TODO: Uncomment when done with motor implementation on PCB
+                //checkToTurnOnMotorsFromWebSocket(data);
+            }
+            break;
+        default:
+            break;
+    }
+}
+
+static void ws_client_task(void *pvParameters) {
+    // Wait for connection
+        while (!esp_wifi_connect()) {
+            vTaskDelay(1000 / portTICK_PERIOD_MS);
+        }
+
+        // WebSocket Configuration
+        esp_websocket_client_config_t ws_cfg = {
+            .uri = "ws://174.129.215.96:3000", 
+        };
+
+        // Create WebSocket Client
+        client = esp_websocket_client_init(&ws_cfg);
+        esp_websocket_register_events(client, ESP_EVENT_ANY_ID, on_websocket_event, client);
+
+        // Connect to WebSocket Server
+        esp_websocket_client_start(client);
+
+        // Wait for the connection to be established
+        while (esp_websocket_client_is_connected(client) != true) {
+            vTaskDelay(1000 / portTICK_PERIOD_MS);
+        }
+
+    // send request to reset movementLog in apiData.txt
+    const char *message = "c";
+    esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
+    vTaskDelay(500 / portTICK_PERIOD_MS);
+    while (1) {
+        // Send WebSocket Text Message
+        message = "gL";
+        esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
+        // Wait for a while before sending the next message
+        vTaskDelay(500 / portTICK_PERIOD_MS);
+
+        if(state == 0) {
+            message = "gD";
+            esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
+            vTaskDelay(500 / portTICK_PERIOD_MS);
+        } else if(state == 1) {
+            char *movementMsg = (char *)malloc(4 * sizeof(char));
+            snprintf(movementMsg, 10, "[d]%d", motionDetected);
+            printf("Sending movement message: %s\n", movementMsg);
+            esp_websocket_client_send_text(client, movementMsg, strlen(movementMsg), portMAX_DELAY);
+            free(movementMsg);
+        }
+
+        if(sendConnectionStatusCounter % 5 == 0) {
+            message = "m";
+            esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
+            vTaskDelay(500 / portTICK_PERIOD_MS);
+
+            if(sendConnectionStatusCounter % 60 == 0 && sendConnectionStatusCounter != 0) {
+                state = 1; // scanning mode
+                printf("state set to 1\n");
+                char *stateMsg = (char *)malloc(5 * sizeof(char));
+                snprintf(stateMsg, 5, "[s]%d", state);
+                esp_websocket_client_send_text(client, stateMsg, strlen(stateMsg), portMAX_DELAY);
+            } else if(sendConnectionStatusCounter % 80 == 0) {
+                printf("state set to 0\n");
+                state = 0; // manual movement mode
+                char *stateMsg = (char *)malloc(5 * sizeof(char));
+                snprintf(stateMsg, 5, "[s]%d", state);
+                esp_websocket_client_send_text(client, stateMsg, strlen(stateMsg), portMAX_DELAY);
+            }
+
+            if(sendConnectionStatusCounter == 6000) {
+                sendConnectionStatusCounter = 0;
+            }
+        }
+        sendConnectionStatusCounter++;
+    }
+}
+
 void app_main(void)
 {   
-    wifi_connection();
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
-
-    initialize_gpio_for_SR();
     setupStepperDriverPins();
     initialize_gpio_for_PIR();
 
+    wifi_connection();
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
+
+
+    printf("------------------Creating websocket task-----------------\n");
     xTaskCreate(&ws_client_task, "ws_client_task", 8192, NULL, 5, NULL);
+    printf("------------------Creating stepper task-----------------\n");
     xTaskCreate(&stepper, "stepper", 8192, NULL, 5, NULL);
-}
-*/
-#include <stdio.h>
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "driver/gpio.h"
-#include "driver/ledc.h"
-
-#define STBY_GPIO   3
-#define PWMA_GPIO   1
-#define AIN1_GPIO   5
-#define AIN2_GPIO   6
-
-void move(int motor, int speed, int direction);
-void stop();
-
-void app_main(void)
-{
-    esp_rom_gpio_pad_select_gpio(STBY_GPIO);
-    gpio_set_direction(STBY_GPIO, GPIO_MODE_OUTPUT);
-
-    esp_rom_gpio_pad_select_gpio(PWMA_GPIO);
-    gpio_set_direction(PWMA_GPIO, GPIO_MODE_OUTPUT);
-    esp_rom_gpio_pad_select_gpio(AIN1_GPIO);
-    gpio_set_direction(AIN1_GPIO, GPIO_MODE_OUTPUT);
-    esp_rom_gpio_pad_select_gpio(AIN2_GPIO);
-    gpio_set_direction(AIN2_GPIO, GPIO_MODE_OUTPUT);
-
-    // Configure LEDC timer
-    ledc_timer_config_t timer_config = {
-        .duty_resolution = LEDC_TIMER_8_BIT, // resolution of PWM duty
-        .freq_hz = 1000,                      // frequency of PWM signal
-        .speed_mode = LEDC_LOW_SPEED_MODE,    // timer mode
-        .timer_num = LEDC_TIMER_0             // timer index
-    };
-    ledc_timer_config(&timer_config);
-
-    // Configure LEDC channel for PWM
-    ledc_channel_config_t channel_config = {
-        .gpio_num = PWMA_GPIO,
-        .speed_mode = LEDC_LOW_SPEED_MODE,
-        .channel = LEDC_CHANNEL_0,
-        .intr_type = LEDC_INTR_DISABLE,
-        .timer_sel = LEDC_TIMER_0,
-        .duty = 0
-    };
-    ledc_channel_config(&channel_config);
-
-    while(1) {
-        move(1, 200, 0); // motor 1, half speed, right
-
-        /*vTaskDelay(1000 / portTICK_PERIOD_MS);
-        stop();
-        vTaskDelay(250 / portTICK_PERIOD_MS);*/
-    }
-}
-
-void move(int motor, int speed, int direction) {
-    gpio_set_level(STBY_GPIO, 1); // disable standby
-
-    int inPin1 = 0;
-    int inPin2 = 1;
-
-    if(direction == 1) {
-        inPin1 = 1;
-        inPin2 = 0;
-    }
-
-    if(motor == 1) {
-        gpio_set_level(AIN1_GPIO, inPin1);
-        gpio_set_level(AIN2_GPIO, inPin2);
-        ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, speed);
-        ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
-    }
-}
-
-void stop() {
-    gpio_set_level(STBY_GPIO, 0); // enable standby
 }

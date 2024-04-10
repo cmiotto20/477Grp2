@@ -1,11 +1,12 @@
 {
   "C_Cpp.intelliSenseEngine": "default",
-  "idf.portWin": "COM19",
+  "idf.portWin": "COM24",
   "idf.adapterTargetName": "esp32s3",
   "idf.openOcdConfigs": [
     "board/esp32s3-bridge.cfg"
   ],
   "files.associations": {
-    "esp_http_client.h": "c"
+    "esp_http_client.h": "c",
+    "ledc.h": "c"
   }
 }
