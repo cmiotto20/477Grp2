@@ -69,6 +69,9 @@ int motionDetected = 0;
 CurrDirection curr_direction = N;
 int moveSpeed = 130; //minimum value from testing, up to 255
 int turnSpeed = 150;
+int turn90Duration = 1000; //divided by portTICK_PERIOD_MS 
+int turn180Duration = 2000; //divided by portTICK_PERIOD_MS 
+//***can set different turn speeds for 90 deg and 180 deg turns if necessary
 
 // Macros
 #define bitSet(value, bit) ((value) |= (1UL << (bit)))
@@ -272,7 +275,7 @@ void moveMotorsLeft(){
     moveMotor(RIGHT, turnSpeed, FORWARD);
     moveMotor(LEFT, turnSpeed, BACKWARD);
     //wait some period of time
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
+    vTaskDelay(turn90Duration / portTICK_PERIOD_MS);
 
     //proceed forward until next instruction
     moveMotor(RIGHT, moveSpeed, FORWARD);
@@ -303,7 +306,7 @@ void moveMotorsRight(){
     moveMotor(LEFT, turnSpeed, FORWARD);
     moveMotor(RIGHT, turnSpeed, BACKWARD);
     //wait some period of time
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
+    vTaskDelay(turn90Duration / portTICK_PERIOD_MS);
 
     //proceed forward until next instruction
     moveMotor(LEFT, moveSpeed, FORWARD);
@@ -335,7 +338,7 @@ void moveMotors180(){
     moveMotor(RIGHT, turnSpeed, BACKWARD);
 
     //wait some period of time - longer than right/left turns
-    vTaskDelay(2000 / portTICK_PERIOD_MS);
+    vTaskDelay(turn180Duration / portTICK_PERIOD_MS);
 
     //proceed forward until next instruction
     moveMotor(LEFT, moveSpeed, FORWARD);
