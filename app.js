@@ -151,6 +151,7 @@ wss.on('connection', (ws) => {
             console.error(`Error: ${err}`);
           } else {
             console.log(`Result: ${state}`);
+            ws.send(``)
           }
         }); 
       break;
@@ -393,12 +394,43 @@ wss.on('connection', (ws) => {
         console.log("received stop recording command");
         break;
 
-      case "stp play":
-        playback = false;
+      case "start play":  // start playback
+      console.log("Received start playback command");
+      setRow(6, '1', (err) => {
+        if (err) {
+          console.error(`Error: ${err}`);
+        } else {
+          console.log(`Updated apiData.txt to start playback`);
+        }
+      }); 
+      break;
+
+      case "stp play":  // stop playback
+        /*playback = false;
         broadcastMsg("[playback status]: 0");
         console.log("received stop playback command");
+        break;*/
+        console.log("Received stop playback command");
+        setRow(6, '0', (err) => {
+          if (err) {
+            console.error(`Error: ${err}`);
+          } else {
+            console.log(`Updated apiData.txt to stop playback`);
+          }
+        }); 
         break;
 
+      case "cp":  // Get playback state (1 for on, 0 for off)
+        console.log(`Recived request for playback state`)
+        getRowStatus(6, (err, playbackState) => {
+          if(err) {
+            console.error(`Error: ${err}`);
+          } else {
+            console.log(`${playbackState}`);
+
+          }
+        });
+        break;
 
       default: 
         console.log('Error: invalid socket read');

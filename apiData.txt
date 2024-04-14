@@ -3,3 +3,4 @@ microStatus|0
 motorDirection|R1
 state|0
 movementDetectionLogs|[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+playbackState|0
