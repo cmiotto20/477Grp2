@@ -110,6 +110,10 @@ export default {
       console.log("hit stop record");
       this.socket.send("[done rec]");
     },
+    startPlayback(){
+      console.log("start playback");
+      this.socket.send("[start play]")
+    },
     stopPlayback(){
       console.log("stop playback");
       this.socket.send("[stp play]");
