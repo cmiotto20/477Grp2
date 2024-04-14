@@ -68,7 +68,6 @@ int turn180Duration = 2000; //divided by portTICK_PERIOD_MS
 //***can set different turn speeds for 90 deg and 180 deg turns if necessary
 int timeSinceOn = 0;
 
-// Macros
 #define bitSet(value, bit) ((value) |= (1UL << (bit)))
 
 static const char *TAG = "websocket";
