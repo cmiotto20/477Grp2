@@ -421,7 +421,7 @@ wss.on('connection', (ws) => {
         break;
 
       case "cp":  // Get playback state (1 for on, 0 for off)
-        console.log(`Recived request for playback state`)
+        /*console.log(`Recived request for playback state`)
         getRowStatus(6, (err, playbackState) => {
           if(err) {
             console.error(`Error: ${err}`);
@@ -429,7 +429,7 @@ wss.on('connection', (ws) => {
             console.log(`${playbackState}`);
 
           }
-        });
+        });*/
         break;
 
       default: 
