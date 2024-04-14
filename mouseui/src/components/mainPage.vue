@@ -6,7 +6,7 @@
         <div class="outerBtnGroup">
           <div class="innerBtnGroup">
             <button @click="recordInputs()" class="btnControls" :class="{'live':recording,}">Start Record</button>
-            <button @click= "playbackInputs()" class="btnControls" :class="{'live':playback,}">Start Playback</button>
+            <button @click= "startPlayback()" class="btnControls" :class="{'live':playback,}">Start Playback</button>
           </div>
           <div class ="innerBtnGroup">
             <button @click="stopRecordInputs()" class="btnControls">Stop Record</button>
@@ -102,10 +102,10 @@ export default {
       console.log("hit record");
       this.socket.send("[record]");
     },
-    playbackInputs(){
+    /*playbackInputs(){
       console.log("hit playback");
       this.socket.send("[playback]");
-    },
+    },*/
     stopRecordInputs(){
       console.log("hit stop record");
       this.socket.send("[done rec]");

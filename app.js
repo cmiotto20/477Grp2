@@ -396,11 +396,11 @@ wss.on('connection', (ws) => {
 
       case "start play":  // start playback
       console.log("Received start playback command");
-      setRow(6, '1', (err) => {
+      setRow(5, '1', (err, playbackState) => {
         if (err) {
           console.error(`Error: ${err}`);
         } else {
-          console.log(`Updated apiData.txt to start playback`);
+          console.log(`Updated apiData.txt to start playback: ${playbackState}`);
         }
       }); 
       break;
@@ -411,11 +411,11 @@ wss.on('connection', (ws) => {
         console.log("received stop playback command");
         break;*/
         console.log("Received stop playback command");
-        setRow(6, '0', (err) => {
+        setRow(5, '0', (err, playbackState) => {
           if (err) {
             console.error(`Error: ${err}`);
           } else {
-            console.log(`Updated apiData.txt to stop playback`);
+            console.log(`Updated apiData.txt to stop playback: ${playbackState}`);
           }
         }); 
         break;
