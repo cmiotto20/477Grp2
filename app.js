@@ -410,6 +410,8 @@ wss.on('connection', (ws) => {
         broadcastMsg("[playback status]: 0");
         console.log("received stop playback command");
         break;*/
+        playback = false;
+        broadcastMsg("[playback status]: 0");
         console.log("Received stop playback command");
         setRow(5, '0', (err, playbackState) => {
           if (err) {
@@ -421,7 +423,7 @@ wss.on('connection', (ws) => {
         break;
 
       case "cp":  // Get playback state (1 for on, 0 for off)
-        console.log(`Recived request for playback state`)
+        console.log(`Recived request for playback state`);
         getRowStatus(5, (err, playbackState) => {
           if(err) {
             console.error(`Error: ${err}`);
@@ -431,15 +433,25 @@ wss.on('connection', (ws) => {
           }
         });
         break;
-      
+
+      case "gs": //Get scan (state) value
+        console.log(`Received request for scan state`)
+        getRowStatus(3, (err, scanState) => {
+          if(err) {
+            console.error(`Error: ${err}`);
+          } else {
+            console.log(`Playback State: ${scanState}`);
+            ws.send(`${scanState}`);
+          }
+        });
+
       case "scan":
-        console.log("Received request for scan");
+        console.log("Toggling scan state");
         toggleRow(3, (err, scanStatus) => {
           if (err) {
             console.error(`Error: ${err}`);
           } else {
             console.log(`Result: ${scanStatus}`);
-            //ws.send(`[toggleLight]: ${scanStatus}`);
           }
         }); 
         break;
