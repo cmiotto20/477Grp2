@@ -441,7 +441,7 @@ wss.on('connection', (ws) => {
             console.error(`Error: ${err}`);
           } else {
             console.log(`Playback State: ${scanState}`);
-            ws.send(`${scanState}`);
+            ws.send(`s${scanState}`);
           }
         });
 
