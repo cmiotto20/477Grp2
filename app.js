@@ -144,7 +144,7 @@ wss.on('connection', (ws) => {
           }); 
         break;
 
-        case "s":// get state from micro
+      case "s":// get state from micro
         console.log("Received request to get state:", data);
         setRow(3, data, (err, state) => {
           if (err) {
@@ -154,7 +154,7 @@ wss.on('connection', (ws) => {
             ws.send(``)
           }
         }); 
-      break;
+        break;
 
       case "checkMovementDetection":
         console.log(`Received request for checking movement detection`);
@@ -444,6 +444,7 @@ wss.on('connection', (ws) => {
             ws.send(`s${scanState}`);
           }
         });
+        break;
 
       case "scan":
         console.log("Toggling scan state");
