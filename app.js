@@ -431,6 +431,18 @@ wss.on('connection', (ws) => {
           }
         });
         break;
+      
+      case "scan":
+        console.log("Received request for scan");
+        toggleRow(3, (err, scanStatus) => {
+          if (err) {
+            console.error(`Error: ${err}`);
+          } else {
+            console.log(`Result: ${scanStatus}`);
+            //ws.send(`[toggleLight]: ${scanStatus}`);
+          }
+        }); 
+        break;
 
       default: 
         console.log('Error: invalid socket read');

@@ -13,8 +13,8 @@
             <button @click="stopPlayback()" class="btnControls">Stop Playback</button>
           </div>
           <div class="innerBtnGroup">
-            <button @click="toggleLight()" class="btnControls">Toggle light</button>
-            <button @click="sendMessage()" class="btnControls">Send Message</button>
+            <button @click="toggleLight()" class="btnControls">Toggle Light</button>
+            <button @click="initiateScan()" class="btnControls">Toggle Scan</button>
           </div>
 
           <!-- Microcontroller connection button -->
@@ -102,6 +102,10 @@ export default {
       console.log("hit record");
       this.socket.send("[record]");
     },
+    initiateScan() {
+      console.log("starting scan");
+      this.socket.send("[scan]");
+    },
     /*playbackInputs(){
       console.log("hit playback");
       this.socket.send("[playback]");
@@ -109,10 +113,12 @@ export default {
     stopRecordInputs(){
       console.log("hit stop record");
       this.socket.send("[done rec]");
+      this.socket.send("[stp play]");
     },
     startPlayback(){
       console.log("start playback");
-      this.socket.send("[start play]")
+      this.socket.send("[start play]");
+      this.socket.send("[playback]");
     },
     stopPlayback(){
       console.log("stop playback");
