@@ -6,15 +6,15 @@
         <div class="outerBtnGroup">
           <div class="innerBtnGroup">
             <button @click="recordInputs()" class="btnControls" :class="{'live':recording,}">Start Record</button>
-            <button @click= "playbackInputs()" class="btnControls" :class="{'live':playback,}">Start Playback</button>
+            <button @click= "startPlayback()" class="btnControls" :class="{'live':playback,}">Start Playback</button>
           </div>
           <div class ="innerBtnGroup">
             <button @click="stopRecordInputs()" class="btnControls">Stop Record</button>
             <button @click="stopPlayback()" class="btnControls">Stop Playback</button>
           </div>
           <div class="innerBtnGroup">
-            <button @click="toggleLight()" class="btnControls">Toggle light</button>
-            <button @click="sendMessage()" class="btnControls">Send Message</button>
+            <button @click="toggleLight()" class="btnControls">Toggle Light</button>
+            <button @click="initiateScan()" class="btnControls">Toggle Scan</button>
           </div>
 
           <!-- Microcontroller connection button -->
@@ -102,13 +102,22 @@ export default {
       console.log("hit record");
       this.socket.send("[record]");
     },
-    playbackInputs(){
+    initiateScan() {
+      console.log("starting scan");
+      this.socket.send("[scan]");
+    },
+    /*playbackInputs(){
       console.log("hit playback");
       this.socket.send("[playback]");
-    },
+    },*/
     stopRecordInputs(){
       console.log("hit stop record");
       this.socket.send("[done rec]");
+    },
+    startPlayback(){
+      console.log("start playback");
+      this.socket.send("[start play]");
+      this.socket.send("[playback]");
     },
     stopPlayback(){
       console.log("stop playback");

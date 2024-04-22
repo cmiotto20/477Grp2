@@ -144,16 +144,17 @@ wss.on('connection', (ws) => {
           }); 
         break;
 
-        case "s":// get state from micro
+      case "s":// get state from micro
         console.log("Received request to get state:", data);
         setRow(3, data, (err, state) => {
           if (err) {
             console.error(`Error: ${err}`);
           } else {
             console.log(`Result: ${state}`);
+            ws.send(``)
           }
         }); 
-      break;
+        break;
 
       case "checkMovementDetection":
         console.log(`Received request for checking movement detection`);
@@ -393,12 +394,68 @@ wss.on('connection', (ws) => {
         console.log("received stop recording command");
         break;
 
-      case "stp play":
-        playback = false;
+      case "start play":  // start playback
+      console.log("Received start playback command");
+      setRow(5, '1', (err, playbackState) => {
+        if (err) {
+          console.error(`Error: ${err}`);
+        } else {
+          console.log(`Updated apiData.txt to start playback: ${playbackState}`);
+        }
+      }); 
+      break;
+
+      case "stp play":  // stop playback
+        /*playback = false;
         broadcastMsg("[playback status]: 0");
         console.log("received stop playback command");
+        break;*/
+        playback = false;
+        broadcastMsg("[playback status]: 0");
+        console.log("Received stop playback command");
+        setRow(5, '0', (err, playbackState) => {
+          if (err) {
+            console.error(`Error: ${err}`);
+          } else {
+            console.log(`Updated apiData.txt to stop playback: ${playbackState}`);
+          }
+        }); 
         break;
 
+      case "cp":  // Get playback state (1 for on, 0 for off)
+        console.log(`Recived request for playback state`);
+        getRowStatus(5, (err, playbackState) => {
+          if(err) {
+            console.error(`Error: ${err}`);
+          } else {
+            console.log(`Playback State: ${playbackState}`);
+            ws.send(`${playbackState}`);
+          }
+        });
+        break;
+
+      case "gs": //Get scan (state) value
+        console.log(`Received request for scan state`)
+        getRowStatus(3, (err, scanState) => {
+          if(err) {
+            console.error(`Error: ${err}`);
+          } else {
+            console.log(`Playback State: ${scanState}`);
+            ws.send(`s${scanState}`);
+          }
+        });
+        break;
+
+      case "scan":
+        console.log("Toggling scan state");
+        toggleRow(3, (err, scanStatus) => {
+          if (err) {
+            console.error(`Error: ${err}`);
+          } else {
+            console.log(`Result: ${scanStatus}`);
+          }
+        }); 
+        break;
 
       default: 
         console.log('Error: invalid socket read');

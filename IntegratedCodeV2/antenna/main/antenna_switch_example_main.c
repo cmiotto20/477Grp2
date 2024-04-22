@@ -20,13 +20,14 @@
 #include <time.h>
 #include <stdlib.h>
 #include "rom/ets_sys.h"
+#include <math.h>
 
 // Constants
 #define GPIO_PIN GPIO_NUM_5
 #define DATA_PIN    12
 #define CLOCK_PIN   14
 #define LATCH_PIN   4
-#define GPIO_INPUT_IO_0   2
+#define PIR_PIN   15
 #define stepperDriverPin0 GPIO_NUM_10
 #define stepperDriverPin1 GPIO_NUM_11
 #define stepperDriverPin2 GPIO_NUM_9
@@ -44,13 +45,6 @@
 #define AIN2_GPIO_L 21
 
 typedef enum {
-    N = 0,
-    E = 1,
-    S = 2,
-    W = 3,
-} CurrDirection;
-
-typedef enum {
     LEFT = 0,
     RIGHT = 1
 } Motor;
@@ -62,15 +56,18 @@ typedef enum {
 
 // Globals
 int _step = 0;
+int totalSteps = 0;
 bool dir = true;
-int state = 1; // 0 is manual moving, 1 is scanning
+int state = 0; // 0 is manual moving, 1 is scanning, 2 is recording path (not actually used), 3 is replaying path
 int sendConnectionStatusCounter = 0; // resets at 6000
 int motionDetected = 0;
-CurrDirection curr_direction = N;
 int moveSpeed = 130; //minimum value from testing, up to 255
 int turnSpeed = 150;
+int turn90Duration = 1000; //divided by portTICK_PERIOD_MS 
+int turn180Duration = 2000; //divided by portTICK_PERIOD_MS 
+//***can set different turn speeds for 90 deg and 180 deg turns if necessary
+int timeSinceOn = 0;
 
-// Macros
 #define bitSet(value, bit) ((value) |= (1UL << (bit)))
 
 static const char *TAG = "websocket";
@@ -131,30 +128,47 @@ void checkToTurnOnLEDsFromWebSocket(esp_websocket_event_data_t *data) {
     }
 }
 
+//--------------------Battery Life----------------
+void batteryLife(void *pvParameters) {
+    timeSinceOn++;
+    int batteryLeft = ((8 * 60 * 60) - timeSinceOn) / (8 * 60 * 60);
+    int numLedsOn = ceil(batteryLeft * 24);
+
+    gpio_set_level(LATCH_PIN, 0);
+    shiftOut(0);
+    gpio_set_level(LATCH_PIN, 1);
+    gpio_set_level(LATCH_PIN, 0);
+    setLEDRange(0,numLedsOn);
+
+    vTaskDelay(1000/portTICK_PERIOD_MS);
+}
+
 //--------------------PIR------------------------
-void IRAM_ATTR gpio_isr_handler(void* arg) {
+/*void IRAM_ATTR gpio_isr_handler(void* arg) {
     uint32_t gpio_num = (uint32_t) arg;
     int level = gpio_get_level(gpio_num);
     motionDetected = !motionDetected;
     ets_printf("GPIO[%ld] state: %d\n", gpio_num, level);
-}
+}*/
 
 void initialize_gpio_for_PIR() {
     gpio_config_t io_conf;
 
     // Configure the GPIO pin as input
-    io_conf.intr_type = GPIO_INTR_ANYEDGE; // Interrupt on rising or falling edge
+    //io_conf.intr_type = GPIO_INTR_ANYEDGE; // Interrupt on rising or falling edge
     io_conf.mode = GPIO_MODE_INPUT;
-    io_conf.pin_bit_mask = (1ULL << GPIO_INPUT_IO_0);
+    io_conf.pin_bit_mask = (1ULL << PIR_PIN);
     io_conf.pull_up_en = GPIO_PULLUP_DISABLE;
     io_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;
     gpio_config(&io_conf);
 
     // Install ISR service
-    gpio_install_isr_service(0);
+    /*gpio_install_isr_service(0);
 
     // Hook ISR handler for specific GPIO pin
-    gpio_isr_handler_add(GPIO_INPUT_IO_0, gpio_isr_handler, (void*) GPIO_INPUT_IO_0);
+    gpio_isr_handler_add(GPIO_INPUT_IO_0, gpio_isr_handler, (void*) GPIO_INPUT_IO_0);*/
+    //esp_rom_gpio_pad_select_gpio(PIR_PIN);
+    //gpio_set_direction(PIR_PIN, GPIO_MODE_INPUT);
 }
 
 // -------------------DC MOTOR-----------------------
@@ -224,11 +238,19 @@ void init_motor_left(){
     ledc_channel_config(&channel_config);
 }
 
-void moveMotor(int motor, int speed, int direction) {
-    gpio_set_level(STBY_GPIO, 1); // disable standby
+void stopMotors() {
+    gpio_set_level(STBY_GPIO, 0); // enable standby
+}
 
-    int inPin1 = 0;
-    int inPin2 = 1;
+void startMotors() {
+    gpio_set_level(STBY_GPIO, 1); // disably standby
+}
+
+void moveMotor(int motor, int speed, int direction) {
+    startMotors(); // disable standby
+
+    int inPin1;
+    int inPin2;
 
     if(direction == FORWARD) {
         inPin1 = 1;
@@ -239,31 +261,24 @@ void moveMotor(int motor, int speed, int direction) {
     }
     
     //right on motor == 1 and channel is 0
-    if(motor == RIGHT) {
-        gpio_set_level(AIN1_GPIO_R, inPin1);
-        gpio_set_level(AIN2_GPIO_R, inPin2);
+    if(motor == LEFT) {
+        gpio_set_level(AIN1_GPIO_L, inPin1);
+        gpio_set_level(AIN2_GPIO_L, inPin2);
         ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, speed);
         ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
     } else { //left on motor != 1 and channel is 1
-        gpio_set_level(AIN1_GPIO_L, inPin1);
-        gpio_set_level(AIN2_GPIO_L, inPin2);
+        gpio_set_level(AIN1_GPIO_R, inPin2);
+        gpio_set_level(AIN2_GPIO_R, inPin1);
         ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_1, speed);
         ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_1);
     }
 }
 
-void stopMotors() {
-    gpio_set_level(STBY_GPIO, 0); // enable standby
-}
-
-void startMotors() {
-    gpio_set_level(STBY_GPIO, 1); // disably standby
-}
-
 void moveMotorsForward(){
-   startMotors();
-   moveMotor(RIGHT, moveSpeed, FORWARD);
-   moveMotor(LEFT, moveSpeed, FORWARD); 
+    printf("moving motors forward\n");
+    startMotors();
+    moveMotor(RIGHT, moveSpeed, FORWARD);
+    //moveMotor(LEFT, moveSpeed, FORWARD); 
 }
 
 void moveMotorsLeft(){
@@ -272,29 +287,11 @@ void moveMotorsLeft(){
     moveMotor(RIGHT, turnSpeed, FORWARD);
     moveMotor(LEFT, turnSpeed, BACKWARD);
     //wait some period of time
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
+    vTaskDelay(turn90Duration / portTICK_PERIOD_MS);
 
     //proceed forward until next instruction
     moveMotor(RIGHT, moveSpeed, FORWARD);
     moveMotor(LEFT, moveSpeed, FORWARD);
-
-    switch(curr_direction){
-     case N:
-        curr_direction = W;
-        break;
-     case E:
-        curr_direction = N;
-        break;
-     case S: 
-        curr_direction = E;
-        break;
-     case W:
-        curr_direction = S;
-        break;
-     default:
-        printf("Error, in default switch state for current direction\n");
-        curr_direction = N;
-    }
 }
 
 void moveMotorsRight(){
@@ -303,29 +300,11 @@ void moveMotorsRight(){
     moveMotor(LEFT, turnSpeed, FORWARD);
     moveMotor(RIGHT, turnSpeed, BACKWARD);
     //wait some period of time
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
+    vTaskDelay(turn90Duration / portTICK_PERIOD_MS);
 
     //proceed forward until next instruction
     moveMotor(LEFT, moveSpeed, FORWARD);
     moveMotor(RIGHT, moveSpeed, FORWARD);
-   //could've done with single line mod statement but this is probably better
-   switch(curr_direction){
-    case N:
-        curr_direction = E;
-        break;
-    case E:
-        curr_direction = S;
-        break;
-    case S:
-        curr_direction = W;
-        break;
-    case W:
-        curr_direction = N;
-        break;
-    default:
-        printf("Error, in default switch state for current direction\n");
-        curr_direction = N;
-   }
 }
 
 void moveMotors180(){
@@ -335,30 +314,11 @@ void moveMotors180(){
     moveMotor(RIGHT, turnSpeed, BACKWARD);
 
     //wait some period of time - longer than right/left turns
-    vTaskDelay(2000 / portTICK_PERIOD_MS);
+    vTaskDelay(turn180Duration / portTICK_PERIOD_MS);
 
     //proceed forward until next instruction
     moveMotor(LEFT, moveSpeed, FORWARD);
     moveMotor(RIGHT, moveSpeed, FORWARD);
-
-   switch(curr_direction){
-    case N:
-        curr_direction = S;
-        break;
-    case E:
-        curr_direction = W;
-        break;
-    case S:
-        curr_direction = N;
-        break;
-    case W:
-        curr_direction = E;
-        break;
-    default:
-        printf("Error, in default switch state for current direction\n");
-        curr_direction = N;
-   }
-
 }
 
 void checkToTurnOnMotorsFromWebSocket(esp_websocket_event_data_t *data) {
@@ -382,95 +342,19 @@ void checkToTurnOnMotorsFromWebSocket(esp_websocket_event_data_t *data) {
                     numberStr++;
                 }
 
-                if(moveSpeed <= 250) {
-                    moveSpeed = 130 + 5 * number;
+                if(moveSpeed <= 130) {
+                    moveSpeed = 80 + 5 * number;
                 }
 
                 printf("Motors begin moving %c%d (final motorSpeed: %d)\n", direction, number, moveSpeed);
 
-                switch(curr_direction){
-                    case N:
-                        //mouse starts facing north
-                        switch(direction){
-                            case 'U':
-                                moveMotorsForward(); 
-                                break;
-                            case 'R':
-                                moveMotorsRight();
-                                break;
-                            case 'L':
-                                moveMotorsLeft();
-                                break;
-                            case 'D':
-                                moveMotors180();
-                                break;
-                            default:
-                                printf("Error in direction command: expected U, L, R, or D\n");
-                        }
-                        break;
-                    case E:
-                        switch(direction){
-                            case 'U':
-                                moveMotorsLeft();
-                                break;
-                            case 'R':
-                                moveMotorsForward();
-                                break;
-                            case 'L':
-                                moveMotors180();
-                                break;
-                            case 'D':
-                                moveMotorsRight();
-                                break;
-                            default:
-                                printf("Error in direction command: expected U, L, R, or D\n");
-                        }
-                        //mouse starts facing east
-                        break;
-                    case S:
-                        switch(direction){
-                            case 'U':
-                                moveMotors180();
-                                break;
-                            case 'R':
-                                moveMotorsLeft();
-                                break;
-                            case 'L':
-                                moveMotorsRight();
-                                break;
-                            case 'D':
-                                moveMotorsForward();
-                                break;
-                            default:
-                                printf("Error in direction command: expected U, L, R, or D\n");
-                        }
-                        //mouse starts facing south
-                        break;
-                    case W:
-                        switch(direction){
-                            case 'U':
-                                moveMotorsRight();
-                                break;
-                            case 'R':
-                                moveMotors180();
-                                break;
-                            case 'L':
-                                moveMotorsForward();
-                                break;
-                            case 'D':
-                                moveMotorsLeft();
-                                break;
-                            default:
-                                printf("Error in direction command: expected U, L, R, or D\n");
-                        }
-                        //mouse starts facing west 
-                        break;
-                    default: 
-                        printf("Error in curr_direction state: invalid\n");
+                if(direction == *moveUp) {
+                    moveMotorsForward();
                 }
 
             } else if (direction == *stop) {
                 printf("Stop motors\n");
+                moveSpeed = 0;
                 stopMotors();
             } else {
                 printf("Invalid direction: %c\n", direction);
@@ -493,68 +377,88 @@ void setupStepperDriverPins() {
 void stepper(void *pvParameters) {
     while (true) {
         if(state == 1) {
-            printf("here: %d\n", _step);
-            switch (_step) {
-                case 0:
-                    gpio_set_level(stepperDriverPin0, 0);
-                    gpio_set_level(stepperDriverPin1, 0);
-                    gpio_set_level(stepperDriverPin2, 0);
-                    gpio_set_level(stepperDriverPin3, 1);
-                    break;
-                case 1:
-                    gpio_set_level(stepperDriverPin0, 0);
-                    gpio_set_level(stepperDriverPin1, 0);
-                    gpio_set_level(stepperDriverPin2, 1);
-                    gpio_set_level(stepperDriverPin3, 1);
-                    break;
-                case 2:
-                    gpio_set_level(stepperDriverPin0, 0);
-                    gpio_set_level(stepperDriverPin1, 0);
-                    gpio_set_level(stepperDriverPin2, 1);
-                    gpio_set_level(stepperDriverPin3, 0);
-                    break;
-                case 3:
-                    gpio_set_level(stepperDriverPin0, 0);
-                    gpio_set_level(stepperDriverPin1, 1);
-                    gpio_set_level(stepperDriverPin2, 1);
-                    gpio_set_level(stepperDriverPin3, 0);
-                    break;
-                case 4:
-                    gpio_set_level(stepperDriverPin0, 0);
-                    gpio_set_level(stepperDriverPin1, 1);
-                    gpio_set_level(stepperDriverPin2, 0);
-                    gpio_set_level(stepperDriverPin3, 0);
-                    break;
-                case 5:
-                    gpio_set_level(stepperDriverPin0, 1);
-                    gpio_set_level(stepperDriverPin1, 1);
-                    gpio_set_level(stepperDriverPin2, 0);
-                    gpio_set_level(stepperDriverPin3, 0);
-                    break;
-                case 6:
-                    gpio_set_level(stepperDriverPin0, 1);
-                    gpio_set_level(stepperDriverPin1, 0);
-                    gpio_set_level(stepperDriverPin2, 0);
-                    gpio_set_level(stepperDriverPin3, 0);
-                    break;
-                case 7:
-                    gpio_set_level(stepperDriverPin0, 1);
-                    gpio_set_level(stepperDriverPin1, 0);
-                    gpio_set_level(stepperDriverPin2, 0);
-                    gpio_set_level(stepperDriverPin3, 1);
-                    break;
-                default:
+            if(totalSteps >= 1300) {
+                if(totalSteps == 1300) {
                     gpio_set_level(stepperDriverPin0, 0);
                     gpio_set_level(stepperDriverPin1, 0);
                     gpio_set_level(stepperDriverPin2, 0);
                     gpio_set_level(stepperDriverPin3, 0);
-                    break;
+                    vTaskDelay(10/portTICK_PERIOD_MS);
+                }
+                totalSteps++;
+                if(gpio_get_level(PIR_PIN) == 1) {
+                    printf("PIR sensed motion\n");
+                    motionDetected = 1;
+                    totalSteps = 2300;
+                }
+            } else {
+                switch (_step) {
+                    case 0:
+                        gpio_set_level(stepperDriverPin0, 0);
+                        gpio_set_level(stepperDriverPin1, 0);
+                        gpio_set_level(stepperDriverPin2, 0);
+                        gpio_set_level(stepperDriverPin3, 1);
+                        break;
+                    case 1:
+                        gpio_set_level(stepperDriverPin0, 0);
+                        gpio_set_level(stepperDriverPin1, 0);
+                        gpio_set_level(stepperDriverPin2, 1);
+                        gpio_set_level(stepperDriverPin3, 1);
+                        break;
+                    case 2:
+                        gpio_set_level(stepperDriverPin0, 0);
+                        gpio_set_level(stepperDriverPin1, 0);
+                        gpio_set_level(stepperDriverPin2, 1);
+                        gpio_set_level(stepperDriverPin3, 0);
+                        break;
+                    case 3:
+                        gpio_set_level(stepperDriverPin0, 0);
+                        gpio_set_level(stepperDriverPin1, 1);
+                        gpio_set_level(stepperDriverPin2, 1);
+                        gpio_set_level(stepperDriverPin3, 0);
+                        break;
+                    case 4:
+                        gpio_set_level(stepperDriverPin0, 0);
+                        gpio_set_level(stepperDriverPin1, 1);
+                        gpio_set_level(stepperDriverPin2, 0);
+                        gpio_set_level(stepperDriverPin3, 0);
+                        break;
+                    case 5:
+                        gpio_set_level(stepperDriverPin0, 1);
+                        gpio_set_level(stepperDriverPin1, 1);
+                        gpio_set_level(stepperDriverPin2, 0);
+                        gpio_set_level(stepperDriverPin3, 0);
+                        break;
+                    case 6:
+                        gpio_set_level(stepperDriverPin0, 1);
+                        gpio_set_level(stepperDriverPin1, 0);
+                        gpio_set_level(stepperDriverPin2, 0);
+                        gpio_set_level(stepperDriverPin3, 0);
+                        break;
+                    case 7:
+                        gpio_set_level(stepperDriverPin0, 1);
+                        gpio_set_level(stepperDriverPin1, 0);
+                        gpio_set_level(stepperDriverPin2, 0);
+                        gpio_set_level(stepperDriverPin3, 1);
+                        break;
+                    default:
+                        gpio_set_level(stepperDriverPin0, 0);
+                        gpio_set_level(stepperDriverPin1, 0);
+                        gpio_set_level(stepperDriverPin2, 0);
+                        gpio_set_level(stepperDriverPin3, 0);
+                        break;
+                }
+                if (dir) {
+                    _step++;
+                    totalSteps++;
+                } else {
+                    _step--;
+                    totalSteps--;
+                }
             }
 
-            if (dir) {
-                _step++;
-            } else {
-                _step--;
+            if(totalSteps == 2300) {
+                totalSteps = 0;
             }
 
             if (_step > 7) {
@@ -683,11 +587,13 @@ static void ws_client_task(void *pvParameters) {
             esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
             vTaskDelay(500 / portTICK_PERIOD_MS);
         } else if(state == 1) {
-            char *movementMsg = (char *)malloc(4 * sizeof(char));
-            snprintf(movementMsg, 10, "[d]%d", motionDetected);
-            printf("Sending movement message: %s\n", movementMsg);
-            esp_websocket_client_send_text(client, movementMsg, strlen(movementMsg), portMAX_DELAY);
-            free(movementMsg);
+            if(motionDetected) {
+                char *movementMsg = (char *)malloc(4 * sizeof(char));
+                snprintf(movementMsg, 10, "[d]%d", motionDetected);
+                printf("Sending movement message: %s\n", movementMsg);
+                esp_websocket_client_send_text(client, movementMsg, strlen(movementMsg), portMAX_DELAY);
+                free(movementMsg);
+            }
         }
 
         if(sendConnectionStatusCounter % 5 == 0) {
@@ -696,7 +602,7 @@ static void ws_client_task(void *pvParameters) {
             vTaskDelay(500 / portTICK_PERIOD_MS);
 
             if(sendConnectionStatusCounter % 60 == 0 && sendConnectionStatusCounter != 0) {
-                state = 1; // scanning mode
+                //state = 1; // scanning mode
                 printf("state set to 1\n");
                 char *stateMsg = (char *)malloc(5 * sizeof(char));
                 snprintf(stateMsg, 5, "[s]%d", state);
@@ -722,6 +628,8 @@ void app_main(void)
     setupStepperDriverPins();
     initialize_gpio_for_PIR();
     initialize_gpio_for_SR();
+    init_motor_right();
+    init_motor_left();
 
     wifi_connection();
     vTaskDelay(1000 / portTICK_PERIOD_MS);
@@ -730,4 +638,6 @@ void app_main(void)
     xTaskCreate(&ws_client_task, "ws_client_task", 8192, NULL, 5, NULL);
     printf("------------------Creating stepper task-----------------\n");
     xTaskCreate(&stepper, "stepper", 8192, NULL, 5, NULL);
+    printf("------------------Creating battery life task-----------------\n");
+    //xTaskCreate(&batteryLife, "batteryLife", 8192, NULL, 5, NULL);
 }
