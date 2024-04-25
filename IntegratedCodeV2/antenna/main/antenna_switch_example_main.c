@@ -58,6 +58,7 @@ typedef enum {
 int _step = 0;
 int totalSteps = 0;
 bool dir = true;
+<<<<<<< Updated upstream
 int state = 0; // 0 is manual moving, 1 is scanning, 2 is recording path (not actually used), 3 is replaying path
 int sendConnectionStatusCounter = 0; // resets at 6000
 int motionDetected = 0;
@@ -67,6 +68,21 @@ int turn90Duration = 1000; //divided by portTICK_PERIOD_MS
 int turn180Duration = 2000; //divided by portTICK_PERIOD_MS 
 //***can set different turn speeds for 90 deg and 180 deg turns if necessary
 int timeSinceOn = 0;
+=======
+int state = 0;                       // 0 is manual moving, 1 is scanning, 2 is recording path (not actually used), 3 is replaying path
+int sendConnectionStatusCounter = 0; // resets at 6000
+int motionDetected = 0;
+int moveSpeed = 130; //minimum value from testing, up to 255
+int turnSpeed = 240;
+int turn90Duration = 2000; //divided by portTICK_PERIOD_MS 
+int turn180Duration = 4000; //divided by portTICK_PERIOD_MS 
+//***can set different turn speeds for 90 deg and 180 deg turns if necessary
+long timeSinceOn = 0;
+int lastTurned;
+char lastDirection;
+bool playBackModeEn = false; 
+int timeSinceLastScan = 0;
+>>>>>>> Stashed changes
 
 #define bitSet(value, bit) ((value) |= (1UL << (bit)))
 
@@ -129,18 +145,30 @@ void checkToTurnOnLEDsFromWebSocket(esp_websocket_event_data_t *data) {
 }
 
 //--------------------Battery Life----------------
+<<<<<<< Updated upstream
 void batteryLife(void *pvParameters) {
     timeSinceOn++;
     int batteryLeft = ((8 * 60 * 60) - timeSinceOn) / (8 * 60 * 60);
     int numLedsOn = ceil(batteryLeft * 24);
+=======
+void batteryLife() {
+    timeSinceOn++;
+    float batteryLeft = ((8.0 * 60 * 60) - timeSinceOn/1000.0) / (8.0 * 60 * 60);
+    int numLedsOn = 24 * batteryLeft;
+
+    // printf("batteryLeft: %f, timeSinceOn: %ld, numLedsOn: %d\n", batteryLeft, timeSinceOn, numLedsOn);
+>>>>>>> Stashed changes
 
     gpio_set_level(LATCH_PIN, 0);
     shiftOut(0);
     gpio_set_level(LATCH_PIN, 1);
     gpio_set_level(LATCH_PIN, 0);
     setLEDRange(0,numLedsOn);
+<<<<<<< Updated upstream
 
     vTaskDelay(1000/portTICK_PERIOD_MS);
+=======
+>>>>>>> Stashed changes
 }
 
 //--------------------PIR------------------------
@@ -207,8 +235,9 @@ void init_motor_right(){
 }
 
 void init_motor_left(){
-    //esp_rom_gpio_pad_select_gpio(STBY_GPIO); 
-    //gpio_set_direction(STBY_GPIO, GPIO_MODE_OUTPUT);
+    esp_rom_gpio_pad_select_gpio(STBY_GPIO);
+    gpio_set_direction(STBY_GPIO, GPIO_MODE_OUTPUT);
+    gpio_set_level(STBY_GPIO, 0); //initialize with standby active
 
     esp_rom_gpio_pad_select_gpio(PWM_GPIO_L);
     gpio_set_direction(PWM_GPIO_L, GPIO_MODE_OUTPUT);
@@ -230,7 +259,7 @@ void init_motor_left(){
     ledc_channel_config_t channel_config = {
         .gpio_num = PWM_GPIO_L,
         .speed_mode = LEDC_LOW_SPEED_MODE,
-        .channel = LEDC_CHANNEL_1,
+        .channel = LEDC_CHANNEL_0,
         .intr_type = LEDC_INTR_DISABLE,
         .timer_sel = LEDC_TIMER_0,
         .duty = 0
@@ -248,6 +277,7 @@ void startMotors() {
 
 void moveMotor(int motor, int speed, int direction) {
     startMotors(); // disable standby
+<<<<<<< Updated upstream
 
     int inPin1;
     int inPin2;
@@ -292,22 +322,79 @@ void moveMotorsLeft(){
     //proceed forward until next instruction
     moveMotor(RIGHT, moveSpeed, FORWARD);
     moveMotor(LEFT, moveSpeed, FORWARD);
+=======
+
+    int inPin1;
+    int inPin2;
+
+    if(direction == FORWARD) {
+        inPin1 = 0;
+        inPin2 = 1;
+    } else {
+        inPin1 = 1;
+        inPin2 = 0;
+    }
+    
+    //right on motor == 1 and channel is 0
+    if(motor == LEFT) {
+        gpio_set_level(AIN1_GPIO_L, inPin1);
+        gpio_set_level(AIN2_GPIO_L, inPin2);
+        ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, speed);
+        ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
+    } else { //left on motor != 1 and channel is 1
+        gpio_set_level(AIN1_GPIO_R, inPin2);
+        gpio_set_level(AIN2_GPIO_R, inPin1);
+        ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_1, speed);
+        ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_1);
+    }
+>>>>>>> Stashed changes
 }
 
-void moveMotorsRight(){
+void moveMotorsForward(){
+    printf("moving motors forward\n");
     startMotors();
+    moveMotor(RIGHT, moveSpeed, FORWARD);
+    moveMotor(LEFT, moveSpeed, FORWARD); 
+}
+
+void moveMotorsLeft(){
+    printf("turning left\n");
+    startMotors(); 
+    moveMotorsForward();
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
+
     //can tweak speed values and directions
     moveMotor(LEFT, turnSpeed, FORWARD);
     moveMotor(RIGHT, turnSpeed, BACKWARD);
     //wait some period of time
     vTaskDelay(turn90Duration / portTICK_PERIOD_MS);
+<<<<<<< Updated upstream
 
     //proceed forward until next instruction
     moveMotor(LEFT, moveSpeed, FORWARD);
     moveMotor(RIGHT, moveSpeed, FORWARD);
+=======
+    stopMotors();
+}
+
+void moveMotorsRight(){
+    printf("turning right\n");
+    startMotors();
+    moveSpeed = 200;
+    moveMotorsForward();
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
+    //can tweak speed values and directions
+    moveMotor(RIGHT, turnSpeed, FORWARD);
+    moveMotor(LEFT, turnSpeed, BACKWARD);
+    //wait some period of time
+    vTaskDelay(turn90Duration / portTICK_PERIOD_MS);
+    stopMotors();
+>>>>>>> Stashed changes
 }
 
 void moveMotors180(){
+    printf("turning 180\n");
+
     startMotors();
     //can tweak speed values and directions
     moveMotor(LEFT, turnSpeed, FORWARD);
@@ -315,10 +402,14 @@ void moveMotors180(){
 
     //wait some period of time - longer than right/left turns
     vTaskDelay(turn180Duration / portTICK_PERIOD_MS);
+<<<<<<< Updated upstream
 
     //proceed forward until next instruction
     moveMotor(LEFT, moveSpeed, FORWARD);
     moveMotor(RIGHT, moveSpeed, FORWARD);
+=======
+    stopMotors();
+>>>>>>> Stashed changes
 }
 
 void checkToTurnOnMotorsFromWebSocket(esp_websocket_event_data_t *data) {
@@ -342,14 +433,34 @@ void checkToTurnOnMotorsFromWebSocket(esp_websocket_event_data_t *data) {
                     numberStr++;
                 }
 
+<<<<<<< Updated upstream
                 if(moveSpeed <= 130) {
                     moveSpeed = 80 + 5 * number;
+=======
+                if(moveSpeed <= 230) {
+                    moveSpeed = 120 + 5 * number;
+>>>>>>> Stashed changes
                 }
 
                 printf("Motors begin moving %c%d (final motorSpeed: %d)\n", direction, number, moveSpeed);
 
                 if(direction == *moveUp) {
                     moveMotorsForward();
+<<<<<<< Updated upstream
+=======
+                }else if(direction == *moveDown && (number != lastTurned || lastDirection != 'd')) {
+                    moveMotors180();
+                    lastTurned = number;
+                    lastDirection = 'd';
+                } else if(direction == *moveLeft && (number != lastTurned || lastDirection != 'l')) {
+                    moveMotorsLeft();
+                    lastTurned = number;
+                    lastDirection = 'l';
+                } else if(direction == *moveRight && (number != lastTurned || lastDirection != 'r')) {
+                    moveMotorsRight();
+                    lastTurned = number;
+                    lastDirection = 'r';
+>>>>>>> Stashed changes
                 }
 
             } else if (direction == *stop) {
@@ -383,13 +494,20 @@ void stepper(void *pvParameters) {
                     gpio_set_level(stepperDriverPin1, 0);
                     gpio_set_level(stepperDriverPin2, 0);
                     gpio_set_level(stepperDriverPin3, 0);
+<<<<<<< Updated upstream
+=======
+                    timeSinceLastScan += 10;
+>>>>>>> Stashed changes
                     vTaskDelay(10/portTICK_PERIOD_MS);
                 }
                 totalSteps++;
                 if(gpio_get_level(PIR_PIN) == 1) {
                     printf("PIR sensed motion\n");
                     motionDetected = 1;
+<<<<<<< Updated upstream
                     totalSteps = 2300;
+=======
+>>>>>>> Stashed changes
                 }
             } else {
                 switch (_step) {
@@ -459,6 +577,10 @@ void stepper(void *pvParameters) {
 
             if(totalSteps == 2300) {
                 totalSteps = 0;
+<<<<<<< Updated upstream
+=======
+                timeSinceLastScan = 0;
+>>>>>>> Stashed changes
             }
 
             if (_step > 7) {
@@ -472,9 +594,44 @@ void stepper(void *pvParameters) {
             gpio_set_level(stepperDriverPin2, 0);
             gpio_set_level(stepperDriverPin3, 0);
         }
+        batteryLife();
         vTaskDelay(1/portTICK_PERIOD_MS);
     }
 }
+
+//--------------------Playback----------------------
+void checkToTurnOnPlayBackState(esp_websocket_event_data_t *data) {
+    const char *isInPlayBack = "1";
+    if (data->data_len > 0) {
+        char playBackState = data->data_ptr[0];
+        if(playBackState == *isInPlayBack) {
+            playBackModeEn = true;
+        } else {
+            state = 0;
+        }
+    }
+}
+
+void checkToTurnOnScanState(esp_websocket_event_data_t *data) {
+    const char *isInScan = "1";
+    if (data->data_len > 0) {
+        char playBackState = data->data_ptr[0];
+        if(playBackState == *isInScan) {
+            printf("turning scan mode on\n");
+            state = 1;
+        } else {
+            state = 0;
+        }
+    }
+}
+
+//PIR Scan
+
+// void activateScanPIR(esp_websockect_event_data_t *data){
+//     if(data->data_len > 0){
+
+//     }
+// }
 
 //--------------------WiFi-----------------------
 static void wifi_event_handler(void *event_handler_arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
@@ -538,10 +695,18 @@ static void on_websocket_event(void *handler_args, esp_event_base_t base, int32_
             ESP_LOGI(TAG, "WebSocket Received Data");
             //ESP_LOGI(TAG, "Received data: %.*s", data->data_len, (char*)data->data_ptr);
 
-            checkToTurnOnLEDsFromWebSocket(data);
+            //checkToTurnOnLEDsFromWebSocket(data);
+            checkToTurnOnPlayBackState(data);
+            checkToTurnOnScanState(data);
             if(state == 0) {
                 checkToTurnOnMotorsFromWebSocket(data);
             }
+            //added for scan button ------------
+            //     playBackModeEn = false;
+            // } else if(state == 1) {
+            //     playBackModeEn = true;
+            // }
+            //end added for scan button ---------
             break;
         default:
             break;
@@ -596,11 +761,12 @@ static void ws_client_task(void *pvParameters) {
             }
         }
 
-        if(sendConnectionStatusCounter % 5 == 0) {
+        if(sendConnectionStatusCounter % 10 == 0) {
             message = "m";
             esp_websocket_client_send_text(client, message, strlen(message), portMAX_DELAY);
             vTaskDelay(500 / portTICK_PERIOD_MS);
 
+<<<<<<< Updated upstream
             if(sendConnectionStatusCounter % 60 == 0 && sendConnectionStatusCounter != 0) {
                 //state = 1; // scanning mode
                 printf("state set to 1\n");
@@ -613,6 +779,32 @@ static void ws_client_task(void *pvParameters) {
                 char *stateMsg = (char *)malloc(5 * sizeof(char));
                 snprintf(stateMsg, 5, "[s]%d", state);
                 esp_websocket_client_send_text(client, stateMsg, strlen(stateMsg), portMAX_DELAY);
+=======
+            // Check to see if it should be in playback mode or not
+            char *stateMsg = (char *)malloc(5 * sizeof(char));
+            snprintf(stateMsg, 5, "[cp]");
+            esp_websocket_client_send_text(client, stateMsg, strlen(stateMsg), portMAX_DELAY);
+
+            // Check to see if it should be in scan mode or not
+            char *stateMsg2 = (char *)malloc(5 * sizeof(char));
+            snprintf(stateMsg2, 5, "[gs]");
+            esp_websocket_client_send_text(client, stateMsg2, strlen(stateMsg2), portMAX_DELAY);
+
+            if(playBackModeEn) {
+                if(timeSinceLastScan > 5000) {
+                    state = 1; // scanning mode
+                    printf("state set to 1\n");
+                    char *stateMsg = (char *)malloc(5 * sizeof(char));
+                    snprintf(stateMsg, 5, "[s]%d", state);
+                    esp_websocket_client_send_text(client, stateMsg, strlen(stateMsg), portMAX_DELAY);
+                } else {
+                    printf("state set to 0\n");
+                    state = 3; // replaying path mode
+                    char *stateMsg = (char *)malloc(5 * sizeof(char));
+                    snprintf(stateMsg, 5, "[s]%d", state);
+                    esp_websocket_client_send_text(client, stateMsg, strlen(stateMsg), portMAX_DELAY);
+                }
+>>>>>>> Stashed changes
             }
 
             if(sendConnectionStatusCounter == 6000) {
@@ -634,10 +826,15 @@ void app_main(void)
     wifi_connection();
     vTaskDelay(1000 / portTICK_PERIOD_MS);
 
-    printf("------------------Creating websocket task-----------------\n");
+    /*printf("------------------Creating websocket task-----------------\n");
     xTaskCreate(&ws_client_task, "ws_client_task", 8192, NULL, 5, NULL);
     printf("------------------Creating stepper task-----------------\n");
+<<<<<<< Updated upstream
     xTaskCreate(&stepper, "stepper", 8192, NULL, 5, NULL);
     printf("------------------Creating battery life task-----------------\n");
     //xTaskCreate(&batteryLife, "batteryLife", 8192, NULL, 5, NULL);
 }
+=======
+    xTaskCreate(&stepper, "stepper", 8192, NULL, 5, NULL);*/
+}
+>>>>>>> Stashed changes

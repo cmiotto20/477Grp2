@@ -191,7 +191,6 @@ export default {
         } 
 
         case "micro_conn": {
-          this.micro_conn = parseInt(this.getDataStream(event)) == 1 ? true : false; 
           console.log(`micro_conn received: ${this.micro_conn}`);
           break;
         }

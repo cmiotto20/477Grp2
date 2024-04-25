@@ -1,0 +1,315 @@
+@font-face {
+  font-family: 'Star Wars';
+  src: url('../assets/Starjedi.ttf');
+}
+
+body {
+  background-color: black;
+  color: rgb(40,80,255);
+  font-family: Arial, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+  background-image: url('../assets/imperial.jpg');
+  background-size: cover; 
+  background-position: center; 
+  background-repeat: no-repeat;
+  font-family: 'Star Wars', sans-serif;
+  font-weight: 100;
+  overflow: hidden;
+  overflow: none;
+}
+
+.container {
+  text-align: center;
+  background: rgb(40,40,40,.9);
+  border: solid;
+  border-color:black;
+  width: 1200px;
+  height: 700px;
+  flex-direction: row;
+  clip-path: polygon(
+    var(--corner)              0%,
+    calc(100% - var(--corner)) 0%,
+    100% var(--corner),
+    100% calc(100% - var(--corner)),
+    calc(100% - var(--corner)) 100%,
+    var(--corner)              100%,
+    0% calc(100% - var(--corner)),
+    0% var(--corner)
+  );
+  --corner: 20px;
+  overflow: none;
+}
+
+#containerBody {
+  position: relative;
+  top: 50px;
+  display: flex;
+  flex-direction: row;
+  overflow: none;
+}
+
+#leftHalf{
+  width: 900px;
+  overflow: none;
+}
+
+#rightHalf {
+  margin-right: 30px;
+}
+
+#messageBox {
+  border: solid;
+  border-color: blue;
+  height: 500px;
+  width: 300px;
+  background: black;
+  overflow: scroll;
+}
+
+.innerBtnGroup{
+  display: flex;
+  flex-direction: column;
+}
+
+
+.outerBtnGroup {
+  position: relative;
+  top: 0px;
+  left: 20%;
+  display: flex;
+  flex-direction: row;
+}
+
+.joypad-container {
+  position: relative;
+  top: 10%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgb(15,15,15,.9);
+  left: 21%;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  width: 500px;
+  height: 225px;
+  clip-path: polygon(
+    var(--corner)              0%,
+    calc(100% - var(--corner)) 0%,
+    100% var(--corner),
+    100% calc(100% - var(--corner)),
+    calc(100% - var(--corner)) 100%,
+    var(--corner)              100%,
+    0% calc(100% - var(--corner)),
+    0% var(--corner)
+  );
+  --corner: 20px
+}
+
+.arrow-button-row {
+  display: flex;
+  justify-content: center;
+}
+
+.arrow-button-container {
+  margin: 0px;
+}
+
+.arrow-button {
+  width: 20px;
+  height: 20px;
+  border-style: solid;
+  cursor: pointer;
+  line-height: 0;
+  vertical-align: middle;
+  background-color: transparent;
+  border: none;
+}
+
+.arrow-button:active { 
+  color: white;
+}
+
+.arrow-up {
+  position: relative;
+  top: -5px;
+  right: 45px;
+  display:inline-block;
+  width: 50px;
+  height: 50px;
+  color: rgb(90,170,255);
+  text-shadow: 0 0px 30px rgb(10,60,255);
+  font-size: 100px;
+  -webkit-transform:scale(1.5,1); /* Safari and Chrome */
+  -moz-transform:scale(1.5,1); /* Firefox */
+  -ms-transform:scale(1.5,1); /* IE 9 */
+  -o-transform:scale(1.5,1); /* Opera */
+  transform:scale(1.5,1); /* W3C */
+}
+
+.arrow-left {
+  position: relative;
+  top: 80px;
+  right: 65px;
+  display:inline-block;
+  width: 50px;
+  height: 50px;
+  color: rgb(90,170,255);
+  text-shadow: 0 0px 30px rgb(10,60,255);
+  font-size: 100px;
+  -webkit-transform:scale(1.5,1); /* Safari and Chrome */
+  -moz-transform:scale(1.5,1); /* Firefox */
+  -ms-transform:scale(1.5,1); /* IE 9 */
+  -o-transform:scale(1.5,1); /* Opera */
+  transform:scale(1,1.5) rotate(270deg); /* W3C */
+}
+
+.arrow-right {
+  position: relative;
+  top: -12.5px;
+  left: 65px;
+  display:inline-block;
+  width: 50px;
+  height: 50px;
+  color: rgb(90,170,255);
+  text-shadow: 0 0px 30px rgb(10,60,255);
+  font-size: 100px;
+  -webkit-transform:scale(1.5,1); /* Safari and Chrome */
+  -moz-transform:scale(1.5,1); /* Firefox */
+  -ms-transform:scale(1.5,1); /* IE 9 */
+  -o-transform:scale(1.5,1); /* Opera */
+  transform:scale(1,1.5) rotate(90deg); /* W3C */
+}
+
+.arrow-down {
+  position: relative;
+  top: 75px;
+  left: 45px;
+  display:inline-block;
+  width: 50px;
+  height: 50px;
+  color: rgb(90,170,255);
+  text-shadow: 0 0px 30px rgb(10,60,255);
+  font-size: 100px;
+  -webkit-transform:scale(1.5,1); /* Safari and Chrome */
+  -moz-transform:scale(1.5,1); /* Firefox */
+  -ms-transform:scale(1.5,1); /* IE 9 */
+  -o-transform:scale(1.5,1); /* Opera */
+  transform:scale(1.5,1) rotate(180deg); /* W3C */
+}
+
+.connected-button {
+  position: relative;
+  top: 21px;
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  font-size: 16px;
+  border-radius: 10px;
+  width: 140px;
+  height: 100px;
+  color: white;
+}
+
+.connected-button.connected {
+  background-color: rgb(40,180,60);
+  color: white;
+  box-shadow: 0px 0px 15px 4px green;
+}
+
+.connected-button.not-connected {
+  background-color: rgb(255,80,60, .85);
+  color: white;
+  box-shadow: 0px 0px 15px 4px red;
+}
+
+#state_container {
+  border: none;
+  position: relative;
+  top: 140px;
+  right: 145px;
+  border: none;
+  border-radius: 10px;
+  width: 140px;
+  height: 80px;
+  padding: 10px 20px;
+  color: white;
+}
+
+#state_container.manual {
+  background-color: rgb(30,70,255, .85);
+  box-shadow: 0px 0px 15px 4px blue;
+  font-size: 16px;
+}
+
+#state_container.scanning {
+  background-color: rgb(255,80,60, .85);
+  box-shadow: 0px 0px 15px 4px red;
+  font-size: 16px;
+}
+
+.btnControls {
+  position: relative;
+  top: 10%;
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  background: rgb(255,255,255, 0.9);
+  color: black;
+  box-shadow: 0px 0px 15px 10px rgb(100,100,100);
+  margin-right: 25px;
+  width: 95px;
+  height: 95px;
+  text-align: center;
+  border-radius: 10px;
+}
+
+.btnControls.live {
+  position: relative;
+  top: 10%;
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  background: #5AAAFF;
+  color: black;
+  box-shadow: 0px 0px 15px 10px rgb(100,100,100);
+  margin-right: 25px;
+  width: 95px;
+  height: 95px;
+  text-align: center;
+  border-radius: 10px;
+}
+
+.btnControls:active {
+  background: #5AAAFF;
+}
+
+#controlBoxTitle {
+  position: relative;
+  top: 3%;
+  font-size: 60px;
+}
+
+#stopBtn {
+  position: relative;
+  top: -75px;
+  border: none;
+  color: white;
+  height:70px;
+  width: 70px;
+  border-radius: 50%;
+  background: red;
+  box-shadow: 0px 0px 18px 5px rgb(255,60,80);
+  font-weight: 800;
+}
+
+.message {
+  margin-bottom: 10px;
+}
